@@ -1,0 +1,36 @@
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+.RDataTmp
+
+# User-specific files
+.Ruserdata
+
+# Example: exclude large raw data binaries (while preserving directory structure)
+# data/raw/*.zip
+# data/raw/*.tar.gz
+
+# Outputs generated during runs (can be regenerated)
+outputs/figures/*
+!outputs/figures/.gitkeep
+outputs/tables/*
+!outputs/tables/.gitkeep
+outputs/results/*
+!outputs/results/.gitkeep
+
+# LaTeX auxiliary files
+manuscript/*.aux
+manuscript/*.log
+manuscript/*.out
+manuscript/*.toc
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.synctex.gz
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
