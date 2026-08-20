@@ -1,0 +1,103 @@
+% ==============================================================================
+% Academic Journal Style Template for Quarto PDF Rendering
+% Project: Physician Exodus from Tunisia: Workforce Projections & Policy Evaluation
+% Target: Health Economics / Human Resources for Health / Health Policy
+% ==============================================================================
+
+\usepackage{setspace}
+\doublespacing
+
+\usepackage{lineno}
+\linenumbers
+\renewcommand\linenumberfont{\normalfont\footnotesize\sffamily\color{gray}}
+
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  left=25mm,
+  right=25mm,
+  top=25mm,
+  bottom=25mm
+}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{calc}
+
+% Caption styling
+\usepackage{caption}
+\captionsetup{
+  font={small,stretch=1.2},
+  labelfont={bf,small},
+  labelsep=period,
+  justification=justified,
+  singlelinecheck=false,
+  skip=6pt
+}
+
+% Hyperlink configuration
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=[rgb]{0.0,0.2,0.6},
+  citecolor=[rgb]{0.0,0.4,0.2},
+  urlcolor=[rgb]{0.6,0.1,0.1},
+  pdfborder={0 0 0}
+}
+
+% Section title formatting
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\itshape}{\thesubsubsection}{1em}{}
+
+% Running header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\itshape Physician Exodus from Tunisia: Modeling to 2050}
+\fancyhead[R]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Float positioning defaults
+\floatplacement{figure}{htbp}
+\floatplacement{table}{htbp}
+
+% Line number patch for amsmath environments
+\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
+  \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
+  \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
+  \renewenvironment{#1}%
+     {\linenumbermath\csname old#1\endcsname}%
+     {\csname oldend#1\endcsname\endlinenumbermath}}% 
+\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
+  \patchAmsMathEnvironmentForLineno{#1}%
+  \patchAmsMathEnvironmentForLineno{#1*}}%
+\AtBeginDocument{%
+  \patchBothAmsMathEnvironmentsForLineno{equation}%
+  \patchBothAmsMathEnvironmentsForLineno{align}%
+  \patchBothAmsMathEnvironmentsForLineno{flalign}%
+  \patchBothAmsMathEnvironmentsForLineno{alignat}%
+  \patchBothAmsMathEnvironmentsForLineno{gather}%
+  \patchBothAmsMathEnvironmentsForLineno{multline}%
+}

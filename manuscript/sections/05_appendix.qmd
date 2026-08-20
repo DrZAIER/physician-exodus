@@ -1,0 +1,139 @@
+# Supplementary Appendix {#sec-appendix}
+
+## Appendix A: Mathematical Formulations and Derivations {#sec-app-math}
+
+### Competing-Risk Continuous-Time Hazard Transition Derivation
+
+In our discrete-time Markov simulation model, each annual step $\Delta t = 1.0\text{ year}$ represents the discrete observation of underlying continuous-time transition processes. To guarantee exact demographic conservation and eliminate probability leakage, we derive transition probabilities from the continuous-time transition rate matrix (generator matrix $\mathbf{Q}$).
+
+For cell $i$, let $\lambda_{\text{emig}, i}$, $\lambda_{\text{retire}, i}$, $\lambda_{\text{trans}, i}$, $\lambda_{\text{geo}, i}$, and $\lambda_{\text{age}, i}$ denote the mutually exclusive event hazards, with total exit hazard $\Lambda_i = \sum_{k} \lambda_{k, i}$. Under the assumption of constant hazard rates over the interval $[t, t + \Delta t)$, the survival probability (probability of remaining in cell $i$) is:
+
+$$p_{\text{stay}, i} = \exp\left( -\int_{0}^{\Delta t} \Lambda_i \, du \right) = \exp(-\Lambda_i \Delta t)$$ {#eq-app-stay}
+
+The probability that an individual in cell $i$ experiences event $k$ during interval $\Delta t$ before any competing event occurs is given by the integral of the event-specific hazard multiplied by the survival function:
+
+$$p_{k, i} = \int_{0}^{\Delta t} \lambda_{k, i} \exp(-\Lambda_i u) \, du = \frac{\lambda_{k, i}}{\Lambda_i} \left[ 1 - \exp(-\Lambda_i \Delta t) \right]$$ {#eq-app-event}
+
+Summing across all competing destinations and the stay state yields:
+
+$$\sum_{k} p_{k, i} + p_{\text{stay}, i} = \sum_{k} \frac{\lambda_{k, i}}{\Lambda_i} (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} = \frac{\sum_k \lambda_{k, i}}{\Lambda_i} (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} = (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} \equiv 1.00000000$$ {#eq-app-proof}
+
+This formulation guarantees non-negativity and exact mass conservation for all possible non-negative hazard values.
+
+### Non-Collapsibility of the Odds Ratio (Zhang & Yu Transformation)
+
+Let $p_0$ denote the baseline probability of an event in the unexposed/reference group, and let $p_1$ denote the probability in the exposed group. The true Relative Risk is $\text{RR} = p_1 / p_0$, while the Odds Ratio is:
+
+$$\text{OR} = \frac{p_1 / (1 - p_1)}{p_0 / (1 - p_0)}$$ {#eq-app-or-def}
+
+Solving for $p_1$ in terms of $\text{OR}$ and $p_0$:
+
+$$\frac{p_1}{1 - p_1} = \text{OR} \cdot \frac{p_0}{1 - p_0} \implies p_1 = \frac{\text{OR} \cdot p_0}{(1 - p_0) + (\text{OR} \cdot p_0)}$$ {#eq-app-p1-solve}
+
+Dividing both sides by $p_0$ yields the @zhang1998 transformation:
+
+$$\text{RR} = \frac{p_1}{p_0} = \frac{\text{OR}}{(1 - p_0) + (p_0 \cdot \text{OR})}$$ {#eq-app-rr-zhang}
+
+In our study, applying this equation to the survey findings of @benromdhane2022 ($p_0 = 0.686$) and @dhouib2024 ($p_0 = 0.756$) yields:
+- Remuneration dissatisfaction: $\text{OR} = 2.14 \implies \text{RR} = \frac{2.14}{(1 - 0.686) + (0.686 \times 2.14)} = \frac{2.14}{0.314 + 1.468} = 1.19$ (vs. 2.14 unadjusted, an overestimation of +80%).
+- Infrastructure deficits: $\text{OR} = 2.48 \implies \text{RR} = \frac{2.48}{(1 - 0.686) + (0.686 \times 2.48)} = \frac{2.48}{0.314 + 1.701} = 1.23$ (vs. 2.48 unadjusted, an overestimation of +102%).
+- Workplace violence: $\text{OR} = 2.06 \implies \text{RR} = \frac{2.06}{(1 - 0.756) + (0.756 \times 2.06)} = \frac{2.06}{0.244 + 1.557} = 1.14$ (vs. 2.06 unadjusted, an overestimation of +81%).
+
+### Iterative Proportional Fitting (IPF) Algorithm
+
+The 36-cell baseline stock tensor $S_{a,s,r,k}(0)$ was initialized by minimizing discrimination information subject to marginal constraints from INS and Carte Sanitaire 2023:
+
+$$\min \sum_{a,s,r,k} S_{a,s,r,k} \ln\left( \frac{S_{a,s,r,k}}{S_{a,s,r,k}^{(0)}} \right)$$ {#eq-app-ipf}
+
+subject to:
+$$\sum_{a,r,k} S_{a,s,r,k} = M_{s}^{\text{INS}}, \quad \sum_{a,s,k} S_{a,s,r,k} = M_{r}^{\text{Carte}}, \quad \sum_{a,s,r} S_{a,s,r,k} = M_{k}^{\text{Carte}}$$
+
+The algorithm iteratively updates cell headcounts along each margin until the maximum cell difference between successive iterations is less than $10^{-6}$.
+
+## Appendix B: Comprehensive Parameter Provenance Registry {#sec-app-parameters}
+
+Every model parameter is classified into the formal 5-tier identification hierarchy (@tbl-app-params):
+- **Class A**: Directly estimated from Tunisian empirical data.
+- **Class B**: Regional North African / Maghreb benchmarks.
+- **Class C**: Pooled international meta-analyses or multi-country panel econometrics.
+- **Class D**: Structural demographic identities and health economic standards.
+- **Class E**: Standardized policy counterfactual scenario levers.
+
+| Parameter ID | Description | Mathematical Role | Base Value | Distribution | Uncertainty Range | Source & Provenance | Class |
+| :--- | :--- | :--- | :---: | :--- | :---: | :--- | :---: |
+| `PAR_ACTIVE_RATIO` | Active Practice Ratio | $N_0 = \alpha \cdot N_{\text{raw}, 0}$ | 0.88 | $\text{Beta}(176, 24)$ | $[0.85, 0.90]$ | INS / CNOM Registry Analysis [@ins2024] | A |
+| `PAR_CLEARANCE_MULT` | Administrative Clearance | $\text{Realized} = \lambda_{\text{exit}} \cdot \text{CNOM}$ | 0.75 | $\text{Beta}(75, 25)$ | $[0.65, 0.85]$ | CNOM / DREES / BÄK Cross-Check [@cnom2025] | A |
+| `PAR_REALIZATION_KAPPA` | Intention Realization | $P = \kappa \cdot \text{logit}^{-1}(\Delta V)$ | 0.35 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | Clemens & Mendola (2020) [@clemens2020] | C |
+| `PAR_KAPPA_GEN` | Generalist Realization | $\kappa_{\text{gen}} = \kappa \times 0.70$ | 0.245 | $\text{Beta}(24.5, 75.5)$ | $[0.15, 0.35]$ | French EVC Exam Quotas [@drees2024] | A |
+| `PAR_KAPPA_MED` | Medical Realization | $\kappa_{\text{med}} = \kappa \times 1.00$ | 0.350 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | DREES / BÄK Registries [@bak2024] | A |
+| `PAR_KAPPA_SURG` | Surgical Realization | $\kappa_{\text{surg}} = \kappa \times 1.40$ | 0.490 | $\text{Beta}(49, 51)$ | $[0.38, 0.60]$ | European Shortage Intakes [@drees2024] | A |
+| `PAR_STAGE_RESIDENT` | Resident Utility Modifier | $\gamma_{\text{resident}}$ in $\Delta V$ | +0.65 | $\text{Normal}(0.65, 0.10)$ | $[0.45, 0.85]$ | Ben Romdhane (2022) [@benromdhane2022] | A |
+| `PAR_STAGE_SENIOR` | Senior Utility Modifier | $\gamma_{\text{senior}}$ in $\Delta V$ | -0.85 | $\text{Normal}(-0.85, 0.12)$ | $[-1.10, -0.60]$ | CNOM Registry Statistics [@cnom2025] | A |
+| `PAR_SECTOR_PUBLIC` | Public Utility Modifier | $\gamma_{\text{public}}$ in $\Delta V$ | +0.40 | $\text{Normal}(0.40, 0.08)$ | $[0.24, 0.56]$ | Ben Romdhane (2022) [@benromdhane2022] | A |
+| `PAR_GEO_INTERIOR` | Interior Utility Modifier | $\gamma_{\text{interior}}$ in $\Delta V$ | +0.30 | $\text{Normal}(0.30, 0.06)$ | $[0.18, 0.42]$ | Carte Sanitaire 2023 [@ms2023] | A |
+| `PAR_SPEC_SURGICAL` | Surgical Utility Modifier | $\gamma_{\text{surgical}}$ in $\Delta V$ | +0.35 | $\text{Normal}(0.35, 0.07)$ | $[0.21, 0.49]$ | European Influx Analysis [@bak2024] | A |
+| `PAR_SPEC_MEDICAL` | Medical Utility Modifier | $\gamma_{\text{medical}}$ in $\Delta V$ | +0.15 | $\text{Normal}(0.15, 0.04)$ | $[0.07, 0.23]$ | European Influx Analysis [@drees2024] | A |
+| `PAR_INTAKE_GRAD_RATE` | Graduation Completion | $I = g_{\text{comp}} \cdot \text{Intake}$ | 0.92 | $\text{Beta}(92, 8)$ | $[0.85, 0.96]$ | MESRS Faculty Records [@ins2024] | A |
+| `PAR_RETIRE_SENIOR` | Senior Retirement Hazard | $\lambda_{\text{retire}} = 0.125$ | 0.125 | $\text{Beta}(25, 175)$ | $[0.09, 0.16]$ | Civil Service Law 83-112 [@ins2024] | A |
+| `PAR_GEO_INTERNAL` | Internal Transfer Hazard | $\lambda_{\text{geo}} = 0.045$ | 0.045 | $\text{Beta}(18, 382)$ | $[0.03, 0.065]$ | Carte Sanitaire Transfers [@ms2023] | A |
+| `PAR_RETURN_MIG_RATE` | Diaspora Return Hazard | $\lambda_{\text{return}} = 0.015$ | 0.015 | $\text{Beta}(15, 985)$ | $[0.005, 0.030]$ | Structural Benchmark [@amorimlopes2019] | D |
+| `PAR_PUB_PRIV_TRANS` | Sectoral Shift Hazard | $\lambda_{\text{trans}} = 0.018$ | 0.018 | $\text{Beta}(18, 982)$ | $[0.012, 0.025]$ | Calibrated INS Series (2017–2024) | A |
+| `PAR_BETA_0_SCALE` | Baseline Logit Intercept | $\beta_0$ in $\Delta V$ | -1.87 | $\text{Normal}(-1.87, 0.20)$ | $[-2.30, -1.45]$ | Calibrated (2020–2021 Sample) | A |
+| `PAR_DELTA_BETA_2021` | Crisis Regime Shift | $\Delta \beta_{2021+}$ in $\Delta V$ | +0.94 | $\text{Normal}(0.94, 0.15)$ | $[0.65, 1.25]$ | Calibrated (2020–2021 Sample) | A |
+| `PAR_BETA_WAGE_DCE` | Wage Utility Weight | $\beta_{\text{wage}}$ in $\Delta V$ | +0.48 | $\text{Normal}(0.48, 0.08)$ | $[0.38, 0.58]$ | Mandeville et al. (2014) [@mandeville2014] | C |
+| `PAR_BETA_INFRA_DCE` | Infrastructure Weight | $\beta_{\text{infra}}$ in $\Delta V$ | +0.36 | $\text{Normal}(0.36, 0.06)$ | $[0.27, 0.45]$ | Mandeville et al. (2014) [@mandeville2014] | C |
+| `PAR_BETA_RURAL_DCE` | Rural Incentive Weight | $\beta_{\text{rural}}$ in $\Delta V$ | +0.31 | $\text{Normal}(0.31, 0.06)$ | $[0.22, 0.40]$ | Mandeville et al. (2014) [@mandeville2014] | C |
+| `PAR_PEER_FEEDBACK` | Peer Feedback Elasticity | $\beta_{\text{peer}}$ in $\Delta V$ | +0.25 | $\text{Beta}(25, 75)$ | $[0.10, 0.40]$ | Structural Feedback Formulation | D |
+| `PAR_SCEN1_WAGE_INC` | Salary Policy Increment | $\Delta w_{\text{pub}} = +30\%$ | 0.30 | $\text{Uniform}(0.20, 0.50)$ | $[0.20, 0.50]$ | Policy Scenario 1 Specification | E |
+| `PAR_SCEN1_RRR_WAGE` | Wage Retention RRR | $\text{RRR}_{\text{wage}}$ | 0.12 | $\text{LogNormal}(-2.12, 0.18)$ | $[0.08, 0.18]$ | Structural Wage Elasticity [@docquier2014] | C |
+| `PAR_SCEN2_RRR_INFRA` | Infrastructure RRR | $\text{RRR}_{\text{infra}}$ | 0.10 | $\text{LogNormal}(-2.30, 0.18)$ | $[0.06, 0.16]$ | Policy Scenario 2 Specification | E |
+| `PAR_SCEN3_RRR_RURAL` | Rural Package RRR | $\text{RRR}_{\text{rural}}$ | 0.18 | $\text{LogNormal}(-1.71, 0.18)$ | $[0.12, 0.26]$ | Policy Scenario 3 Specification | E |
+| `PAR_SCEN4_QUOTA_EXP` | Training Quota Increase | $\Delta I_{\text{intake}} = +15\%$ | 0.15 | $\text{Uniform}(0.10, 0.25)$ | $[0.10, 0.25]$ | Policy Scenario 4 Specification | E |
+| `PAR_SCEN4_ROS_COMP` | Return-of-Service Rate | $R_{\text{ros}} = 0.75$ | 0.75 | $\text{Beta}(75, 25)$ | $[0.65, 0.85]$ | Bärnighausen & Bloom (2009) [@barnighausen2009] | C |
+| `PAR_POLICY_DECAY` | Annual Policy Decay | $\delta_{\text{policy}} = 0.035$ | 0.035 | $\text{Beta}(14, 386)$ | $[0.02, 0.06]$ | Health Economics Standard [@sanders2016] | D |
+| `PAR_COMP_COST_FAC` | Clinical Support Cost | $C_{\text{comp}} = 0.35 \cdot C_{\text{wage}}$ | 0.35 | $\text{Gamma}(35, 0.01)$ | $[0.25, 0.45]$ | CHEERS 2022 Item 13 [@husereau2022] | C |
+| `PAR_DISCOUNT_RATE` | Social Discount Rate | $r = 0.03$ | 0.03 | Discrete $(0.00, 0.03, 0.05, 0.08)$ | $[0.00, 0.08]$ | Second Panel Standard [@sanders2016] | D |
+| `PAR_GROSS_TRAIN_MD` | Gross Training Outlay | $C_{\text{gross}} = 85,000\text{ TND}$ | 85,000 | $\text{Gamma}(25, 3400)$ | $[65\text{k}, 110\text{k}]$ | MESRS University Accounts [@ins2024] | A |
+| `PAR_RES_LABOR_OFF` | Resident Labor Offset | $\omega_{\text{labor}} = 0.40$ | 0.40 | $\text{Beta}(40, 60)$ | $[0.30, 0.50]$ | Human Capital Accounting [@sanders2016] | D |
+| `PAR_NET_TRAIN_COST` | Net Training Fiscal Loss | $C_{\text{net}} = 51,000\text{ TND}$ | 51,000 | $\text{Gamma}(25, 2040)$ | $[39\text{k}, 66\text{k}]$ | Calculated ($85\text{k} \times (1 - 0.40)$) | D |
+| `PAR_BASE_SALARY_ANN`| Public Base Salary | $w_{\text{base}} = 36,000\text{ TND}$ | 36,000 | $\text{Gamma}(36, 1000)$ | $[30\text{k}, 48\text{k}]$ | Statut des Médecins de la Santé Publique | A |
+| `PAR_INFRA_CAPEX_ANN`| Modernization Budget | $C_{\text{infra}} = 25\text{M TND}$ | 25,000,000 | $\text{Gamma}(25, 1000000)$ | $[15\text{M}, 40\text{M}]$ | MOH Capital Envelope Allocation | E |
+
+: Complete Model Parameter Provenance Registry and Identifiability Classification. {#tbl-app-params}
+
+## Appendix C: CHEERS 2022 Reporting Checklist {#sec-app-cheers}
+
+The study methodology and reporting strictly adhere to the 28-item Consolidated Health Economic Evaluation Reporting Standards (CHEERS 2022) Statement [@husereau2022], summarized in @tbl-app-cheers.
+
+| Item No. | CHEERS Section & Item | Reported in Manuscript | Location & Description |
+| :---: | :--- | :---: | :--- |
+| **1** | Title | Yes | Title page: Identifies dynamic workforce simulation, policy counterfactuals, and economic evaluation to 2050. |
+| **2** | Abstract | Yes | Abstract: Structured summary with objectives, methods, milestone outcomes, and policy implications. |
+| **3** | Background and Objectives | Yes | Section 1: Institutional context, brain drain escalation, and explicit primary/secondary objectives. |
+| **4** | Health Economic Analysis Plan | Yes | Section 2: CHEERS 2022 and Second Panel compliant plan specified prior to model execution. |
+| **5** | Study Population | Yes | Section 2: Entire licensed and practicing physician workforce in Tunisia (36-cell tensor). |
+| **6** | Setting and Location | Yes | Section 2: National Tunisian health system, disaggregated into Coastal and Interior macro-regions. |
+| **7** | Comparators | Yes | Section 2: Status Quo baseline (SCEN_0) versus 5 standardized policy counterfactuals. |
+| **8** | Perspective | Yes | Section 2: Public payer perspective (Ministry of Health and Ministry of Finance). |
+| **9** | Time Horizon | Yes | Section 2: 25-year projection horizon (2025–2050) with milestone reporting at 2030, 2040, and 2050. |
+| **10** | Discount Rate | Yes | Section 2: Baseline 3.0% annual discount rate; tested at 0.0%, 5.0%, and 8.0%. |
+| **11** | Selection of Outcomes | Yes | Section 2: Total, public-sector, and interior-region physician-years retained; emigrants averted. |
+| **12** | Measurement of Outcomes | Yes | Section 2: Exact continuous-time competing-risk multi-state Markov transitions. |
+| **13** | Valuation of Outcomes | Yes | Section 2: Natural units (physician-years retained); complementary operational support factor (35%). |
+| **14** | Measurement and Valuation of Resources | Yes | Section 2: Full inframarginal public wage bill expansion, capital budgets, and net training investment losses. |
+| **15** | Currency, Price Date, and Conversion | Yes | Section 2: 2024 Tunisian Dinars (TND); historical series deflated by INS Consumer Price Index. |
+| **16** | Model Type and Rationale | Yes | Section 2: Discrete-time 36-cell Markov stock-and-flow model with continuous-time hazard engine. |
+| **17** | Assumptions | Yes | Section 2 & Appendix A: Documented baseline filter timing ($\alpha$), realization ($\kappa$), and policy decay. |
+| **18** | Analytical Methods | Yes | Section 2: 2-parameter MLE calibration, temporal validation split, and external DREES/BÄK validation. |
+| **19** | Study Results: Baseline Stock & Flow | Yes | Section 3: Calibrated 36-cell stock, in-sample and out-of-sample fit metrics (MAPE, RMSE, $r$). |
+| **20** | Study Results: Resource Use and Costs | Yes | Section 3 & Table 3: Undiscounted and discounted fiscal costs across all scenarios. |
+| **21** | Study Results: Cost-Effectiveness | Yes | Section 3: Cost-Consequence Analysis, ICERs ($\text{ICER}_{\text{public}}, \text{ICER}_{\text{interior}}$), and efficiency frontier. |
+| **22** | Study Results: Uncertainty Analysis | Yes | Section 3: Deterministic Tornado analysis and 1,000-draw Monte Carlo PSA credible intervals. |
+| **23** | Study Results: Heterogeneity | Yes | Section 3: Disaggregated outcomes by career stage, sector of practice, geography, and specialty. |
+| **24** | Discussion: Findings & Policy | Yes | Section 4: "Training-only trap", infrastructure efficiency, synergistic bundling, and fiscal feasibility. |
+| **25** | Discussion: Limitations | Yes | Section 4: Aggregated specialty clusters, stationary return migration, and absence of DALYs. |
+| **26** | Discussion: Generalizability | Yes | Section 4: Transferability of findings to Maghreb (Morocco, Algeria) and middle-income health systems. |
+| **27** | Source of Funding | Yes | Declarations: Independent academic research conducted without external commercial sponsorship. |
+| **28** | Conflicts of Interest | Yes | Declarations: Authors declare no competing financial or professional interests. |
+
+: CHEERS 2022 Checklist of Health Economic Evaluation Reporting Standards. {#tbl-app-cheers}
