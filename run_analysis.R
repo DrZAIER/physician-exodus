@@ -57,7 +57,7 @@ econ_res <- evaluate_economic_impact(scenario_res$scenario_runs, calibrated_para
 # 9. Sensitivity Analysis: Tornado & 1,000-Draw Monte Carlo PSA
 cat("\n[9/11] Executing Deterministic Tornado & 1,000-Draw Monte Carlo PSA...\n")
 tornado_res <- run_one_way_sensitivity(baseline_stock_36, calibrated_params)
-psa_res <- run_probabilistic_sensitivity(baseline_stock_36, psa_draws, n_draws = 1000)
+psa_res <- run_probabilistic_sensitivity(baseline_stock_36, calibrated_params, psa_params_list = psa_draws, n_draws = 1000)
 
 # 10. Generate Figures & Formatted Tables
 cat("\n[10/11] Generating publication figures and formatted output tables...\n")

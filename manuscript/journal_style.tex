@@ -7,10 +7,6 @@
 \usepackage{setspace}
 \doublespacing
 
-\usepackage{lineno}
-\linenumbers
-\renewcommand\linenumberfont{\normalfont\footnotesize\sffamily\color{gray}}
-
 \usepackage{geometry}
 \geometry{
   a4paper,
@@ -25,15 +21,7 @@
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{makecell}
-\usepackage{wrapfig}
 \usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -82,22 +70,3 @@
 % Float positioning defaults
 \floatplacement{figure}{htbp}
 \floatplacement{table}{htbp}
-
-% Line number patch for amsmath environments
-\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
-  \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
-  \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
-  \renewenvironment{#1}%
-     {\linenumbermath\csname old#1\endcsname}%
-     {\csname oldend#1\endcsname\endlinenumbermath}}% 
-\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
-  \patchAmsMathEnvironmentForLineno{#1}%
-  \patchAmsMathEnvironmentForLineno{#1*}}%
-\AtBeginDocument{%
-  \patchBothAmsMathEnvironmentsForLineno{equation}%
-  \patchBothAmsMathEnvironmentsForLineno{align}%
-  \patchBothAmsMathEnvironmentsForLineno{flalign}%
-  \patchBothAmsMathEnvironmentsForLineno{alignat}%
-  \patchBothAmsMathEnvironmentsForLineno{gather}%
-  \patchBothAmsMathEnvironmentsForLineno{multline}%
-}

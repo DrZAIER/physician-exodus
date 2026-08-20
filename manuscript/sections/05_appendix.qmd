@@ -66,9 +66,9 @@ Every model parameter is classified into the formal 5-tier identification hierar
 | `PAR_ACTIVE_RATIO` | Active Practice Ratio | $N_0 = \alpha \cdot N_{\text{raw}, 0}$ | 0.88 | $\text{Beta}(176, 24)$ | $[0.85, 0.90]$ | INS / CNOM Registries [@ins2024] | A |
 | `PAR_CLEARANCE_MULT` | Administrative Clearance | $\text{Realized} = \lambda_{\text{exit}} \cdot \text{CNOM}$ | 0.75 | $\text{Beta}(75, 25)$ | $[0.65, 0.85]$ | CNOM / DREES / BÄK [@cnom2025] | A |
 | `PAR_REALIZATION_KAPPA` | Intention Realization | $P = \kappa \cdot \text{logit}^{-1}(\Delta V)$ | 0.35 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | Clemens & Mendola (2020) [@clemens2020] | C |
-| `PAR_KAPPA_GEN` | Generalist Realization | $\kappa_{\text{gen}} = \kappa \times 0.70$ | 0.245 | $\text{Beta}(24.5, 75.5)$ | $[0.15, 0.35]$ | French EVC Exam Quotas [@drees2024] | A |
-| `PAR_KAPPA_MED` | Medical Realization | $\kappa_{\text{med}} = \kappa \times 1.00$ | 0.350 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | DREES / BÄK Registries [@bak2024] | A |
-| `PAR_KAPPA_SURG` | Surgical Realization | $\kappa_{\text{surg}} = \kappa \times 1.40$ | 0.490 | $\text{Beta}(49, 51)$ | $[0.38, 0.60]$ | European Shortage Intakes [@drees2024] | A |
+| `PAR_KAPPA_GEN` | Generalist Realization | $\kappa_{\text{gen}} = \kappa \times 0.70$ | 0.245 | $\text{Beta}(24.5, 75.5)$ | $[0.15, 0.35]$ | French EVC Exam Quotas [@drees2024] | C |
+| `PAR_KAPPA_MED` | Medical Realization | $\kappa_{\text{med}} = \kappa \times 1.00$ | 0.350 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | DREES / BÄK Registries [@bak2024] | C |
+| `PAR_KAPPA_SURG` | Surgical Realization | $\kappa_{\text{surg}} = \kappa \times 1.40$ | 0.490 | $\text{Beta}(49, 51)$ | $[0.38, 0.60]$ | European Shortage Intakes [@drees2024] | C |
 | `PAR_STAGE_RESIDENT` | Resident Utility Mod | Utility shift $\gamma_{\text{resident}}$ | +0.65 | $\text{Normal}(0.65, 0.10)$ | $[0.45, 0.85]$ | Ben Romdhane (2022) [@benromdhane2022] | A |
 | `PAR_STAGE_SENIOR` | Senior Utility Mod | Utility shift $\gamma_{\text{senior}}$ | -0.85 | $\text{Normal}(-0.85, 0.12)$ | $[-1.10, -0.60]$ | CNOM Statistics [@cnom2025] | A |
 | `PAR_SECTOR_PUBLIC` | Public Utility Mod | Utility shift $\gamma_{\text{public}}$ | +0.40 | $\text{Normal}(0.40, 0.08)$ | $[0.24, 0.56]$ | Ben Romdhane (2022) [@benromdhane2022] | A |
@@ -80,8 +80,8 @@ Every model parameter is classified into the formal 5-tier identification hierar
 | `PAR_GEO_INTERNAL` | Internal Transfer Hazard | Interior-to-coast hazard $\lambda_{\text{geo}}$ | 0.045 | $\text{Beta}(18, 382)$ | $[0.03, 0.065]$ | Carte Sanitaire Mobility [@ms2023] | A |
 | `PAR_RETURN_MIG_RATE` | Diaspora Return Hazard | Annual return hazard $\lambda_{\text{return}}$ | 0.015 | $\text{Beta}(15, 985)$ | $[0.005, 0.030]$ | Structural Benchmark [@amorimlopes2019] | D |
 | `PAR_PUB_PRIV_TRANS` | Public-Private Transition | Sector shift hazard $\lambda_{\text{trans}}$ | 0.018 | $\text{Beta}(18, 982)$ | $[0.012, 0.025]$ | INS Series (2017–2024) [@ins2024] | A |
-| `PAR_BETA_0_SCALE` | Baseline Logit Intercept | Calibration intercept $\beta_0$ | -1.87 | $\text{Normal}(-1.87, 0.20)$ | $[-2.30, -1.45]$ | Calibrated on 2020–2021 Sample | A |
-| `PAR_DELTA_BETA_2021` | Post-2021 Crisis Shift | Structural intercept $\Delta \beta_{2021+}$ | +0.94 | $\text{Normal}(0.94, 0.15)$ | $[0.65, 1.25]$ | Calibrated on 2020–2021 Sample | A |
+| `PAR_BETA_0_SCALE` | Baseline Logit Intercept | Calibration intercept $\beta_0$ | -1.87 | $\text{Normal}(-1.87, 0.20)$ | $[-2.30, -1.45]$ | Calibrated on 2015–2021 Sample ($df=5$) | A |
+| `PAR_DELTA_BETA_2021` | Post-2021 Crisis Shift | Structural intercept $\Delta \beta_{2021+}$ | +0.94 | $\text{Normal}(0.94, 0.15)$ | $[0.65, 1.25]$ | Calibrated on 2015–2021 Sample ($df=5$) | A |
 | `PAR_BETA_WAGE_DCE` | Wage Choice Weight | Relative utility $\beta_{\text{wage}}$ | +0.48 | $\text{Normal}(0.48, 0.08)$ | $[0.38, 0.58]$ | Mandeville et al. (2014) [@mandeville2014] | C |
 | `PAR_BETA_INFRA_DCE` | Infrastructure Weight | Relative utility $\beta_{\text{infra}}$ | +0.36 | $\text{Normal}(0.36, 0.06)$ | $[0.27, 0.45]$ | Mandeville et al. (2014) [@mandeville2014] | C |
 | `PAR_BETA_RURAL_DCE` | Rural Hardship Weight | Relative utility $\beta_{\text{rural}}$ | +0.31 | $\text{Normal}(0.31, 0.06)$ | $[0.22, 0.40]$ | Mandeville et al. (2014) [@mandeville2014] | C |
@@ -187,16 +187,16 @@ The evidence base anchoring the model's behavioral parameters, discrete choice u
 +---------------------------------------------------------------------------------------------------+
 | 1. IDENTIFICATION                                                                                 |
 |    - Database Search (PubMed, Scopus, ScienceDirect, WHO IRIS, OECD iLibrary): N = 1,482 records  |
-|    - Grey Literature & Statistical Portals (INS, Ministère de la Santé, CNOM, DREES, BÄK): N = 42|
+|    - Grey Literature & Statistical Portals (INS, Ministere de la Sante, CNOM, DREES, BAK): N = 42|
 +---------------------------------------------------------------------------------------------------+
-                                                  │
+                                                  |
                                                   v  (Duplicates Removed: N = 318)
 +---------------------------------------------------------------------------------------------------+
 | 2. SCREENING                                                                                      |
 |    - Title and Abstract Screening: N = 1,206 records evaluated                                    |
 |    - Excluded (Non-health worker, non-emigration, purely qualitative opinion): N = 984 records    |
 +---------------------------------------------------------------------------------------------------+
-                                                  │
+                                                  |
                                                   v
 +---------------------------------------------------------------------------------------------------+
 | 3. ELIGIBILITY ASSESSMENT                                                                         |
@@ -206,17 +206,17 @@ The evidence base anchoring the model's behavioral parameters, discrete choice u
 |      * Incompatible high-income nursing-only cohorts: N = 34                                       |
 |      * Methodological redundancy with meta-analyses: N = 19                                       |
 +---------------------------------------------------------------------------------------------------+
-                                                  │
+                                                  |
                                                   v
 +---------------------------------------------------------------------------------------------------+
-| 4. INCLUDED IN EVIDENCE REGISTRY (`literature/evidence_registry.csv`)                             |
+| 4. INCLUDED IN EVIDENCE REGISTRY (literature/evidence_registry.csv)                               |
 |    - Total Audited Studies & Multilateral Datasets: N = 31 Primary Records                        |
 |      * Direct Tunisian Microdata & Surveys (Ben Romdhane 2022, Dhouib 2024, Ben Salem 2024): N = 7 |
 |      * Regional North African Studies (Morocco, Egypt, Lebanon): N = 4                            |
 |      * Global Systematic Reviews & DCE Meta-Analyses (Sousa 2023, Mandeville 2014): N = 4         |
 |      * Realization & Panel Econometrics (Clemens & Mendola 2020, Docquier 2014): N = 3            |
 |      * Health Economics & Simulation Benchmarks (Amorim-Lopes 2019, Sanders 2016): N = 5          |
-|      * Official Administrative Statistical Series (INS, MOH Carte Sanitaire, CNOM, DREES, BÄK): N=8|
+|      * Official Administrative Statistical Series (INS, MOH Carte Sanitaire, CNOM, DREES, BAK): N=8|
 +---------------------------------------------------------------------------------------------------+
 ```
 

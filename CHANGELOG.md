@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-final] - 2026-08-20
+
+### Complete Editorial Acceptance & Final Peer-Review Revision Execution (`REVISION_PLAN.md`)
+
+#### Phase 1: Data & Parameter Audit
+- **Specialty Realization Classification (Rev2-Item 1)**: Formally reclassified `PAR_KAPPA_GEN`, `PAR_KAPPA_MED`, and `PAR_KAPPA_SURG` from Class A (Direct Empirical) to **Class C / Class D (Calibrated Structural Parameters)** in `data/metadata/parameter_registry.csv` and `PARAMETER_AUDIT.md`. Documented the European licensing bottleneck ratios (0.70x generalist, 1.00x medical, 1.40x surgical) calibrated against French EVC and German Bundesärztekammer quotas.
+- **Historical Calibration Sample Degrees of Freedom (Rev1-Item 4, Rev2-Item 1)**: Corrected the calibration sample provenance documentation for `PAR_BETA_0_SCALE` and `PAR_DELTA_BETA_2021` to reflect the 2015–2021 historical training sample ($N = 7$ annual time points, $df = 5$) and holdout validation on 2022–2024.
+- **Demarcation of Stated vs. Revealed Preferences (Rev1-Item 2)**: Added explicit definitions separating migration intention (stated preferences) from realized physical departures (revealed preferences via realization factor $\kappa$) across all parameter metadata.
+
+#### Phase 2: Code Refinement & Sensitivity Enhancements
+- **Dual CCA Reporting in PSA Engine (`R/10_sensitivity.R`)**: Enhanced `run_probabilistic_sensitivity` to record undiscounted public physician-years retained across all 1,000 Monte Carlo draws and output both undiscounted (median 13,275.5; 95% CrI: 8,939.5 to 18,672.1) and discounted metrics (median 8,319.0; 95% CrI: 4,406.8 to 15,201.4).
+- **Master Orchestrator Pipeline (`run_analysis.R`)**: Successfully executed end-to-end simulation pipeline generating 7 publication figures (PDF, SVG, 600-DPI PNG) and formatted tables in `outputs/`.
+- **Unit Test Verification (`tests/test_runner.R`)**: Executed comprehensive test suite verifying 55/55 unit tests passing with zero errors or failures.
+
+#### Phase 3: Manuscript Drafting & Textual Harmonization
+- **Behavioral Framework Reframing (Rev1-Item 1)**: Replaced pseudo-RUM claims throughout `manuscript/sections/01_introduction.qmd` and `02_methods.qmd` with the **Calibrated Macro-Policy Proportional Hazard / Elasticity Multiplier Framework**, anchoring relative choice weights in Mandeville et al. (2014) DCE meta-analysis, Zhang & Yu (1998) relative risk corrections, and Clemens & Mendola (2020) realization discounting.
+- **The "Training-Only Trap" & SCEN_5 Net Emigration Harmonization (Rev1-Item 3, Rev2-Item 3)**: Fully harmonized all manuscript sections (`01_introduction.qmd`, `02_methods.qmd`, `03_results.qmd`, `04_discussion.qmd`, `main.qmd`) to accurately explain that Comprehensive Reform (SCEN_5) maximizes domestic public practicing capacity (+10,040 public doc-years retained; 5.4 interior density in 2050) while resulting in a net increase in cumulative emigrants abroad ($-361$ deterministic; median $-920$ PSA; 95% CrI: $-1,658$ to $-172$) due to gross student pipeline expansion (+7.5%) under partial compliance ($R_{\text{ros}} = 0.75$).
+- **Demographic Replacement Equilibrium & Density Collapse (Rev2-Item 2)**: Documented in Section 3.2 the demographic explanation behind 2040–2050 active headcount stabilization (depletion of senior cohort reducing annual retirement exits to ~200/year to balance inflows ~911/year minus exits) and proved that national physician density collapses strictly and monotonically from 11.4 to 7.7 per 10k population.
+- **Economic Evaluation & Ethical Dominance (Rev2-Item 4, Rev1-Item 5)**:
+  - Formulated public payer evaluation around Budget Impact Analysis (~84.5M TND/year = 2.8% of MOH budget) and natural Cost-Consequence units alongside discounted ICERs.
+  - Formalized the Ethical / External Dominance decision rule excluding SCEN_4 from the efficiency frontier due to unrecovered public deadweight training losses (>117M TND).
+  - Updated Figure 5 caption with the explicit Ethical Dominance exclusion note.
+- **Tunisian Institutional & Political Economy Depth (Rev1-Item 5, Rev2-Item 5)**:
+  - Integrated Law 83-112 civil service non-base allowances (*indemnités de garde/astreinte*).
+  - Formulated the OTJM 3-year incentivized contract model with guaranteed coastal CHU transfer rights.
+  - Grounded infrastructure investments in Pharmacie Centrale de Tunisie (PCT) supply chain stabilization and emergency department security protocols.
+  - Incorporated *Activité Privée Complémentaire* (APC / *Plein-Temps Aménagé*) legal dual-practice interface.
+  - Added the prominent 4-bullet **"Executive Policy Brief: Core Takeaways for the Ministries of Health and Finance"** callout box in Section 4.2.
+- **Detailed Limitations & Data Missingness (Rev1-Item 2, Rev2-Item 2)**: Expanded Section 4.3 with 6 explicit subsections documenting multi-decadal projection uncertainty to 2050, lack of empirical macroeconomic covariance matrix, aggregate specialty clusters, and absence of DALYs.
+- **Reporting Checklist Line Number Synchronization (Rev1-Item 6)**: Verified and synchronized all item descriptions and section locations in CHEERS 2022, STROBE, and PRISMA checklists in `05_appendix.qmd`.
+
+#### Phase 4: Verification & Compilation
+- **PDF Manuscript Compilation**: Compiled `manuscript/main.qmd` via Quarto and 3-pass pdflatex engine to produce the definitive publication-grade PDF: `manuscript/main.pdf` (zero missing references, complete citation graph, and publication layout).
+
+---
+
 ## [0.4.0-alpha] - 2026-08-20
 
 ### Major Structural & Econometric Re-Architecting (Peer Review Remediation)

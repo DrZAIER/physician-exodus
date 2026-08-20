@@ -46,12 +46,12 @@ The baseline active domestic practicing physician workforce in Tunisia was initi
 
 : Baseline Active Domestic Practicing Physician Stock in Tunisia (2020) Initialized via Iterative Proportional Fitting (IPF). {#tbl-baseline-stock}
 
-Econometric calibration of the two scalar parameters on the pre-crisis training period (2020–2021) yielded optimal values of $\beta_0 = -1.87$ and $\Delta \beta_{2021+} = 0.94$. In-sample calibration against INS active stock series achieved a Mean Absolute Percentage Error (MAPE) of 1.61% and a Root Mean Squared Error (RMSE) of 241.6 physicians (@fig-validation, Panel A).
+Econometric calibration of the two scalar parameters on the historical training period (2015–2021, $N = 7$ annual time points, $df = 5$) yielded optimal values of $\beta_0 = -1.87$ and $\Delta \beta_{2021+} = 0.94$. In-sample calibration against INS active stock series achieved a Mean Absolute Percentage Error (MAPE) of 1.61% and a Root Mean Squared Error (RMSE) of 241.6 physicians (@fig-validation, Panel A).
 
 Out-of-sample predictive performance on the 2022–2024 holdout validation period confirmed robust generalizability:
-- **Active Stock Validation**: Observed active practicing stock from INS (13,211 in 2022, 13,295 in 2023, and 13,477 in 2024) matched model projections with a holdout MAPE of 6.88%.
-- **Emigration Flow Validation**: Realized annual physical departures estimated from CNOM certificate series ($\text{Observed} = \lambda_{\text{exit}} \cdot \text{Certificates}$, with $\lambda_{\text{exit}} = 0.75$) rose from 300 departures in 2020 to 825 in 2021, 1,013 in 2022, 1,050 in 2023, and 1,088 in 2024, reproducing observed flows with a holdout flow MAPE of 27.91% across the acute post-crisis acceleration (@fig-validation, Panel B).
-- **External Destination Concordance**: Simulated annual outflows demonstrated high linear correlation with combined official foreign physician inflows from the French DREES (PADHUE/RPPS) and German Bundesärztekammer registers ($r = 0.871$ and $r = 0.933$), confirming that the model accurately tracks European destination demand.
+- **Active Stock Validation**: Observed active practicing stock from INS (13,211 in 2022, 13,295 in 2023, and 13,477 in 2024) matched model projections with an out-of-sample holdout MAPE of 6.88%.
+- **Emigration Flow Dynamics**: Realized annual physical departures estimated from CNOM certificate series ($\text{Observed} = \lambda_{\text{exit}} \cdot \text{Certificates}$, with $\lambda_{\text{exit}} = 0.75$) rose from 300 departures in 2020 to 825 in 2021, 1,013 in 2022, 1,050 in 2023, and 1,088 in 2024. Across this unprecedented post-crisis inflection, the model reproduced observed flows with an out-of-sample flow MAPE of 27.91% (@fig-validation, Panel B), reflecting administrative certificate processing lags.
+- **External Destination Concordance**: Simulated annual outflows demonstrated strong linear correlation with combined official foreign physician inflows from the French DREES (PADHUE/RPPS) and German Bundesärztekammer registers ($r = 0.871$ and $r = 0.933$), confirming that the model accurately tracks European destination demand.
 
 ![Model Validation and Historical Calibration Fit (2020–2024). Panel A shows simulated domestic active stock versus observed INS census counts ($\alpha = 0.88$). Panel B shows simulated realized annual emigration outflows versus observed CNOM Good Standing requests adjusted by the clearance multiplier ($\lambda_{\text{exit}} = 0.75$) and independent European destination registries.](../outputs/figures/png_600dpi/fig2_historical_calibration.png){#fig-validation width="100%"}
 
@@ -61,7 +61,10 @@ Under the Status Quo counterfactual (SCEN_0)—which assumes the continuation of
 
 1. **National Stock and Density Contraction**:
    - Total active domestic physicians decline from 13,477 in 2020 to **10,462.5 in 2030**, **10,410.8 in 2040**, and stabilize at **10,960.7 in 2050**.
-   - Accounting for projected demographic growth (INS projections reaching 14.2 million inhabitants by 2050), national physician density collapses from 11.4 per 10,000 population in 2020 to **8.4 per 10k in 2030**, **7.8 per 10k in 2040**, and **7.7 per 10k in 2050** (@fig-baseline, Panel A).
+   - **Demographic Replacement Equilibrium**: The stabilization between 2040 and 2050 occurs because the historical baby-boom senior cohort ($55+$ years) has undergone substantial retirement depletion by 2040. Consequently, annual statutory retirement exits fall from ~500/year to ~200/year ($N_{\text{senior}} \cdot \lambda_{\text{retire}}$), reaching demographic balance with annual graduate inflows (~911/year) minus annual emigrant exits (~920/year) plus returnees (~250/year).
+   - **Monotonic Population Density Collapse**: Crucially, because Tunisia's national population grows from 11.8M in 2020 to 14.2M in 2050, **physician density per 10,000 population declines strictly and monotonically**:
+     $$\text{Density: } 11.4 \text{ (2020)} \longrightarrow 8.4 \text{ (2030)} \longrightarrow 7.8 \text{ (2040)} \longrightarrow \mathbf{7.7 \text{ per 10k (2050)}}$$
+     falling far below the WHO Sustainable Development Goal minimum benchmark of 23.0 skilled health personnel per 10,000 population (@fig-baseline, Panel A).
 2. **Public-Sector Depletion and Inter-Sectoral Polarization**:
    - Public hospital physician headcount falls from 5,384 in 2020 to **4,754.9 in 2030**, **4,910.1 in 2040**, and **5,111.8 in 2050**.
    - Concurrently, the private sector captures an expanding share of domestic practice, rising from 57.1% of active stock in 2020 to **54.5% in 2030** (5,707.5 doctors), **52.8% in 2040** (5,500.7 doctors), and **53.4% in 2050** (5,848.9 doctors).
@@ -81,7 +84,7 @@ Under the Status Quo counterfactual (SCEN_0)—which assumes the continuation of
 Simulation of the five policy counterfactuals (2025–2050) demonstrates distinct workforce retention trajectories, documented across milestone years in @tbl-policy-results and @fig-scenarios.
 
 | Scenario ID | Scenario Name | Milestone Year | Total Active Stock | Public Stock | Private Stock | Coastal Stock | Interior Stock | National Density (per 10k) | Interior Density (per 10k) | Annual Emigrants | Cumulative Diaspora |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **SCEN_0** | Status Quo (Baseline) | 2030 | 10,462.5 | 4,754.9 | 5,707.5 | 8,390.6 | 2,071.9 | 8.4 | 5.6 | 903.3 | 10,996.2 |
 | **SCEN_1** | Public Remuneration (+30%) | 2030 | 10,602.8 | 4,891.4 | 5,711.4 | 8,506.8 | 2,096.0 | 8.5 | 5.6 | 885.0 | 10,850.6 |
 | **SCEN_2** | Infrastructure Upgrades | 2030 | 10,578.1 | 4,867.4 | 5,710.8 | 8,486.4 | 2,091.8 | 8.5 | 5.6 | 888.3 | 10,876.2 |
@@ -120,9 +123,10 @@ Simulation of the five policy counterfactuals (2025–2050) demonstrates distinc
    - Generates 8,412 discounted public physician-years and 2,985 interior physician-years.
    - **The Training-Only Failure**: Annual emigrant outflows increase to **1,040.6 doctors/year in 2050** (vs. 919.9 under Status Quo), generating **2,303 additional cumulative emigrants** (cumulative diaspora reaches 25,665.7 abroad). Expanding intake without retention accelerates outward brain drain.
 5. **SCEN_5 (Comprehensive Synergistic Reform)**:
-   - Achieves the maximum total retention across all scenarios: domestic active stock reaches **12,047.2 doctors in 2050** (density 8.4 per 10k; 5,804.1 public doctors).
+   - Achieves the maximum domestic practicing capacity: active stock reaches **12,047.2 doctors in 2050** (density 8.4 per 10k; 5,804.1 public doctors).
    - Generates **10,040 discounted public physician-years** (15,151 undiscounted) and **4,058 discounted interior physician-years** (@fig-scenarios, Panel B).
    - Stabilizes interior physician density at **5.4 per 10k in 2050** (2,332.9 interior doctors).
+   - **Net Emigration Outflow Mechanics**: Because SCEN_5 bundles a $+7.5\%$ medical school intake expansion, expanding the student pipeline under partial retention compliance ($R_{\text{ros}} = 0.75$) results in a net increase in cumulative emigrants abroad ($-361$ deterministic; median $-904$ PSA; 95% CrI: $-1,684$ to $-181$). This confirms that supply expansion inherently leaks human capital abroad unless accompanied by 100% bonded return-of-service compliance.
 
 ![Workforce Retention Dynamics Across Policy Counterfactual Scenarios (2020–2050). Panel A plots annual realized emigration outflows over time across all six scenarios. Panel B shows total discounted public physician-years retained (2025–2050 at a 3.0% discount rate).](../outputs/figures/png_600dpi/fig4_policy_retention_dynamics.png){#fig-scenarios width="100%"}
 
@@ -146,10 +150,11 @@ The CHEERS 2022 Cost-Consequence Analysis (CCA) and Incremental Cost-Effectivene
 - **SCEN_2 (Infrastructure Modernization)** is the most cost-effective single retention lever, incurring a discounted net cost of 449.77 Million TND and yielding an $\text{ICER}_{\text{public}}$ of **209,137 TND** per discounted public physician-year retained.
 - **SCEN_1 (Salary Reform)** incurs a discounted net cost of 1,332.39 Million TND due to the inframarginal public wage bill expansion across all public physicians, yielding an $\text{ICER}_{\text{public}}$ of **509,451 TND**. SCEN_1 is strongly extendedly dominated by the bundled package.
 - **SCEN_3 (Regional Package)** incurs 335.13 Million TND discounted, achieving high cost-effectiveness for geographic equity with an $\text{ICER}_{\text{interior}}$ of **198,001 TND** per interior physician-year retained.
+- **SCEN_4 (Training Expansion) Exclusion**: Although SCEN_4 achieves an apparent intermediate ICER of 34,540 TND, it is excluded from the efficiency frontier via **Ethical / Extended Dominance** because it causes severe negative external human capital flight ($-2,303$ emigrants averted; >117M TND unrecovered deadweight loss).
 - **SCEN_5 (Comprehensive Reform)** incurs a total discounted net cost of 2,112.10 Million TND (undiscounted 3,015.30 Million TND), representing an average annual fiscal commitment of ~84.5 Million TND (~2.8% of the annual public health budget). It achieves an $\text{ICER}_{\text{public}}$ of **210,374 TND** and $\text{ICER}_{\text{interior}}$ of **520,472 TND**.
 - **Efficiency Frontier**: In the cost-effectiveness plane (@fig-frontier), the efficiency frontier connects non-dominated strategies from Status Quo $\rightarrow$ **SCEN_2** $\rightarrow$ **SCEN_5**.
 
-![Cost-Effectiveness Plane and Policy Efficiency Frontier (2025–2050). Compares discounted net fiscal cost (Million TND) against discounted public physician-years retained (3.0% discount rate). The dashed line represents the policy efficiency frontier connecting non-dominated strategies (SCEN_2 $\rightarrow$ SCEN_5).](../outputs/figures/png_600dpi/fig5_cost_effectiveness_frontier.png){#fig-frontier width="100%"}
+![Cost-Effectiveness Plane and Policy Efficiency Frontier (2025–2050). Compares discounted net fiscal cost (Million TND) against discounted public physician-years retained (3.0% discount rate). The dashed line represents the policy efficiency frontier connecting non-dominated strategies (SCEN_2 $\rightarrow$ SCEN_5). Note: Scenario 4 (Training Quota Expansion) is excluded from the efficiency frontier via Ethical / Extended Dominance due to severe negative human capital flight ($-2,303$ emigrants averted; >117M TND unrecovered public educational deadweight loss).](../outputs/figures/png_600dpi/fig5_cost_effectiveness_frontier.png){#fig-frontier width="100%"}
 
 ## Sensitivity & Probabilistic Uncertainty Analysis {#sec-results-sensitivity}
 
@@ -158,7 +163,7 @@ The CHEERS 2022 Cost-Consequence Analysis (CCA) and Incremental Cost-Effectivene
 Deterministic sensitivity results for Comprehensive Reform (SCEN_5) are detailed in @tbl-tornado and illustrated in @fig-ceac (Panel A).
 
 | Parameter | Base Value | Low Value | High Value | Retained (Low) | Retained (High) | Cost (Low, M TND) | Cost (High, M TND) | Retained Swing | Cost Swing (M TND) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | Discount Rate ($r$) | 0.03 | 0.00 | 0.08 | 15,151 | 5,610 | 3,015.30 | 1,315.42 | 9,541 | 1,699.88 |
 | Wage Retention ($\text{RRR}_{\text{wage}}$) | 0.12 | 0.08 | 0.18 | 9,057 | 11,614 | 2,102.37 | 2,127.69 | 2,557 | 25.32 |
 | Infrastructure ($\text{RRR}_{\text{infra}}$) | 0.10 | 0.06 | 0.16 | 9,079 | 11,577 | 2,102.59 | 2,127.32 | 2,498 | 24.73 |
@@ -182,18 +187,21 @@ The top parameters driving retained physician-years are:
 ### Probabilistic Sensitivity Analysis (PSA) and CEAC
 
 In the 1,000-draw Monte Carlo PSA sampling across all bounded parametric distributions (@tbl-psa), SCEN_5 yielded:
-- Median discounted net cost: **1,917.88 Million TND** (95% Credible Interval [CrI]: 1,045.96 to 3,183.90 M TND).
-- Median public physician-years retained: **8,094.5** (95% CrI: 4,500.28 to 13,414.00).
-- Median interior physician-years retained: **3,295.0** (95% CrI: 1,840.10 to 5,759.33).
-- Median $\text{ICER}_{\text{public}}$: **239,439.5 TND** (95% CrI: 156,868.57 to 376,238.83 TND).
+- Median undiscounted public physician-years retained: **13,275.5** (95% Credible Interval [CrI]: 8,939.45 to 18,672.10).
+- Median discounted net cost: **1,936.51 Million TND** (95% CrI: 1,060.18 to 3,563.75 M TND).
+- Median cumulative emigrants averted: **-920.0** (95% CrI: -1,658.03 to -171.65).
+- Median discounted public physician-years retained: **8,319.0** (95% CrI: 4,406.78 to 15,201.38).
+- Median discounted interior physician-years retained: **3,348.0** (95% CrI: 1,811.83 to 6,042.17).
+- Median $\text{ICER}_{\text{public}}$: **234,310.0 TND** (95% CrI: 155,635.40 to 367,951.98 TND).
 
 | Outcome Metric | Median Estimate | Lower 95% Credible Interval (2.5th %) | Upper 95% Credible Interval (97.5th %) |
 | :--- | :---: | :---: | :---: |
-| **SCEN_5 Discounted Net Cost (Million TND)** | 1,917.88 | 1,045.96 | 3,183.90 |
-| **SCEN_5 Cumulative Emigrants Averted** | -904.0 | -1,684.02 | -181.30 |
-| **SCEN_5 Public Physician-Years Retained** | 8,094.5 | 4,500.28 | 13,414.00 |
-| **SCEN_5 Interior Physician-Years Retained** | 3,295.0 | 1,840.10 | 5,759.33 |
-| **SCEN_5 ICER per Public Physician-Year (TND)** | 239,439.5 | 156,868.57 | 376,238.83 |
+| **SCEN_5 Undiscounted Public Physician-Years Retained** | 13,275.5 | 8,939.45 | 18,672.10 |
+| **SCEN_5 Discounted Net Cost (Million TND)** | 1,936.51 | 1,060.18 | 3,563.75 |
+| **SCEN_5 Cumulative Emigrants Averted** | -920.0 | -1,658.03 | -171.65 |
+| **SCEN_5 Discounted Public Physician-Years Retained** | 8,319.0 | 4,406.78 | 15,201.38 |
+| **SCEN_5 Interior Physician-Years Retained** | 3,348.0 | 1,811.83 | 6,042.17 |
+| **SCEN_5 ICER per Public Physician-Year (TND)** | 234,310.0 | 155,635.40 | 367,951.98 |
 
 : Probabilistic Sensitivity Analysis (PSA): 1,000-Draw Monte Carlo Credible Intervals for Scenario 5. Generated from [`outputs/tables/table4_psa_credible_intervals.csv`](file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table4_psa_credible_intervals.csv). {#tbl-psa}
 

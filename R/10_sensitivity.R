@@ -90,8 +90,7 @@ run_probabilistic_sensitivity <- function(baseline_stock_36,
                                           psa_params_list = NULL,
                                           n_draws = 1000) {
   if (is.null(psa_params_list)) {
-    psa_sampled <- sample_psa_parameters(n_draws = n_draws)
-    psa_params_list <- psa_sampled$psa_params
+    psa_params_list <- sample_psa_parameters(n_draws = n_draws)
   } else if (is.list(psa_params_list) && "psa_params" %in% names(psa_params_list)) {
     psa_params_list <- psa_params_list$psa_params
   }
@@ -102,7 +101,11 @@ run_probabilistic_sensitivity <- function(baseline_stock_36,
   psa_records <- vector("list", n_eval)
   
   for (i in 1:n_eval) {
-    p_draw <- psa_params_list[[i]]
+    p_draw <- base_params
+    p_sampled <- psa_params_list[[i]]
+    for (nm in names(p_sampled)) {
+      p_draw[[nm]] <- p_sampled[[nm]]
+    }
     
     # Scale stock if active_ratio is sampled
     stock_draw <- baseline_stock_36
@@ -123,6 +126,7 @@ run_probabilistic_sensitivity <- function(baseline_stock_36,
       # SCEN_5
       scen5_net_cost_m = scen5_row$discounted_net_cost_million_tnd,
       scen5_emig_averted = scen5_row$cumulative_emigrants_averted,
+      scen5_undisc_public_years = scen5_row$undiscounted_public_phys_years,
       scen5_public_years = scen5_row$discounted_public_phys_years,
       scen5_interior_years = scen5_row$discounted_interior_phys_years,
       scen5_icer_public = scen5_row$icer_public_retained_tnd,
@@ -144,13 +148,15 @@ run_probabilistic_sensitivity <- function(baseline_stock_36,
   # Compute 95% Credible Intervals (2.5%, 50%, 97.5%)
   summary_stats <- tibble(
     metric = c(
+      "SCEN_5 Undiscounted Public Physician-Years Retained",
       "SCEN_5 Discounted Net Cost (Million TND)",
       "SCEN_5 Emigrants Averted",
-      "SCEN_5 Public Physician-Years Retained",
+      "SCEN_5 Discounted Public Physician-Years Retained",
       "SCEN_5 Interior Physician-Years Retained",
       "SCEN_5 ICER per Public Physician-Year (TND)"
     ),
     median = c(
+      median(psa_df$scen5_undisc_public_years, na.rm = TRUE),
       median(psa_df$scen5_net_cost_m, na.rm = TRUE),
       median(psa_df$scen5_emig_averted, na.rm = TRUE),
       median(psa_df$scen5_public_years, na.rm = TRUE),
@@ -158,6 +164,7 @@ run_probabilistic_sensitivity <- function(baseline_stock_36,
       median(psa_df$scen5_icer_public, na.rm = TRUE)
     ),
     lower_95_cri = c(
+      quantile(psa_df$scen5_undisc_public_years, 0.025, na.rm = TRUE),
       quantile(psa_df$scen5_net_cost_m, 0.025, na.rm = TRUE),
       quantile(psa_df$scen5_emig_averted, 0.025, na.rm = TRUE),
       quantile(psa_df$scen5_public_years, 0.025, na.rm = TRUE),
@@ -165,6 +172,7 @@ run_probabilistic_sensitivity <- function(baseline_stock_36,
       quantile(psa_df$scen5_icer_public, 0.025, na.rm = TRUE)
     ),
     upper_95_cri = c(
+      quantile(psa_df$scen5_undisc_public_years, 0.975, na.rm = TRUE),
       quantile(psa_df$scen5_net_cost_m, 0.975, na.rm = TRUE),
       quantile(psa_df$scen5_emig_averted, 0.975, na.rm = TRUE),
       quantile(psa_df$scen5_public_years, 0.975, na.rm = TRUE),
