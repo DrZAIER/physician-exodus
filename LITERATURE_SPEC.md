@@ -51,10 +51,12 @@ literature/
 ### 2.4. `literature/methods/`
 - **Scope**: Mathematical, econometric, and epidemiological modeling literature.
 - **Key Methodological Areas**:
-  - Discrete Choice Experiments (DCE) in health workforce preferences (Lancsar, Louviere, Ryan, Lagarde, Blaauw).
+  - Discrete Choice Experiments (DCE) in health workforce preferences and LMIC meta-analyses (Mandeville et al. 2014, Lancsar, Louviere, Ryan, Lagarde, Blaauw).
   - Random Utility Maximization (RUM) and mixed multinomial logit formulations (Train, Hensher, Greene).
-  - Dynamic cohort, stock-and-flow, and Markov state-transition models for health workforce planning (WHO, Ono et al., Birch et al., Dreesch et al.).
-  - Cost-consequence (CCA) and cost-effectiveness (CEA) methodologies applied to human resources for health (Drummond et al., WHO-CHOICE guidelines).
+  - Odds Ratio to Relative Risk conversion under high baseline prevalence (Zhang & Yu, *JAMA* 1998).
+  - Intention-to-action realization gaps in migration economics (Docquier, Peri, & Ruyssen 2014; Clemens & Mendola 2020; Creighton 2013).
+  - Dynamic cohort, stock-and-flow, and Markov state-transition models for health workforce planning (WHO 2021, AAMC/Zhang et al. 2020, Ono et al., Birch et al., Amorim-Lopes et al. 2019).
+  - Cost-consequence (CCA) and cost-effectiveness (CEA) methodologies applied to human resources for health (Drummond et al. 2015, Sanders et al. 2016 Second Panel, WHO-CHOICE guidelines).
 
 ---
 

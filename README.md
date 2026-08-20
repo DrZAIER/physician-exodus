@@ -48,8 +48,8 @@ The research is structured across six integrated analytical frameworks:
 2. **Push-Pull Migration Theory**: Categorizes international and domestic drivers of mobility.
 3. **Macro-Meso-Micro Determinants Framework**: Systematically links macro-level structural factors, meso-level organizational/workplace factors, and micro-level individual characteristics.
 4. **Random-Utility / Discrete-Choice Modeling (RUM / DCE)**: Evaluates physician preferences and relative valuation of wages, working conditions, career development, and geographical incentives.
-5. **Cohort / State-Transition Physician Workforce Modeling**: Dynamic Markov stock-and-flow projections stratifying physicians by age, sex, specialty, sector (public/private), and region through **2050**.
-6. **Cost-Consequence & Economic Evaluation**: Evaluates budget impact, training cost loss, benefit-cost tradeoffs, and incremental cost-effectiveness of retention packages.
+5. **Cohort / State-Transition Physician Workforce Modeling**: Dynamic Markov stock-and-flow projections using a parsimonious 36-cell state tensor ($3 \text{ Career Stages} \times 2 \text{ Sectors} \times 2 \text{ Regions} \times 3 \text{ Specialties}$) through **2050**.
+6. **Cost-Consequence & Economic Evaluation**: Evaluates public wage bill expansion, net training loss (offsetting resident hospital labor), budget impact, and incremental cost-effectiveness.
 
 ---
 
@@ -66,6 +66,9 @@ physician-exodus-tunisia/
 ├── LITERATURE_SPEC.md         # Literature taxonomy, search protocols, and evidence matrices
 ├── ASSUMPTIONS.md             # Policy scenario definitions, parameter log, and structural bounds
 ├── CHANGELOG.md               # Versioning log and project audit trail
+├── PROJECT_AUDIT.md           # Formal methodological pre-implementation audit
+├── REVIEWER_1_REPORT.md       # Peer review report from Senior Health Economist
+├── REBUTTAL_LETTER.md         # Systematic point-by-point response and modification log
 │
 ├── data/                      # Data assets (raw data is strictly read-only and uncommitted)
 │   ├── raw/                   # Immutable primary & secondary data extracts

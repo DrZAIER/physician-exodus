@@ -68,31 +68,37 @@
 ### 4.1. Dataset: `physician_stock_annual.parquet`
 Harmonized annual stock of practicing physicians in Tunisia.
 
+### 4.1. Dataset: `physician_stock_annual.parquet`
+Harmonized annual stock of active practicing physicians in Tunisia (36-cell cohort tensor).
+*Baseline Initialization Protocol*: The 36-cell stock distribution at $t_0 = 2020$ is initialized from INS (national public/private totals) and Ministry of Health *Carte Sanitaire* (governorate public headcounts and specialty clusters) marginal distributions via 2-dimensional **Iterative Proportional Fitting (IPF / raking)**.
+*Inactivity Adjustment Timing*: The `active_practice_ratio` ($\alpha = 0.88$) is applied strictly as an **initial baseline stock filter at $t_0$** ($\text{headcount\_active}_0 = \alpha \cdot \text{headcount\_raw}_0$). Subsequent annual evolution ($t > 0$) is governed by dynamic demographic stock-flow transitions.
+
 | Field Name | Type | Allowed Values / Range | Description |
 | :--- | :--- | :--- | :--- |
-| `year` | Integer | $2000 \le \text{year} \le 2024$ | Reference calendar year. |
-| `governorate` | String (ISO 3166-2:TN) | 24 Tunisian governorates | Governorate of practice (e.g., `TN-11` Tunis, `TN-31` Beja, `TN-81` Medenine). |
-| `planning_region` | String | Greater Tunis, North East, North West, Center East, Center West, South East, South West | Macro-region classification. |
-| `specialty_code` | String | Standardized specialty taxonomy (e.g., `GP`, `ANES_ICU`, `SURG_GEN`, `CARDIO`) | Medical specialty classification. |
-| `specialty_group`| String | Generalist, Medical, Surgical, Intensive/Emergency, Diagnostic, Pediatrics/OBGYN, Public Health | Aggregated specialty cluster. |
-| `sector` | String | `public_chu`, `public_regional`, `public_primary`, `private_clinic`, `private_solo`, `other` | Sector and level of healthcare delivery. |
-| `age_group` | String | `<30`, `30-39`, `40-49`, `50-59`, `60-64`, `65+` | Age bracket of physician stock. |
-| `sex` | String | `M`, `F`, `UNKNOWN` | Biological sex. |
-| `headcount` | Integer | $\ge 0$ | Total number of active licensed physicians. |
-| `data_source` | String | `SRC_CNOM_ANN`, `SRC_MS_CARTE`, etc. | Source identifier for provenance tracking. |
+| `year` | Integer | $2015 \le \text{year} \le 2050$ | Reference calendar year. |
+| `career_stage` | String | `early_resident` (<35 yrs), `mid_career` (35–54 yrs), `senior` (55+ yrs) | Career stage stratum (3 bins). |
+| `sector` | String | `public`, `private` | Sector of practice (2 strata). |
+| `geography_macro`| String | `coastal_metro` (District of Tunis, Center East), `interior_underserved` (North West, Center West, South) | Geographic planning stratum (2 strata). |
+| `specialty_cluster`| String | `general_medicine`, `medical_specialties`, `surgical_critical_care` | Aggregated specialty cluster (3 strata). |
+| `migration_status` | String | `active_domestic`, `cumulative_emigrated` | Domestic vs. Emigrated stock pool. |
+| `headcount_raw_admin` | Numeric | $\ge 0$ | Raw administrative registration headcount from INS / MS Carte Sanitaire. |
+| `active_practice_ratio` | Numeric | $[0.85, 0.90]$ (base = 0.88) | Baseline-only correction factor eliminating inactive / unpurged registrations. |
+| `headcount_active` | Numeric | $\ge 0$ | Active practicing stock ($\text{raw} \times \alpha$ at $t_0$; dynamic stock for $t > 0$). |
+| `data_source` | String | `SRC_INS_ANN`, `SRC_MS_CARTE`, `SRC_CNOM_ANN` | Provenance source identifier. |
 
 ### 4.2. Dataset: `emigration_flows_annual.parquet`
-Annual outflow of physicians by destination country, specialty, and credentialing pathway.
+Annual outflow of physicians by career stage, specialty cluster, and destination region.
 
 | Field Name | Type | Allowed Values / Range | Description |
 | :--- | :--- | :--- | :--- |
-| `year` | Integer | $2000 \le \text{year} \le 2024$ | Reference calendar year. |
-| `destination_country` | String (ISO 3166-1 alpha-3) | `FRA`, `DEU`, `QAT`, `SAU`, `ARE`, `CAN`, `GBR`, `OTH` | Destination country. |
-| `destination_region` | String | Europe, Gulf States, North America, Other | Destination macro-region. |
-| `specialty_group` | String | Generalist, Specialist, In-Training (Resident/Intern) | Career stage / specialty at emigration. |
-| `emigration_proxy_metric` | String | `cnom_good_standing`, `rpps_new_registration`, `bak_foreign_physician`, `survey_declared` | Operational metric type. |
-| `flow_count` | Integer | $\ge 0$ | Number of physicians emigrating or entering foreign registry. |
-| `data_source` | String | Source code | Provenance source. |
+| `year` | Integer | $2015 \le \text{year} \le 2050$ | Reference calendar year. |
+| `career_stage` | String | `early_resident`, `mid_career`, `senior` | Career stage at departure. |
+| `specialty_cluster` | String | `general_medicine`, `medical_specialties`, `surgical_critical_care` | Specialty cluster. |
+| `destination_region` | String | `france_drees`, `germany_bak`, `gulf_gcc`, `north_america_other` | Destination registry/region. |
+| `cnom_certificates_raw` | Integer | $\ge 0$ | Raw *Attestations de bonne conduite* requested from CNOM. |
+| `clearance_multiplier` | Numeric | $[0.65, 0.90]$ (base = 0.75) | Realization factor mapping certificate requests to border departures ($\lambda_{\text{exit}}$). |
+| `flow_realized_est` | Numeric | $\ge 0$ | Realized annual physical departures ($\text{raw} \times \lambda_{\text{exit}}$). |
+| `data_source` | String | `SRC_CNOM_ANN`, `SRC_INT_DREES`, `SRC_INT_BAK` | Source identifier. |
 
 ### 4.3. Dataset: `training_pipeline_annual.parquet`
 Annual throughput of medical education and specialization.
