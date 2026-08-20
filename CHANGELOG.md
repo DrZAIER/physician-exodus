@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0-alpha] - 2026-08-20
+
+### Major Structural & Econometric Re-Architecting (Peer Review Remediation)
+- **Competing-Risk Multi-State Markov Engine (`R/05_workforce_model.R`)**: Replaced additive difference outflows with an exact continuous-time transition intensity matrix ($P = \exp(Q \cdot \Delta t)$), enforcing $\sum p_k + p_{\text{stay}} \equiv 1.0000$, total demographic conservation, and zero probability leakage.
+- **Statutory Senior Retirement Calibration (`parameter_registry.csv`, `R/03_parameters.R`, `R/05_workforce_model.R`)**: Replaced the defective $r_{\text{retire}} = 0.025$ (40-year career span) with $r_{\text{retire}} = 0.125$ (12.5%/year; 8-year expected span) reflecting Tunisian civil service Law 83-112 mandatory retirement at ages 62–65.
+- **Internal Domestic Mobility (`R/05_workforce_model.R`)**: Incorporated internal geographic reallocation transitions ($p_{\text{geo\_trans}} = 0.045$/year from `interior_underserved` to `coastal_metro` public hospital sectors).
+- **Diaspora Return Allocation (`R/05_workforce_model.R`)**: Distributed returning specialists 30% to public university/regional hospitals and 70% to private practice across mid-career and senior strata.
+- **Endogenous Random Utility Policy Engine (`R/04_migration_model.R`, `R/08_policy_scenarios.R`)**: Replaced exogenous probability multipliers with direct utility shifts ($\Delta U_{\text{wage}}, \Delta U_{\text{infra}}, \Delta U_{\text{rural}}$) in the Random Utility Model choice function, with annual policy efficacy decay ($\delta_{\text{policy}} = 0.035$/year) capturing inflation erosion and depreciation.
+- **Specialty-Specific Migration Realization Vectors (`R/04_migration_model.R`, `parameter_registry.csv`)**: Stratified realization friction across clinical disciplines ($\kappa_{\text{generalist}} = 0.245$, $\kappa_{\text{medical}} = 0.350$, $\kappa_{\text{surgical}} = 0.490$) reflecting European licensing bottlenecks (EVC) vs acute shortages.
+- **Structural Utility Modifiers Registered (`parameter_registry.csv`, `R/03_parameters.R`)**: Explicitly registered and parameterized all stratum utility modifiers (`stage_mod`, `sector_mod`, `geo_mod`, `spec_mod`) from empirical regressions.
+- **Strict Temporal Validation Split (`R/06_calibration.R`, `R/07_validation.R`)**: Strictly partitioned empirical timeline: calibrated $\beta_0$ and $\Delta \beta_{2021+}$ on **2020–2021** training sample, and validated on **2022–2024** out-of-sample holdout data.
+- **Official Destination Registry Ingestion (`R/01_import.R`, `data/raw/destination_registries_france_germany.csv`)**: Replaced hardcoded destination vectors with ingested official DREES (France) and Bundesärztekammer (Germany) intake registries.
+- **CHEERS 2022-Compliant Economic Costing (`R/09_economic_evaluation.R`)**:
+  - Incorporated training deadweight loss on incremental emigrants in Scenario 4 (Training Expansion).
+  - Added complementary clinical operational support costs (35% factor for nursing/diagnostics/consumables).
+  - Reported both undiscounted and discounted public physician-years retained.
+- **Standard Parametric PSA Distributions (`R/03_parameters.R`, `R/10_sensitivity.R`)**: Replaced uniform distributions with Beta (probabilities), Log-Normal (relative risks), and Gamma (costs) distributions, with end-to-end active ratio stock propagation.
+- **Automated Testing Suite (`tests/testthat/test_workforce_pipeline.R`)**: Expanded test suite to 55 comprehensive tests verifying competing risks, holdout validation, and CHEERS metrics.
+
+---
+
 ## [0.3.0-alpha] - 2026-08-20
 
 ### Finalized & Locked (Round 2 Peer-Review Technical Alignment)

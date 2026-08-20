@@ -25,3 +25,6 @@ dataset_name,variable_name,definition,unit,data_type,source_id,tier,allowed_valu
 "macro_economic_series","inflation_cpi","Annual Consumer Price Index inflation rate","Percentage","Numeric","SRC_BCT_INS",1,"0-25","None","IMF/BCT macroeconomic projections"
 "macro_economic_series","exchange_rate_tnd_eur","Average annual exchange rate (TND per 1 EUR)","TND/EUR","Numeric","SRC_BCT_INS",1,"1.5-6.0","None","Historical BCT series"
 "macro_economic_series","health_exp_gdp_pct","Current health expenditure as % of Gross Domestic Product","Percentage","Numeric","SRC_WHO_NHWA",2,"3.0-12.0","None","WHO Global Health Expenditure Database"
+"destination_registries","year","Calendar reference year","Year","Integer","SRC_DEST_REG",2,"2015-2024","None","Official foreign intake data from DREES and BAK"
+"destination_registries","country_code","Destination country ISO code","Code","String","SRC_DEST_REG",2,"FRA, DEU","None","France and Germany"
+"destination_registries","inflow_headcount","Annual newly registered Tunisian-trained physicians","Physicians","Integer","SRC_DEST_REG",2,"0-2000","None","Direct administrative registry counts"

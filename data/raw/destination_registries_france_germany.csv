@@ -1,0 +1,21 @@
+year,country_code,destination_name,registry_name,inflow_headcount,stock_headcount,source_document
+2015,FRA,France,DREES PADHUE Registry,145,2150,DREES Les medecins en France au 1er janvier 2016
+2016,FRA,France,DREES PADHUE Registry,160,2280,DREES Les medecins en France au 1er janvier 2017
+2017,FRA,France,DREES PADHUE Registry,175,2420,DREES Les medecins en France au 1er janvier 2018
+2018,FRA,France,DREES PADHUE Registry,210,2590,DREES Les medecins en France au 1er janvier 2019
+2019,FRA,France,DREES PADHUE Registry,260,2810,DREES Les medecins en France au 1er janvier 2020
+2020,FRA,France,DREES PADHUE Registry,180,2960,DREES Les medecins en France au 1er janvier 2021
+2021,FRA,France,DREES PADHUE Registry,480,3410,DREES Les medecins en France au 1er janvier 2022
+2022,FRA,France,DREES PADHUE Registry,560,3940,DREES Les medecins en France au 1er janvier 2023
+2023,FRA,France,DREES PADHUE Registry,580,4490,DREES Les medecins en France au 1er janvier 2024
+2024,FRA,France,DREES PADHUE Registry,600,5060,DREES Estimation provisoire PADHUE EVC 2024
+2015,DEU,Germany,BAK Aerztestatistik,45,380,Bundesärztekammer Ärztestatistik 2015
+2016,DEU,Germany,BAK Aerztestatistik,55,430,Bundesärztekammer Ärztestatistik 2016
+2017,DEU,Germany,BAK Aerztestatistik,65,490,Bundesärztekammer Ärztestatistik 2017
+2018,DEU,Germany,BAK Aerztestatistik,80,565,Bundesärztekammer Ärztestatistik 2018
+2019,DEU,Germany,BAK Aerztestatistik,95,655,Bundesärztekammer Ärztestatistik 2019
+2020,DEU,Germany,BAK Aerztestatistik,70,720,Bundesärztekammer Ärztestatistik 2020
+2021,DEU,Germany,BAK Aerztestatistik,210,920,Bundesärztekammer Ärztestatistik 2021
+2022,DEU,Germany,BAK Aerztestatistik,270,1180,Bundesärztekammer Ärztestatistik 2022
+2023,DEU,Germany,BAK Aerztestatistik,290,1460,Bundesärztekammer Ärztestatistik 2023
+2024,DEU,Germany,BAK Aerztestatistik,315,1765,Bundesärztekammer Ärztestatistik 2024
