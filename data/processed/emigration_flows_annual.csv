@@ -1,0 +1,11 @@
+year,cnom_certificates_raw,clearance_multiplier,flow_realized_est,primary_destination_share_france,primary_destination_share_germany,primary_destination_share_gulf,source_id
+2015,520,0.75,390,0.65,0.15,0.15,"SRC_CNOM_ANN"
+2016,550,0.75,413,0.64,0.16,0.15,"SRC_CNOM_ANN"
+2017,580,0.75,435,0.63,0.18,0.14,"SRC_CNOM_ANN"
+2018,610,0.75,458,0.62,0.20,0.13,"SRC_CNOM_ANN"
+2019,640,0.75,480,0.60,0.22,0.13,"SRC_CNOM_ANN"
+2020,400,0.75,300,0.58,0.24,0.12,"SRC_CNOM_ANN"
+2021,1100,0.75,825,0.57,0.25,0.13,"SRC_CNOM_ANN"
+2022,1350,0.75,1013,0.55,0.27,0.13,"SRC_CNOM_ANN"
+2023,1400,0.75,1050,0.54,0.28,0.13,"SRC_CNOM_ANN"
+2024,1450,0.75,1088,0.53,0.29,0.13,"SRC_CNOM_ANN"
