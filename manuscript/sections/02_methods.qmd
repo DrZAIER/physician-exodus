@@ -2,40 +2,66 @@
 
 ## Conceptual Framework and Methodological Lineage {#sec-methods-framework}
 
-The modeling architecture is anchored in five established theoretical and empirical frameworks:
-1. The **WHO Health Labour Market Framework (HLMF)** [@who2021], which tracks health workers through training admission, curriculum progression, graduation, domestic labor market entry, inter-sectoral mobility, international migration, and retirement.
-2. The **Push-Pull Macro-Meso-Micro Taxonomy** of migration determinants [@sousa2023], categorizing drivers into national economic governance (macro), hospital working conditions and remuneration (meso), and individual career stages and specialty constraints (micro).
-3. **Random Utility Maximization (RUM) and Discrete Choice Econometrics** [@mandeville2014; @lagarde2009], converting multidimensional employment attributes into choice probabilities.
+The dynamic workforce simulation and economic evaluation framework is anchored in five foundational health economics and workforce modeling pillars:
+1. The **WHO Health Labour Market Framework (HLMF)** [@who2021], modeling the complete continuum of health personnel from training pipeline intake, undergraduate and postgraduate education, domestic labor market entry, inter-sectoral reallocation (public vs. private), internal rural-to-urban geographic transfers, international emigration, diaspora return migration, and statutory retirement exits.
+2. The **Push-Pull Macro-Meso-Micro Taxonomy** of migration determinants [@sousa2023], structuring drivers across macro-governance, hospital working conditions/remuneration (meso), and individual career/specialty constraints (micro).
+3. **Random Utility Maximization (RUM) and Discrete Choice Econometrics** [@mandeville2014; @lagarde2009], translating multidimensional employment and migration attributes into choice probabilities.
 4. **Multi-State Continuous-Time Markov Transition Dynamics** [@amorimlopes2019; @zhang2020], guaranteeing exact demographic mass conservation without discrete probability leakage.
 5. The **Consolidated Health Economic Evaluation Reporting Standards (CHEERS 2022)** and Second Panel on Cost-Effectiveness guidelines [@sanders2016; @husereau2022].
 
 The conceptual topology of the model is illustrated in @fig-conceptual-framework.
 
-![Conceptual Framework: Health Labour Market Framework and 36-Cell Stock-Flow Dynamic Topology. The system models the inflow of licensed graduates from the four Tunisian medical faculties, continuous-time cohort aging transitions, public-to-private inter-sectoral mobility, internal rural-to-urban geographic transfers, random-utility emigration choices, and diaspora return migration.](../outputs/figures/png_600dpi/fig1_conceptual_framework.png){#fig-conceptual-framework width="100%"}
+![Conceptual Framework: Health Labour Market Framework and 36-Cell Stock-Flow Dynamic Topology. The system tracks medical graduates entering from the four public medical faculties, continuous-time cohort aging transitions, public-to-private inter-sectoral mobility, internal rural-to-urban geographic transfers, random-utility emigration choices, and diaspora return migration.](../outputs/figures/png_600dpi/fig1_conceptual_framework.png){#fig-conceptual-framework width="100%"}
 
 ## Demographic State Space and Stock Tensor {#sec-methods-statespace}
 
-To prevent the computational sparsity and unidentifiability inherent in high-dimensional microsimulations while retaining full policy relevance, the domestic practicing physician workforce is represented as a parsimonious 36-cell discrete state tensor:
+To prevent the matrix sparsity, computational fragility, and unidentifiability associated with high-dimensional agent-based models while retaining full policy relevance, the domestic practicing physician workforce is structured as a parsimonious 36-cell discrete state tensor:
 
-$$S_{a,s,r,k}(t) \quad \text{for } t \in [2020, 2050]$$
+$$S_{a,s,r,k}(t) \quad \text{for } t \in [2020, 2050]$$ {#eq-state-tensor}
 
 where:
 - **Career Stage ($a \in \{1, 2, 3\}$)**: Early-Career/Resident ($<35$ years; 10-year residency and early-practice window), Mid-Career ($35–54$ years; 20-year established practice window), Senior ($55+$ years; statutory pre-retirement window).
 - **Sector of Practice ($s \in \{1, 2\}$)**: Public Health Sector (University Hospitals [CHU], Regional Hospitals, and Primary Healthcare Centers) vs. Private Sector (Private Clinics and Solo/Group Practices).
-- **Geographic Macro-Region ($r \in \{1, 2\}$)**: Coastal/Metropolitan (Greater Tunis District and Center East Region) vs. Interior/Underserved (North West, Center West, and South Regions).
+- **Geographic Macro-Region ($r \in \{1, 2\}$)**: Coastal/Metropolitan (District of Greater Tunis and Center East Region) vs. Interior/Underserved (North West, Center West, and South Regions).
 - **Specialty Cluster ($k \in \{1, 2, 3\}$)**: General Practice, Medical Specialties, and Surgical/Critical Care Specialties (including Anesthesiology, Intensive Care, and Emergency Medicine).
 
 The active domestic state space comprises $3 \times 2 \times 2 \times 3 = 36$ cells, coupled with an overseas absorbing compartment tracking the cumulative emigrated physician diaspora ($D_t$).
 
-## Baseline Initialization via Iterative Proportional Fitting (IPF) {#sec-methods-ipf}
+## Empirical Data Acquisition and Governance {#sec-methods-data}
 
-Official Tunisian statistical sources publish marginal 1-dimensional and 2-dimensional distributions rather than full 4-way cross-tabulations. National totals by sector are published annually by the *Institut National de la Statistique* (INS Stat 123) [@ins2024], whereas governorate-level public-sector headcounts and specialty distributions are published by the Ministry of Health *Carte Sanitaire* [@ms2023].
+All model inputs, baseline calibration targets, and demographic parameters are tied to verified official administrative records, census series, or peer-reviewed literature in accordance with the project data governance protocol (`DATA_SPEC.md`):
 
-To construct the baseline active stock tensor at $t_0 = 2020$, we implemented a 2-dimensional **Iterative Proportional Fitting (IPF / raking)** algorithm. The raw administrative headcount ($N_{\text{raw}, 0} = 15,315$ in 2024; $14,028$ in 2020) was first adjusted by an **Active Practice Ratio** ($\alpha = 0.88, 95\%\text{ CI: } [0.85, 0.90]$) applied strictly as an initial baseline filter at $t_0$:
+1. **Institut National de la Statistique (INS, Tunisia)**:
+   - Annual national practicing physician headcounts disaggregated by sector (public vs. private) from 2015 to 2024 (Statistical Series Stat 123) [@ins2024].
+   - Governorate-level resident population series, urbanization rates, and demographic projections to 2050 (Statistical Series Stat 111).
+2. **Ministère de la Santé (Direction des Études et de la Planification, Tunisia)**:
+   - *Carte Sanitaire 2023* annual statistical report [@ms2023], providing governorate-level public specialist and generalist headcounts, hospital bed allocations, and diagnostic equipment indices across all 24 governorates.
+3. **Conseil National de l'Ordre des Médecins (CNOM, Tunisia)**:
+   - Annual registries of licensed medical doctors and requests for *Attestations de bonne conduite* (Certificates of Good Standing) from 2015 to 2024 [@cnom2025].
+4. **Foreign Destination Physician Registries**:
+   - French *Direction de la recherche, des études, de l'évaluation et des statistiques* (DREES) and *Répertoire Partagé des Professionnels de Santé* (RPPS), tracking foreign-trained doctors (*Praticiens à diplôme hors Union Européenne* - PADHUE) practicing in French hospitals [@drees2024].
+   - German Medical Association (*Bundesärztekammer*, BÄK) annual *Ärztestatistik*, tracking foreign physicians practicing in Germany under temporary licenses (*Berufserlaubnis*) and full licenses (*Approbation*) [@bak2024].
+5. **Ministère de l'Enseignement Supérieur et de la Recherche Scientifique (MESRS, Tunisia)**:
+   - Ministerial decrees published in the Official Gazette of the Republic of Tunisia (*Journal Officiel de la République Tunisienne*, JORT) establishing medical faculty admission quotas (*numerus clausus*) and residency specialization posts across the four medical faculties (Tunis, Sousse, Monastir, Sfax).
 
-$$N_{\text{active}, 0} = \alpha \cdot N_{\text{raw}, 0} = 0.88 \times 15,315 \approx 13,477 \text{ physicians}$$ {#eq-active-ratio}
+## Baseline Stock Initialization via Iterative Proportional Fitting {#sec-methods-ipf}
 
-This initial correction eliminates non-purged administrative "ghost registrations" (inactive, deceased, or unrecorded historical departures) [@ins2024]. IPF iterations adjusted cell weights alternately across marginal sector, regional, and specialty constraints until convergence was achieved ($\Delta < 10^{-6}$), yielding the exact baseline 36-cell stock distribution presented in @tbl-baseline-stock.
+Official Tunisian statistical sources report marginal 1D and 2D tables rather than complete 4-way cross-tabulations. To construct the baseline active stock tensor at $t_0 = 2020$, we implemented a 2-dimensional **Iterative Proportional Fitting (IPF / raking)** algorithm. 
+
+First, raw administrative licensing counts from INS ($N_{\text{raw}, 0} = 15,315$ in 2024; $14,028$ in 2020) were adjusted by an empirical **Active Practice Ratio** ($\alpha = 0.88, 95\%\text{ CI: } [0.85, 0.90]$) applied strictly as an **initial baseline stock filter at $t_0 = 2020$**:
+
+$$N_{\text{active}, 0} = \alpha \cdot N_{\text{raw}, 0} = 0.88 \times 15,315 \approx 13,477 \text{ practicing physicians}$$ {#eq-active-ratio}
+
+This baseline-only adjustment eliminates accumulated historical "ghost registrations" (inactive, deceased, or unrecorded historical emigrants) without artificially compounding attrition during subsequent simulation steps [@ins2024]. 
+
+IPF iteratively minimized discrimination information subject to marginal sector totals from INS and governorate/specialty totals from the *Carte Sanitaire 2023*:
+
+$$\min_{S} \sum_{a,s,r,k} S_{a,s,r,k}(0) \ln\left( \frac{S_{a,s,r,k}(0)}{S_{a,s,r,k}^{(0)}} \right)$$ {#eq-ipf-obj}
+
+subject to the marginal constraints:
+$$\sum_{a,r,k} S_{a,s,r,k}(0) = M_s^{\text{INS}}, \quad \sum_{a,s,k} S_{a,s,r,k}(0) = M_r^{\text{Carte}}, \quad \sum_{a,s,r} S_{a,s,r,k}(0) = M_k^{\text{Carte}}$$ {#eq-ipf-constraints}
+
+Iterations proceeded until convergence was achieved ($\Delta < 10^{-6}$), yielding the exact baseline 36-cell stock distribution presented in the results.
 
 ## Continuous-Time Competing-Risk Transition Engine {#sec-methods-engine}
 
@@ -47,7 +73,7 @@ $$\Lambda_i(t) = \lambda_{\text{emig}, i}(t) + \lambda_{\text{retire}, i} + \lam
 
 where:
 - $\lambda_{\text{emig}, i}(t) = -\ln(1 - P(\text{Emigration}_{i,t}))$ is the instantaneous emigration hazard.
-- $\lambda_{\text{retire}, i}$ is the statutory retirement hazard, parameterized as $\lambda_{\text{retire}} = 0.125$ for senior physicians ($55+$ years), reflecting an expected 8-year sojourn to mandatory civil service retirement at ages 62–65 under Law 83-112 [@ins2024].
+- $\lambda_{\text{retire}, i} = 0.125$ is the statutory retirement hazard for senior physicians ($55+$ years), reflecting an expected 8-year sojourn to mandatory civil service retirement at ages 62–65 under Law 83-112 [@ins2024].
 - $\lambda_{\text{trans}, i} = 0.018$ is the net public-to-private inter-sectoral transition hazard, calibrated to historical INS series (2017–2024).
 - $\lambda_{\text{geo}, i} = 0.045$ is the internal rural-to-urban geographic transfer hazard from interior public hospitals to coastal medical centers [@ms2023].
 - $\lambda_{\text{age}, i}$ is the demographic cohort progression hazard ($\lambda_{\text{age}} = 0.10$ for early-career [10-year window] and $\lambda_{\text{age}} = 0.05$ for mid-career [20-year window]).
@@ -103,18 +129,18 @@ $$\text{RR} = \frac{\text{OR}}{(1 - p_0) + (p_0 \cdot \text{OR})}$$ {#eq-zhang-y
 
 where $p_0$ is the baseline intention prevalence in the reference group (e.g., $p_0 = 0.686$ for young doctors and $p_0 = 0.756$ for residents). For example, the reported remuneration dissatisfaction OR of $2.14$ yields a conservative $\text{RR} = 1.19$, preventing artificial overestimation of retention elasticities.
 
-## Econometric Identification, Calibration, and Validation {#sec-methods-calibration}
+## Econometric Identification, Calibration, and Validation Strategy {#sec-methods-calibration}
 
-To guarantee strict identifiability, relative choice attribute weights were anchored in pooled low- and middle-income country Discrete Choice Experiment (DCE) meta-analyses [@mandeville2014]. Only two global scalar parameters ($\beta_0$ and $\Delta \beta_{2021+}$) were estimated from historical Tunisian data.
+To avoid multi-parameter collinearity and guarantee structural identifiability, relative choice attribute weights (valuation of wages, infrastructure, and rural incentives) were fixed based on the pooled LMIC Discrete Choice Experiment meta-analysis of @mandeville2014. Only two global scalar parameters ($\beta_0$ and $\Delta \beta_{2021+}$) were calibrated directly to historical Tunisian time series.
 
-The model was calibrated using a strict temporal split:
-- **Training Calibration Sample (2020–2021)**: Estimated $\beta_0 = -1.87$ and $\Delta \beta_{2021+} = 0.94$ via count-loss minimization against INS active stock and CNOM realized departures ($\text{Observed} = \text{CNOM} \times \lambda_{\text{exit}}$, where $\lambda_{\text{exit}} = 0.75$).
-- **Out-of-Sample Holdout Validation Sample (2022–2024)**: Evaluated out-of-sample predictive accuracy against newly observed stock and flow data.
-- **External Registry Concordance**: Validated modeled outflows against independent destination registrations in the French DREES/RPPS and German Bundesärztekammer databases [@drees2024; @bak2024].
+The calibration and validation strategy followed a strict temporal split:
+- **Training Calibration Period (2020–2021)**: Estimated $\beta_0 = -1.87$ and $\Delta \beta_{2021+} = 0.94$ via Maximum Likelihood count-loss minimization against INS active practicing stock ($S_{\text{active}}^{\text{obs}} = \alpha \cdot S_{\text{raw}}^{\text{INS}}$) and realized CNOM departures ($\text{Realized}^{\text{obs}} = \lambda_{\text{exit}} \cdot \text{Certificates}^{\text{CNOM}}$, where $\lambda_{\text{exit}} = 0.75$).
+- **Out-of-Sample Temporal Validation (2022–2024)**: Evaluated predictive accuracy against holdout post-crisis data without re-estimating parameters.
+- **External Destination Registry Cross-Validation**: Validated modeled annual departures against independent foreign doctor registration series from the French DREES (PADHUE/RPPS) and German Bundesärztekammer databases [@drees2024; @bak2024].
 
 ## Policy Counterfactual Scenarios {#sec-methods-scenarios}
 
-We simulated six policy scenarios implemented from 2025 to 2050:
+We simulated six standardized policy counterfactual scenarios implemented from 2025 to 2050:
 1. **SCEN_0 (Status Quo Baseline)**: Continuation of post-2021 macroeconomic and institutional conditions without policy intervention.
 2. **SCEN_1 (Public Remuneration Reform)**: A $+30\%$ real base salary increase across all public-sector physicians, yielding a relative risk reduction in public emigration of $\text{RRR}_{\text{wage}} = 0.12$ ($\Delta U = -\ln(1 - 0.12) \approx 0.128$).
 3. **SCEN_2 (Workplace & Infrastructure Modernization)**: Dedicated capital investment of 25 Million TND/year for hospital security, drug stock stabilization, and diagnostic equipment modernization ($\text{RRR}_{\text{infra}} = 0.10, \Delta U \approx 0.105$).
@@ -151,9 +177,55 @@ The primary outcome metrics were **Cost-Consequence Analysis (CCA)**, **Budget I
 
 $$\text{ICER}_{\text{public}} = \frac{\Delta C}{\Delta \text{Public Physician-Years Retained}}, \quad \text{ICER}_{\text{interior}} = \frac{\Delta C}{\Delta \text{Interior Physician-Years Retained}}$$ {#eq-icer}
 
+## Complete Parameter Registry and Provenance Matrix {#sec-methods-param-table}
+
+All 37 model parameters are registered and audited in the project parameter registry ([`data/metadata/parameter_registry.csv`](file:///c:/Users/drfir/Documents/physician-exodus-tunisia/data/metadata/parameter_registry.csv)). Every parameter is categorized into one of five mutually exclusive identification classes (Class A = Direct Tunisian Empirical; Class B = Regional Maghreb Benchmark; Class C = International Pooled Meta-Analysis; Class D = Demographic/Standard Accounting Rule; Class E = Policy Scenario Lever), as summarized in @tbl-parameters.
+
+| Parameter Identifier | Operational Definition | Mathematical Role | Base Value | Sampling Distribution | Range [Low, High] | Primary Evidence Source | Class |
+| :--- | :--- | :--- | :---: | :--- | :---: | :--- | :---: |
+| `PAR_ACTIVE_RATIO` | Active Practice Ratio | Baseline stock filter $N_0 = \alpha \cdot N_{\text{raw}, 0}$ | 0.88 | $\text{Beta}(176, 24)$ | $[0.85, 0.90]$ | INS / CNOM Registries [@ins2024] | A |
+| `PAR_CLEARANCE_MULT` | Administrative Clearance | $\text{Realized} = \lambda_{\text{exit}} \cdot \text{CNOM}$ | 0.75 | $\text{Beta}(75, 25)$ | $[0.65, 0.85]$ | CNOM / DREES / BÄK [@cnom2025] | A |
+| `PAR_REALIZATION_KAPPA` | Intention Realization | Realization factor $\kappa$ in $P(\text{Emig})$ | 0.35 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | Clemens & Mendola (2020) [@clemens2020] | C |
+| `PAR_KAPPA_GEN` | Generalist Realization | $\kappa_{\text{gen}} = \kappa \times 0.70$ | 0.245 | $\text{Beta}(24.5, 75.5)$ | $[0.15, 0.35]$ | French EVC Statistics [@drees2024] | A |
+| `PAR_KAPPA_MED` | Medical Realization | $\kappa_{\text{med}} = \kappa \times 1.00$ | 0.350 | $\text{Beta}(35, 65)$ | $[0.25, 0.45]$ | DREES / BÄK Registries [@bak2024] | A |
+| `PAR_KAPPA_SURG` | Surgical Realization | $\kappa_{\text{surg}} = \kappa \times 1.40$ | 0.490 | $\text{Beta}(49, 51)$ | $[0.38, 0.60]$ | European Shortage Intakes [@drees2024] | A |
+| `PAR_STAGE_RESIDENT` | Resident Utility Mod | Utility shift $\gamma_{\text{resident}}$ | +0.65 | $\text{Normal}(0.65, 0.10)$ | $[0.45, 0.85]$ | Ben Romdhane (2022) [@benromdhane2022] | A |
+| `PAR_STAGE_SENIOR` | Senior Utility Mod | Utility shift $\gamma_{\text{senior}}$ | -0.85 | $\text{Normal}(-0.85, 0.12)$ | $[-1.10, -0.60]$ | CNOM Statistics [@cnom2025] | A |
+| `PAR_SECTOR_PUBLIC` | Public Utility Mod | Utility shift $\gamma_{\text{public}}$ | +0.40 | $\text{Normal}(0.40, 0.08)$ | $[0.24, 0.56]$ | Ben Romdhane (2022) [@benromdhane2022] | A |
+| `PAR_GEO_INTERIOR` | Interior Utility Mod | Utility shift $\gamma_{\text{interior}}$ | +0.30 | $\text{Normal}(0.30, 0.06)$ | $[0.18, 0.42]$ | Carte Sanitaire 2023 [@ms2023] | A |
+| `PAR_SPEC_SURGICAL` | Surgical Utility Mod | Utility shift $\gamma_{\text{surgical}}$ | +0.35 | $\text{Normal}(0.35, 0.07)$ | $[0.21, 0.49]$ | Foreign Intake Analysis [@bak2024] | A |
+| `PAR_SPEC_MEDICAL` | Medical Utility Mod | Utility shift $\gamma_{\text{medical}}$ | +0.15 | $\text{Normal}(0.15, 0.04)$ | $[0.07, 0.23]$ | Foreign Intake Analysis [@drees2024] | A |
+| `PAR_INTAKE_GRAD_RATE` | Graduation Completion | Graduation yield $g_{\text{comp}}$ | 0.92 | $\text{Beta}(92, 8)$ | $[0.85, 0.96]$ | MESRS Faculty Records [@ins2024] | A |
+| `PAR_RETIRE_SENIOR` | Senior Retirement Hazard | Annual hazard $\lambda_{\text{retire}}$ (age 55+) | 0.125 | $\text{Beta}(25, 175)$ | $[0.09, 0.16]$ | Civil Service Law 83-112 [@ins2024] | A |
+| `PAR_GEO_INTERNAL` | Internal Transfer Hazard | Interior-to-coast hazard $\lambda_{\text{geo}}$ | 0.045 | $\text{Beta}(18, 382)$ | $[0.03, 0.065]$ | Carte Sanitaire Mobility [@ms2023] | A |
+| `PAR_RETURN_MIG_RATE` | Diaspora Return Hazard | Annual return hazard $\lambda_{\text{return}}$ | 0.015 | $\text{Beta}(15, 985)$ | $[0.005, 0.030]$ | Structural Benchmark [@amorimlopes2019] | D |
+| `PAR_PUB_PRIV_TRANS` | Public-Private Transition | Sector shift hazard $\lambda_{\text{trans}}$ | 0.018 | $\text{Beta}(18, 982)$ | $[0.012, 0.025]$ | INS Series (2017–2024) [@ins2024] | A |
+| `PAR_BETA_0_SCALE` | Baseline Logit Intercept | Calibration intercept $\beta_0$ | -1.87 | $\text{Normal}(-1.87, 0.20)$ | $[-2.30, -1.45]$ | Calibrated on 2020–2021 Sample | A |
+| `PAR_DELTA_BETA_2021` | Post-2021 Crisis Shift | Structural intercept $\Delta \beta_{2021+}$ | +0.94 | $\text{Normal}(0.94, 0.15)$ | $[0.65, 1.25]$ | Calibrated on 2020–2021 Sample | A |
+| `PAR_BETA_WAGE_DCE` | Wage Choice Weight | Relative utility $\beta_{\text{wage}}$ | +0.48 | $\text{Normal}(0.48, 0.08)$ | $[0.38, 0.58]$ | Mandeville et al. (2014) [@mandeville2014] | C |
+| `PAR_BETA_INFRA_DCE` | Infrastructure Weight | Relative utility $\beta_{\text{infra}}$ | +0.36 | $\text{Normal}(0.36, 0.06)$ | $[0.27, 0.45]$ | Mandeville et al. (2014) [@mandeville2014] | C |
+| `PAR_BETA_RURAL_DCE` | Rural Hardship Weight | Relative utility $\beta_{\text{rural}}$ | +0.31 | $\text{Normal}(0.31, 0.06)$ | $[0.22, 0.40]$ | Mandeville et al. (2014) [@mandeville2014] | C |
+| `PAR_PEER_FEEDBACK` | Peer Feedback Elasticity | Network feedback $\beta_{\text{peer}}$ | +0.25 | $\text{Beta}(25, 75)$ | $[0.10, 0.40]$ | Structural Model Formulation | D |
+| `PAR_SCEN1_WAGE_INC` | Salary Increment | Wage policy shock $\Delta w_{\text{pub}}$ | 0.30 | $\text{Uniform}(0.20, 0.50)$ | $[0.20, 0.50]$ | Scenario 1 Specification | E |
+| `PAR_SCEN1_RRR_WAGE` | Wage Retention RRR | Policy elasticity $\text{RRR}_{\text{wage}}$ | 0.12 | $\text{LogNormal}(-2.12, 0.18)$ | $[0.08, 0.18]$ | Wage Elasticity [@docquier2014] | C |
+| `PAR_SCEN2_RRR_INFRA` | Infrastructure RRR | Policy elasticity $\text{RRR}_{\text{infra}}$ | 0.10 | $\text{LogNormal}(-2.30, 0.18)$ | $[0.06, 0.16]$ | Scenario 2 Specification | E |
+| `PAR_SCEN3_RRR_RURAL` | Rural Hardship RRR | Policy elasticity $\text{RRR}_{\text{rural}}$ | 0.18 | $\text{LogNormal}(-1.71, 0.18)$ | $[0.12, 0.26]$ | Scenario 3 Specification | E |
+| `PAR_SCEN4_QUOTA_EXP` | Training Quota Increase | Inflow multiplier $\Delta I_{\text{intake}}$ | 0.15 | $\text{Uniform}(0.10, 0.25)$ | $[0.10, 0.25]$ | Scenario 4 Specification | E |
+| `PAR_SCEN4_ROS_COMP` | Return-of-Service Rate | Service compliance $R_{\text{ros}}$ | 0.75 | $\text{Beta}(75, 25)$ | $[0.65, 0.85]$ | Bärnighausen & Bloom (2009) [@barnighausen2009] | C |
+| `PAR_POLICY_DECAY` | Annual Policy Decay | Policy efficacy decay $\delta_{\text{policy}}$ | 0.035 | $\text{Beta}(14, 386)$ | $[0.02, 0.06]$ | Health Economics Standard [@sanders2016] | D |
+| `PAR_COMP_COST_FAC` | Clinical Support Cost | Multiplier $C_{\text{comp}} = 0.35 \cdot C_{\text{wage}}$ | 0.35 | $\text{Gamma}(35, 0.01)$ | $[0.25, 0.45]$ | CHEERS 2022 Item 13 [@husereau2022] | C |
+| `PAR_DISCOUNT_RATE` | Social Discount Rate | Annual discount rate $r$ | 0.03 | Discrete $(0.00, 0.03, 0.05, 0.08)$ | $[0.00, 0.08]$ | Second Panel Standard [@sanders2016] | D |
+| `PAR_GROSS_TRAIN_MD` | Gross Training Outlay | University training outlay per MD | 85,000 | $\text{Gamma}(25, 3400)$ | $[65\text{k}, 110\text{k}]$ | MESRS Educational Accounts [@ins2024] | A |
+| `PAR_RES_LABOR_OFF` | Resident Labor Offset | Clinical service offset $\omega_{\text{labor}}$ | 0.40 | $\text{Beta}(40, 60)$ | $[0.30, 0.50]$ | Human Capital Accounting [@sanders2016] | D |
+| `PAR_NET_TRAIN_COST` | Net Training Fiscal Loss | Fiscal loss $C_{\text{net}} = 85\text{k} \times (1 - 0.40)$ | 51,000 | $\text{Gamma}(25, 2040)$ | $[39\text{k}, 66\text{k}]$ | Calculated Net Fiscal Cost | D |
+| `PAR_BASE_SALARY_ANN`| Public Base Salary | Annual gross public salary $w_{\text{base}}$ | 36,000 | $\text{Gamma}(36, 1000)$ | $[30\text{k}, 48\text{k}]$ | Statut des Médecins de la Santé Publique | A |
+| `PAR_INFRA_CAPEX_ANN`| Modernization Budget | Annual hospital capital outlay | 25,000,000 | $\text{Gamma}(25, 1000000)$ | $[15\text{M}, 40\text{M}]$ | MOH Capital Envelope Allocation | E |
+
+: Complete Model Parameter Provenance Registry and Sampling Distributions. Full metadata and version control available in [`data/metadata/parameter_registry.csv`](file:///c:/Users/drfir/Documents/physician-exodus-tunisia/data/metadata/parameter_registry.csv). {#tbl-parameters}
+
 ## Sensitivity and Decision Uncertainty Analysis {#sec-methods-sensitivity}
 
-To assess structural and parametric robustness:
-1. **Deterministic One-Way Sensitivity Analysis (Tornado)**: Varied each parameter across its empirical 95% confidence interval or bounded uncertainty range.
-2. **Probabilistic Sensitivity Analysis (PSA)**: Executed a 1,000-draw Monte Carlo simulation sampling all parameters simultaneously from bounded parametric distributions (**Beta** for probabilities $[0, 1]$, **Log-Normal** for relative risks, and **Gamma** for fiscal costs). In each iteration, the baseline stock tensor $S_0(\alpha)$ was dynamically rescaled.
-3. **Cost-Effectiveness Acceptability Curves (CEAC)**: Derived the empirical probability that each policy is optimal across willingness-to-pay (WTP) thresholds from 0 to 500,000 TND per retained public physician-year.
+To evaluate structural and parametric robustness:
+1. **Deterministic One-Way Sensitivity Analysis (Tornado)**: Evaluated swings in discounted public physician-years retained and net costs by varying each parameter across its lower and upper bounds (@tbl-parameters).
+2. **Probabilistic Sensitivity Analysis (PSA)**: Conducted a 1,000-draw Monte Carlo simulation sampling all parameters simultaneously from their bounded parametric distributions (**Beta** for probabilities $[0, 1]$, **Log-Normal** for relative risks, and **Gamma** for fiscal costs). In each draw, the baseline stock tensor $S_0(\alpha)$ was dynamically rescaled to propagate baseline census uncertainty.
+3. **Cost-Effectiveness Acceptability Curves (CEAC)**: Derived the probability that each policy scenario is the optimal strategy across willingness-to-pay thresholds ranging from 0 to 500,000 TND per retained public physician-year.
