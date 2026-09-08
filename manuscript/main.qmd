@@ -2,10 +2,16 @@
 title: "Physician Exodus from Tunisia: Dynamic Workforce Projections, Retention Policy Counterfactuals, and Economic Evaluation to 2050"
 subtitle: "A Multi-State Continuous-Time Markov Simulation and Cost-Consequence Analysis"
 author:
-  - name: "Health Workforce and Health Economics Research Consortium for Tunisia"
+  - name: "Firas Zaier"
+    orcid: "0009-0006-4887-1819"
     affiliations:
-      - name: "Department of Health Economics and Public Health Policy, Faculty of Medicine of Tunis, University of Tunis El Manar, Tunis, Tunisia"
-      - name: "Health System Sustainability and Human Resources for Health Collaborative, Tunis, Tunisia"
+      - name: "Faculty of Medicine of Tunis, University of Tunis El Manar, Tunis, Tunisia"
+  - name: "Mariem Zribi"
+    orcid: "0009-0004-5917-984X"
+    affiliations:
+      - name: "Faculty of Medicine of Tunis, University of Tunis El Manar, Tunis, Tunisia"
+      - name: "National Institute of Health, Tunis, Tunisia"
+      - name: "SURVEN (Nutrition Surveillance and Epidemiology in Tunisia) Research Laboratory, LR12SP05, Tunis, Tunisia"
 date: "2026-08-20"
 abstract: |
   **Background**: The escalating emigration of physicians from Tunisia poses a structural threat to the sustainability of the public health system, universal health coverage, and regional equity. Since 2021, annual medical departures have exceeded 1,450 doctors per year (~10% of the active workforce), with over 6,000 physicians emigrating between 2021 and 2024.
@@ -98,7 +104,7 @@ The authors declare that they have no competing financial, personal, or professi
 This research received no dedicated external commercial funding. Computational resources were provided by the University of Tunis El Manar.
 
 ## Authors' Contributions
-Conceptualization: Modeling Team; Methodology and Econometric Specification: Modeling Team; Data Ingestion and Curation: Modeling Team; Software Programming and Simulation Engine: Modeling Team; Validation and Sensitivity Testing: Modeling Team; Economic Evaluation: Modeling Team; Writing – Original Draft Preparation: Modeling Team; Writing – Review and Editing: Modeling Team. All authors read and approved the final manuscript.
+FZ and MZ conceptualized the study. FZ designed and programmed the econometric methodology and dynamic Markov simulation model, acquired empirical data, and performed calibration and scenario simulations. FZ and MZ conducted the economic and sensitivity analyses, interpreted the findings, and drafted and critically revised the manuscript. Both authors read and approved the final manuscript.
 
 ## Acknowledgements
 The authors express their gratitude to the Direction des Études et de la Planification at the Ministère de la Santé de Tunisie, the Institut National de la Statistique (INS), and the Conseil National de l'Ordre des Médecins (CNOM) for making public health workforce statistical reports accessible.

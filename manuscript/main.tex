@@ -68,6 +68,7 @@
 
 
 \usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -273,8 +274,8 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={Physician Exodus from Tunisia: Dynamic Workforce Projections, Retention Policy Counterfactuals, and Economic Evaluation to 2050},
-  pdfauthor={Health Workforce and Health Economics Research Consortium for Tunisia},
+  pdftitle={Physician Exodus from Tunisia: Dynamic Workforce Projections{,} Retention Policy Counterfactuals{,} and Economic Evaluation to 2050},
+  pdfauthor={Firas Zaier; Mariem Zribi},
   pdfkeywords={Physician Migration, Health Workforce
 Planning, Tunisia, Markov Simulation Model, Cost-Consequence
 Analysis, Discrete Choice Experiment, Human Resources for
@@ -297,8 +298,7 @@ Retention Policy Counterfactuals, and Economic Evaluation to 2050}
 \makeatother
 \subtitle{A Multi-State Continuous-Time Markov Simulation and
 Cost-Consequence Analysis}
-\author{Health Workforce and Health Economics Research Consortium for
-Tunisia}
+\author{Firas Zaier \and Mariem Zribi}
 \date{2026-08-20}
 \begin{document}
 \maketitle
@@ -412,8 +412,7 @@ loads, critical hospital infrastructure deficits, chronic shortages of
 essential pharmaceuticals and diagnostic consumables, low public-sector
 remuneration grids, and increasing exposure to physical and verbal
 workplace violence in acute care wards (\citeproc{ref-bensalem2024}{Ben
-Salem, Triki, and Loukil 2024}; \citeproc{ref-dhouib2024}{Dhouib et al.
-2024}).
+Salem et al. 2024}; \citeproc{ref-dhouib2024}{Dhouib et al. 2024}).
 
 Within this regional landscape, Tunisia presents an exceptionally acute
 and policy-critical case study. Following independence in 1956, Tunisia
@@ -483,7 +482,7 @@ study grounds its architecture in two established theoretical pillars:
 \item
   \textbf{Push-Pull Migration Theory and the Macro-Meso-Micro
   Determinant Taxonomy}: Rooted in classical migration economics
-  (\citeproc{ref-mejia1978}{Mejia, Pizurki, and Royston 1978};
+  (\citeproc{ref-mejia1978}{Mejia et al. 1978};
   \citeproc{ref-kline2003}{Kline 2003}) and comprehensively synthesized
   across 107 global health workforce studies by Sousa et al.
   (\citeproc{ref-sousa2023}{2023}), health worker mobility is propelled
@@ -502,7 +501,7 @@ study grounds its architecture in two established theoretical pillars:
     ratios, on-call remuneration, academic supervision in university
     hospitals, and physical workplace security
     (\citeproc{ref-benromdhane2022}{Ben Romdhane et al. 2022};
-    \citeproc{ref-bensalem2024}{Ben Salem, Triki, and Loukil 2024};
+    \citeproc{ref-bensalem2024}{Ben Salem et al. 2024};
     \citeproc{ref-dhouib2024}{Dhouib et al. 2024}).
   \item
     \textbf{Micro-level drivers}: Individual career stage (resident
@@ -544,7 +543,7 @@ from four major methodological vulnerabilities:
   year window, constrained by destination licensing quotas, visa
   barriers, language requirements, and personal inertia
   (\citeproc{ref-clemens2020}{Clemens and Mendola 2020};
-  \citeproc{ref-docquier2014}{Docquier, Peri, and Ruyssen 2014};
+  \citeproc{ref-docquier2014}{Docquier et al. 2014};
   \citeproc{ref-creighton2013}{Creighton 2013}). Applying unadjusted
   intention rates directly to simulation models causes catastrophic and
   mathematically spurious workforce collapses within single five-year
@@ -560,7 +559,7 @@ from four major methodological vulnerabilities:
   substantially from relative risks (RRs). Directly applying
   cross-sectional ORs as multiplicative risk ratios severely overstates
   policy elasticity due to the mathematical non-collapsibility of the
-  odds ratio (\citeproc{ref-zhang1998}{J. Zhang and Yu 1998}).
+  odds ratio (\citeproc{ref-zhang1998}{Zhang and Yu 1998}).
 \item
   \textbf{Inframarginal Public Wage Bill Expansion}: In health
   economics, retention policies involving salary raises cannot be
@@ -594,24 +593,35 @@ physician emigration from Tunisia, and which feasible retention,
 infrastructure, training, and regional policies maximize retained
 physician-years while optimizing public spending through 2050?}
 
-Specifically, the study aims to: 1. Model the baseline 30-year
-trajectory (2020--2050) of Tunisia's total, public-sector,
-private-sector, and regional physician stock under the continuation of
-post-2021 emigration rates (Status Quo). 2. Quantify how multi-attribute
-working conditions, financial remuneration, regional hardship, and
-specialty credentialing hurdles translate into realized physical
-emigration flows. 3. Simulate five targeted and bundled retention policy
-counterfactuals spanning public wage adjustments, hospital
-infrastructure modernization, regional hardship allowances, training
-quota expansion, and comprehensive reform. 4. Conduct a public payer
-Cost-Consequence Analysis (CCA) and Budget Impact Analysis (BIA)
-compliant with CHEERS 2022 standards
+Specifically, the study aims to:
+
+1. Model the baseline 30-year trajectory (2020--2050) of Tunisia's
+total, public-sector, private-sector, and regional physician stock under
+the continuation of post-2021 emigration rates (Status Quo).
+
+2. Quantify how multi-attribute working conditions, financial
+remuneration, regional hardship, and specialty credentialing hurdles
+translate into realized physical emigration flows.
+
+3. Simulate five targeted and bundled retention policy counterfactuals
+spanning public wage adjustments, hospital infrastructure modernization,
+regional hardship allowances, training quota expansion, and
+comprehensive reform.
+
+4. Conduct a public payer Cost-Consequence Analysis (CCA) and Budget
+Impact Analysis (BIA) compliant with CHEERS 2022 standards
 (\citeproc{ref-husereau2022}{Husereau et al. 2022}), estimating
 incremental cost-effectiveness ratios (\(\text{ICER}_{\text{public}}\)
 and \(\text{ICER}_{\text{interior}}\)) per discounted physician-year
-retained. 5. Evaluate decision uncertainty and policy robustness through
+retained.
+
+5. Evaluate decision uncertainty and policy robustness through
 deterministic one-way sensitivity analysis and a 1,000-draw Monte Carlo
 Probabilistic Sensitivity Analysis (PSA).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+editor: markdown: wrap: sentence ---
 
 \section{Methods}\label{sec-methods}
 
@@ -620,31 +630,38 @@ Lineage}\label{sec-methods-framework}
 
 The dynamic workforce simulation and economic evaluation framework is
 anchored in five foundational health economics and workforce modeling
-pillars: 1. The \textbf{WHO Health Labour Market Framework (HLMF)}
+pillars:
+
+1. The \textbf{WHO Health Labour Market Framework (HLMF)}
 (\citeproc{ref-who2021}{World Health Organization 2021}), modeling the
 complete continuum of health personnel from training pipeline intake,
 undergraduate and postgraduate education, domestic labor market entry,
 inter-sectoral reallocation (public vs.~private), internal
 rural-to-urban geographic transfers, international emigration, diaspora
-return migration, and statutory retirement exits. 2. The
-\textbf{Push-Pull Macro-Meso-Micro Taxonomy} of migration determinants
-(\citeproc{ref-sousa2023}{Sousa et al. 2023}), structuring drivers
-across macro-governance, hospital working conditions/remuneration
-(meso), and individual career/specialty constraints (micro). 3. The
-\textbf{Calibrated Macro-Policy Proportional Hazard / Elasticity
-Multiplier Framework} (\citeproc{ref-mandeville2014}{Mandeville,
-Lagarde, and Hanson 2014}; \citeproc{ref-clemens2020}{Clemens and
-Mendola 2020}), translating multidimensional employment and migration
-attributes into bounded choice probabilities without asserting
-unobserved individual utility maximization. 4. \textbf{Multi-State
-Continuous-Time Markov Transition Dynamics}
-(\citeproc{ref-amorimlopes2019}{Amorim-Lopes, Almeida, and Almada-Lobo
-2019}; \citeproc{ref-zhang2020}{X. Zhang et al. 2020}), guaranteeing
-exact demographic mass conservation without discrete probability
-leakage. 5. The \textbf{Consolidated Health Economic Evaluation
-Reporting Standards (CHEERS 2022)} and Second Panel on
-Cost-Effectiveness guidelines (\citeproc{ref-sanders2016}{Sanders et al.
-2016}; \citeproc{ref-husereau2022}{Husereau et al. 2022}).
+return migration, and statutory retirement exits.
+
+2. The \textbf{Push-Pull Macro-Meso-Micro Taxonomy} of migration
+determinants (\citeproc{ref-sousa2023}{Sousa et al. 2023}), structuring
+drivers across macro-governance, hospital working
+conditions/remuneration (meso), and individual career/specialty
+constraints (micro).
+
+3. The \textbf{Calibrated Macro-Policy Proportional Hazard / Elasticity
+Multiplier Framework} (\citeproc{ref-mandeville2014}{Mandeville et al.
+2014}; \citeproc{ref-clemens2020}{Clemens and Mendola 2020}),
+translating multidimensional employment and migration attributes into
+bounded choice probabilities without asserting unobserved individual
+utility maximization.
+
+4. \textbf{Multi-State Continuous-Time Markov Transition Dynamics}
+(\citeproc{ref-amorimlopes2019}{Amorim-Lopes et al. 2019};
+\citeproc{ref-zhang2020}{Zhang et al. 2020}), guaranteeing exact
+demographic mass conservation without discrete probability leakage.
+
+5. The \textbf{Consolidated Health Economic Evaluation Reporting
+Standards (CHEERS 2022)} and Second Panel on Cost-Effectiveness
+guidelines (\citeproc{ref-sanders2016}{Sanders et al. 2016};
+\citeproc{ref-husereau2022}{Husereau et al. 2022}).
 
 The conceptual topology of the model is illustrated in
 Figure~\ref{fig-conceptual-framework}.
@@ -675,22 +692,27 @@ unidentifiability associated with high-dimensional agent-based models
 while retaining full policy relevance, the domestic practicing physician
 workforce is structured as a parsimonious 36-cell discrete state tensor:
 
-\begin{equation}\phantomsection\label{eq-state-tensor}{S_{a,s,r,k}(t) \quad \text{for } t \in [2020, 2050]}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-state-tensor}{S_{a,s,r,k}(t) \quad \text{for } t \in [2020, 2050]}\end{equation}
 
-where: - \textbf{Career Stage (\(a \in \{1, 2, 3\}\))}:
-Early-Career/Resident (\(<35\) years; 10-year residency and
-early-practice window), Mid-Career (\(35–54\) years; 20-year established
-practice window), Senior (\(55+\) years; statutory pre-retirement
-window). - \textbf{Sector of Practice (\(s \in \{1, 2\}\))}: Public
-Health Sector (University Hospitals {[}CHU{]}, Regional Hospitals, and
-Primary Healthcare Centers) vs.~Private Sector (Private Clinics and
-Solo/Group Practices). - \textbf{Geographic Macro-Region
-(\(r \in \{1, 2\}\))}: Coastal/Metropolitan (District of Greater Tunis
-and Center East Region) vs.~Interior/Underserved (North West, Center
-West, and South Regions). - \textbf{Specialty Cluster
-(\(k \in \{1, 2, 3\}\))}: General Practice, Medical Specialties, and
-Surgical/Critical Care Specialties (including Anesthesiology, Intensive
-Care, and Emergency Medicine).
+where:
+
+- \textbf{Career Stage (}\(a \in \{1, 2, 3\}\)): Early-Career/Resident
+(\(<35\) years; 10-year residency and early-practice window), Mid-Career
+(\(35–54\) years; 20-year established practice window), Senior (\(55+\)
+years; statutory pre-retirement window).
+
+- \textbf{Sector of Practice (}\(s \in \{1, 2\}\)): Public Health Sector
+(University Hospitals {[}CHU{]}, Regional Hospitals, and Primary
+Healthcare Centers) vs.~Private Sector (Private Clinics and Solo/Group
+Practices).
+
+- \textbf{Geographic Macro-Region (}\(r \in \{1, 2\}\)):
+Coastal/Metropolitan (District of Greater Tunis and Center East Region)
+vs.~Interior/Underserved (North West, Center West, and South Regions).
+
+- \textbf{Specialty Cluster (}\(k \in \{1, 2, 3\}\)): General Practice,
+Medical Specialties, and Surgical/Critical Care Specialties (including
+Anesthesiology, Intensive Care, and Emergency Medicine).
 
 The active domestic state space comprises
 \(3 \times 2 \times 2 \times 3 = 36\) cells, coupled with an overseas
@@ -793,9 +815,9 @@ First, raw administrative licensing counts from INS
 (\(N_{\text{raw}, 0} = 14,792\) in 2020; \(15,315\) in 2024) were
 adjusted by an empirical \textbf{Active Practice Ratio}
 (\(\alpha = 0.88, 95\%\text{ CI: } [0.85, 0.90]\)) applied strictly as
-an \textbf{initial baseline stock filter at \(t_0 = 2020\)}:
+an \textbf{initial baseline stock filter at} \(t_0 = 2020\):
 
-\begin{equation}\phantomsection\label{eq-active-ratio}{N_{\text{active}, 0} = \alpha \cdot N_{\text{raw}, 0} = 0.88 \times 15,315 \approx 13,477 \text{ practicing physicians}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-active-ratio}{N_{\text{active}, 0} = \alpha \cdot N_{\text{raw}, 0} = 0.88 \times 15,315 \approx 13,477 \text{ practicing physicians}}\end{equation}
 
 This baseline-only adjustment eliminates accumulated historical ``ghost
 registrations'' (inactive, deceased, or unrecorded historical emigrants)
@@ -807,10 +829,10 @@ IPF iteratively minimized discrimination information subject to marginal
 sector totals from INS and governorate/specialty totals from the
 \emph{Carte Sanitaire 2023}:
 
-\begin{equation}\phantomsection\label{eq-ipf-obj}{\min_{S} \sum_{a,s,r,k} S_{a,s,r,k}(0) \ln\left( \frac{S_{a,s,r,k}(0)}{S_{a,s,r,k}^{(0)}} \right)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-ipf-obj}{\min_{S} \sum_{a,s,r,k} S_{a,s,r,k}(0) \ln\left( \frac{S_{a,s,r,k}(0)}{S_{a,s,r,k}^{(0)}} \right)}\end{equation}
 
 subject to the marginal constraints:
-\begin{equation}\phantomsection\label{eq-ipf-constraints}{\sum_{a,r,k} S_{a,s,r,k}(0) = M_s^{\text{INS}}, \quad \sum_{a,s,k} S_{a,s,r,k}(0) = M_r^{\text{Carte}}, \quad \sum_{a,s,r} S_{a,s,r,k}(0) = M_k^{\text{Carte}}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-ipf-constraints}{\sum_{a,r,k} S_{a,s,r,k}(0) = M_s^{\text{INS}}, \quad \sum_{a,s,k} S_{a,s,r,k}(0) = M_r^{\text{Carte}}, \quad \sum_{a,s,r} S_{a,s,r,k}(0) = M_k^{\text{Carte}}}\end{equation}
 
 Iterations proceeded until convergence was achieved
 (\(\Delta < 10^{-6}\)), yielding the exact baseline 36-cell stock
@@ -824,14 +846,13 @@ continuous-time demographic hazard rates converted into discrete
 transition probabilities via matrix exponential integration. This
 guarantees that total transition probabilities sum to identically 1.0000
 with zero probability leakage across extreme parameter shocks
-(\citeproc{ref-amorimlopes2019}{Amorim-Lopes, Almeida, and Almada-Lobo
-2019}).
+(\citeproc{ref-amorimlopes2019}{Amorim-Lopes et al. 2019}).
 
 For any cell \(i \in \{1, \dots, 36\}\), the total competing hazard
 intensity \(\Lambda_i(t)\) is defined as the sum of all instantaneous
 transition rates:
 
-\begin{equation}\phantomsection\label{eq-hazard-sum}{\Lambda_i(t) = \lambda_{\text{emig}, i}(t) + \lambda_{\text{retire}, i} + \lambda_{\text{trans}, i} + \lambda_{\text{geo}, i} + \lambda_{\text{age}, i}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-hazard-sum}{\Lambda_i(t) = \lambda_{\text{emig}, i}(t) + \lambda_{\text{retire}, i} + \lambda_{\text{trans}, i} + \lambda_{\text{geo}, i} + \lambda_{\text{age}, i}}\end{equation}
 
 where: -
 \(\lambda_{\text{emig}, i}(t) = -\ln(1 - P(\text{Emigration}_{i,t}))\)
@@ -858,18 +879,18 @@ Over the discrete annual simulation step \(\Delta t = 1.0\text{ year}\),
 the exact competing-risk transition probability for event
 \(k \in \{\text{emig, retire, trans, geo, age}\}\) is:
 
-\begin{equation}\phantomsection\label{eq-competing-risk-prob}{p_{k, i}(t) = \frac{\lambda_{k, i}(t)}{\Lambda_i(t)} \left( 1 - e^{-\Lambda_i(t)} \right)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-competing-risk-prob}{p_{k, i}(t) = \frac{\lambda_{k, i}(t)}{\Lambda_i(t)} \left( 1 - e^{-\Lambda_i(t)} \right)}\end{equation}
 
 and the probability of remaining in the current state is:
 
-\begin{equation}\phantomsection\label{eq-stay-prob}{p_{\text{stay}, i}(t) = e^{-\Lambda_i(t)}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-stay-prob}{p_{\text{stay}, i}(t) = e^{-\Lambda_i(t)}}\end{equation}
 
 such that
 \(\sum_{k} p_{k, i}(t) + p_{\text{stay}, i}(t) \equiv 1.00000000\).
 
 The dynamic stock-flow state update equation is:
 
-\begin{equation}\phantomsection\label{eq-stock-update}{S_i(t+1) = S_i(t) \cdot p_{\text{stay}, i}(t) + \text{Inflow}_{\text{grad}, i}(t+1) + \text{Inflow}_{\text{age}, i}(t+1) + \text{Inflow}_{\text{trans}, i}(t+1) + \text{Inflow}_{\text{return}, i}(t+1)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-stock-update}{S_i(t+1) = S_i(t) \cdot p_{\text{stay}, i}(t) + \text{Inflow}_{\text{grad}, i}(t+1) + \text{Inflow}_{\text{age}, i}(t+1) + \text{Inflow}_{\text{trans}, i}(t+1) + \text{Inflow}_{\text{return}, i}(t+1)}\end{equation}
 
 Annual medical graduate inflows
 (\(I_{\text{grad}, t+1} \approx 900–1,100\)) enter the early-career
@@ -893,9 +914,9 @@ at year \(t\) is formulated within a \textbf{Calibrated Macro-Policy
 Proportional Hazard / Elasticity Multiplier Framework} scaled by an
 empirical \textbf{Intention-to-Action Realization Factor} (\(\kappa_k\))
 (\citeproc{ref-clemens2020}{Clemens and Mendola 2020};
-\citeproc{ref-docquier2014}{Docquier, Peri, and Ruyssen 2014}):
+\citeproc{ref-docquier2014}{Docquier et al. 2014}):
 
-\begin{equation}\phantomsection\label{eq-emigration-prob}{P(\text{Emigration}_{i,t}) = \kappa_k \cdot \frac{1}{1 + \exp\left(-\Delta V_{i,t}\right)}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-emigration-prob}{P(\text{Emigration}_{i,t}) = \kappa_k \cdot \frac{1}{1 + \exp\left(-\Delta V_{i,t}\right)}}\end{equation}
 
 where \(\kappa_k\) accounts for destination country licensing, visa
 filters, and procedural bottlenecks: - \(\kappa_{\text{gen}} = 0.245\)
@@ -907,7 +928,7 @@ and Critical Care Specialists facing expedited foreign recruitment)
 The latent relative policy response index \(\Delta V_{i,t}\) is
 structured as:
 
-\begin{equation}\phantomsection\label{eq-latent-utility}{\Delta V_{i,t} = \beta_0 + \Delta \beta_{\text{regime}}(t) + \gamma_{\text{stage}, a} + \gamma_{\text{sector}, s} + \gamma_{\text{geo}, r} + \gamma_{\text{spec}, k} + \beta_{\text{peer}} \cdot \text{PeerFeedback}_t - \Delta U_{\text{policy}, i}(t)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-latent-utility}{\Delta V_{i,t} = \beta_0 + \Delta \beta_{\text{regime}}(t) + \gamma_{\text{stage}, a} + \gamma_{\text{sector}, s} + \gamma_{\text{geo}, r} + \gamma_{\text{spec}, k} + \beta_{\text{peer}} \cdot \text{PeerFeedback}_t - \Delta U_{\text{policy}, i}(t)}\end{equation}
 
 where: - \(\beta_0 = -1.87\) is the baseline logit scale intercept
 calibrated to pre-2021 departure series. -
@@ -935,10 +956,10 @@ To ensure that survey-derived parameters from Tunisian cross-sectional
 studies (\citeproc{ref-benromdhane2022}{Ben Romdhane et al. 2022};
 \citeproc{ref-dhouib2024}{Dhouib et al. 2024}) do not inflate policy
 response functions, all reported odds ratios were converted to
-conservative Relative Risks (RRs) using the formula of J. Zhang and Yu
+conservative Relative Risks (RRs) using the formula of Zhang and Yu
 (\citeproc{ref-zhang1998}{1998}):
 
-\begin{equation}\phantomsection\label{eq-zhang-yu}{\text{RR} = \frac{\text{OR}}{(1 - p_0) + (p_0 \cdot \text{OR})}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-zhang-yu}{\text{RR} = \frac{\text{OR}}{(1 - p_0) + (p_0 \cdot \text{OR})}}\end{equation}
 
 where \(p_0\) is the baseline intention prevalence in the reference
 group (e.g., \(p_0 = 0.686\) for young doctors and \(p_0 = 0.756\) for
@@ -952,15 +973,14 @@ Strategy}\label{sec-methods-calibration}
 To avoid multi-parameter collinearity and guarantee structural
 identifiability, relative choice attribute weights (valuation of wages,
 infrastructure, and rural incentives) were fixed based on the pooled
-LMIC Discrete Choice Experiment meta-analysis of Mandeville, Lagarde,
-and Hanson (\citeproc{ref-mandeville2014}{2014})
-(\(N = 10 \text{ studies}\)). Only two global scalar parameters
-(\(\beta_0\) and \(\Delta \beta_{2021+}\)) were calibrated directly to
-historical Tunisian time series.
+LMIC Discrete Choice Experiment meta-analysis of Mandeville et al.
+(\citeproc{ref-mandeville2014}{2014}) (\(N = 10 \text{ studies}\)). Only
+two global scalar parameters (\(\beta_0\) and \(\Delta \beta_{2021+}\))
+were calibrated directly to historical Tunisian time series.
 
 The calibration and validation strategy followed a strict temporal
-split: - \textbf{Training Calibration Period (2015--2021, \(N = 7\) time
-points, \(df = 5\))}: Estimated \(\beta_0 = -1.87\) and
+split: - \textbf{Training Calibration Period (2015--2021,} \(N = 7\)
+time points, \(df = 5\)): Estimated \(\beta_0 = -1.87\) and
 \(\Delta \beta_{2021+} = 0.94\) via Maximum Likelihood count-loss
 minimization against INS active practicing stock
 (\(S_{\text{active}}^{\text{obs}} = \alpha \cdot S_{\text{raw}}^{\text{INS}}\))
@@ -1010,7 +1030,7 @@ contractual compliance (\(R_{\text{ros}} = 0.75\))
 policy levers and enforce strict \([0, 1)\) probability bounds, the
 compound relative risk was calculated multiplicatively:
 
-\begin{equation}\phantomsection\label{eq-compound-risk}{\text{RR}_{\text{package}} = \prod_{k=1}^{3} \text{RR}_k \quad \Longleftrightarrow \quad \text{RRR}_{\text{package}} = 1 - \prod_{k=1}^{3} (1 - \text{RRR}_k)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-compound-risk}{\text{RR}_{\text{package}} = \prod_{k=1}^{3} \text{RR}_k \quad \Longleftrightarrow \quad \text{RRR}_{\text{package}} = 1 - \prod_{k=1}^{3} (1 - \text{RRR}_k)}\end{equation}
 
 yielding a combined relative risk reduction of
 \(\text{RRR}_{\text{package}} = 1 - (1 - 0.12)(1 - 0.10)(1 - 0.18) = 0.350\)
@@ -1036,7 +1056,7 @@ following CHEERS 2022 and Second Panel guidelines
   public workforce:
 \end{enumerate}
 
-\begin{equation}\phantomsection\label{eq-wage-cost}{\Delta C_{\text{wage}, t} = N_{\text{public}, t} \cdot (\text{Salary}_{\text{base}} \times \Delta w) = N_{\text{public}, t} \cdot (36,000\text{ TND} \times 0.30) = N_{\text{public}, t} \cdot 10,800\text{ TND}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-wage-cost}{\Delta C_{\text{wage}, t} = N_{\text{public}, t} \cdot (\text{Salary}_{\text{base}} \times \Delta w) = N_{\text{public}, t} \cdot (36,000\text{ TND} \times 0.30) = N_{\text{public}, t} \cdot 10,800\text{ TND}}\end{equation}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1073,14 +1093,14 @@ All monetary costs and workforce outcomes were discounted at a baseline
 social discount rate of \(r = 3.0\%\) annually (tested at 0\%, 5\%, and
 8\%):
 
-\begin{equation}\phantomsection\label{eq-discounting}{\Delta C = \sum_{t=2025}^{2050} \frac{C_{\text{policy}}(t) - C_{\text{statusquo}}(t)}{(1 + r)^{t - 2025}}, \quad \Delta E = \sum_{t=2025}^{2050} \frac{E_{\text{policy}}(t) - E_{\text{statusquo}}(t)}{(1 + r)^{t - 2025}}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-discounting}{\Delta C = \sum_{t=2025}^{2050} \frac{C_{\text{policy}}(t) - C_{\text{statusquo}}(t)}{(1 + r)^{t - 2025}}, \quad \Delta E = \sum_{t=2025}^{2050} \frac{E_{\text{policy}}(t) - E_{\text{statusquo}}(t)}{(1 + r)^{t - 2025}}}\end{equation}
 
 The primary decision frameworks are \textbf{Budget Impact Analysis
 (BIA)} and \textbf{Cost-Consequence Analysis (CCA)} in natural
 undiscounted and discounted units, alongside disaggregated Incremental
 Cost-Effectiveness Ratios:
 
-\begin{equation}\phantomsection\label{eq-icer}{\text{ICER}_{\text{public}} = \frac{\Delta C}{\Delta \text{Public Physician-Years Retained}}, \quad \text{ICER}_{\text{interior}} = \frac{\Delta C}{\Delta \text{Interior Physician-Years Retained}}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-icer}{\text{ICER}_{\text{public}} = \frac{\Delta C}{\Delta \text{Public Physician-Years Retained}}, \quad \text{ICER}_{\text{interior}} = \frac{\Delta C}{\Delta \text{Interior Physician-Years Retained}}}\end{equation}
 
 \textbf{Decision-Analytic Frontier Rule}: In the cost-effectiveness
 plane, interventions generating severe negative external human capital
@@ -1098,20 +1118,20 @@ Every parameter is categorized into one of five mutually exclusive
 identification classes (Class A = Direct Tunisian Empirical; Class B =
 Regional Maghreb Benchmark; Class C = International Pooled
 Meta-Analysis; Class D = Demographic/Standard Accounting Rule; Class E =
-Policy Scenario Lever), as summarized in Table~\ref{tbl-parameters}.
+Policy Scenario Lever), as summarized in \textbf{?@tbl-parameters}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1143}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1143}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1143}}
-  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1429}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1143}}
-  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1429}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1143}}
-  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1429}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
 \caption{Complete Model Parameter Provenance Registry and Sampling
 Distributions. Full metadata and version control available in
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/data/metadata/parameter_registry.csv}{\texttt{data/metadata/parameter\_registry.csv}}.}\label{tbl-parameters}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/data/metadata/parameter_registry.csv}{\protect\texttt{data/metadata/parameter\_registry.csv}}.}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Parameter Identifier
@@ -1225,8 +1245,7 @@ Interior-to-coast hazard \(\lambda_{\text{geo}}\) & 0.045 &
 \texttt{PAR\_RETURN\_MIG\_RATE} & Diaspora Return Hazard & Annual return
 hazard \(\lambda_{\text{return}}\) & 0.015 & \(\text{Beta}(15, 985)\) &
 \([0.005, 0.030]\) & Structural Benchmark
-(\citeproc{ref-amorimlopes2019}{Amorim-Lopes, Almeida, and Almada-Lobo
-2019}) & D \\
+(\citeproc{ref-amorimlopes2019}{Amorim-Lopes et al. 2019}) & D \\
 \texttt{PAR\_PUB\_PRIV\_TRANS} & Public-Private Transition & Sector
 shift hazard \(\lambda_{\text{trans}}\) & 0.018 &
 \(\text{Beta}(18, 982)\) & \([0.012, 0.025]\) & INS Series (2017--2024)
@@ -1242,18 +1261,15 @@ intercept \(\Delta \beta_{2021+}\) & +0.94 &
 \texttt{PAR\_BETA\_WAGE\_DCE} & Wage Choice Weight & Relative utility
 \(\beta_{\text{wage}}\) & +0.48 & \(\text{Normal}(0.48, 0.08)\) &
 \([0.38, 0.58]\) & Mandeville et al.~(2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}) &
-C \\
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}) & C \\
 \texttt{PAR\_BETA\_INFRA\_DCE} & Infrastructure Weight & Relative
 utility \(\beta_{\text{infra}}\) & +0.36 & \(\text{Normal}(0.36, 0.06)\)
 & \([0.27, 0.45]\) & Mandeville et al.~(2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}) &
-C \\
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}) & C \\
 \texttt{PAR\_BETA\_RURAL\_DCE} & Rural Hardship Weight & Relative
 utility \(\beta_{\text{rural}}\) & +0.31 & \(\text{Normal}(0.31, 0.06)\)
 & \([0.22, 0.40]\) & Mandeville et al.~(2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}) &
-C \\
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}) & C \\
 \texttt{PAR\_PEER\_FEEDBACK} & Peer Feedback Elasticity & Network
 feedback \(\beta_{\text{peer}}\) & +0.25 & \(\text{Beta}(25, 75)\) &
 \([0.10, 0.40]\) & Structural Model Formulation & D \\
@@ -1263,7 +1279,7 @@ feedback \(\beta_{\text{peer}}\) & +0.25 & \(\text{Beta}(25, 75)\) &
 \texttt{PAR\_SCEN1\_RRR\_WAGE} & Wage Retention RRR & Policy elasticity
 \(\text{RRR}_{\text{wage}}\) & 0.12 & \(\text{LogNormal}(-2.12, 0.18)\)
 & \([0.08, 0.18]\) & Wage Elasticity
-(\citeproc{ref-docquier2014}{Docquier, Peri, and Ruyssen 2014}) & C \\
+(\citeproc{ref-docquier2014}{Docquier et al. 2014}) & C \\
 \texttt{PAR\_SCEN2\_RRR\_INFRA} & Infrastructure RRR & Policy elasticity
 \(\text{RRR}_{\text{infra}}\) & 0.10 & \(\text{LogNormal}(-2.30, 0.18)\)
 & \([0.06, 0.16]\) & Scenario 2 Specification & E \\
@@ -1319,7 +1335,7 @@ To evaluate structural and parametric robustness: 1.
 \textbf{Deterministic One-Way Sensitivity Analysis (Tornado)}: Evaluated
 swings in discounted public physician-years retained and net costs by
 varying each parameter across its lower and upper bounds
-(Table~\ref{tbl-parameters}). 2. \textbf{Probabilistic Sensitivity
+(\textbf{?@tbl-parameters}). 2. \textbf{Probabilistic Sensitivity
 Analysis (PSA)}: Conducted a 1,000-draw Monte Carlo simulation sampling
 all parameters simultaneously from their bounded parametric
 distributions (\textbf{Beta} for probabilities \([0, 1]\),
@@ -1647,7 +1663,7 @@ years in Table~\ref{tbl-policy-results} and Figure~\ref{fig-scenarios}.
   >{\centering\arraybackslash}p{(\linewidth - 24\tabcolsep) * \real{0.0794}}@{}}
 \caption{Projected Tunisian Physician Workforce Milestones at 2030,
 2040, and 2050 Across Policy Scenarios. Generated from
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table2_workforce_milestones_2030_2040_2050.csv}{\texttt{outputs/tables/table2\_workforce\_milestones\_2030\_2040\_2050.csv}}.}\label{tbl-policy-results}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table2_workforce_milestones_2030_2040_2050.csv}{\protect\texttt{outputs/tables/table2\_workforce\_milestones\_2030\_2040\_2050.csv}}.}\label{tbl-policy-results}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Scenario ID
@@ -1884,7 +1900,7 @@ cost-effectiveness plane (Figure~\ref{fig-frontier}).
 Cost-Effectiveness Evaluation (2025--2050). Discounted at 3.0\%
 annually. Monetary values in Million Tunisian Dinars (M TND). Generated
 from
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table3_economic_evaluation_cca.csv}{\texttt{outputs/tables/table3\_economic\_evaluation\_cca.csv}}.}\label{tbl-icer}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table3_economic_evaluation_cca.csv}{\protect\texttt{outputs/tables/table3\_economic\_evaluation\_cca.csv}}.}\label{tbl-icer}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Scenario ID
@@ -2036,7 +2052,7 @@ Figure~\ref{fig-ceac} (Panel A).
   >{\centering\arraybackslash}p{(\linewidth - 20\tabcolsep) * \real{0.0926}}@{}}
 \caption{Deterministic One-Way Sensitivity Analysis (Tornado) for
 Comprehensive Synergistic Reform (SCEN\_5). Generated from
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table5_tornado_sensitivity.csv}{\texttt{outputs/tables/table5\_tornado\_sensitivity.csv}}.}\label{tbl-tornado}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table5_tornado_sensitivity.csv}{\protect\texttt{outputs/tables/table5\_tornado\_sensitivity.csv}}.}\label{tbl-tornado}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Parameter
@@ -2144,7 +2160,7 @@ CrI: 1,811.83 to 6,042.17). - Median \(\text{ICER}_{\text{public}}\):
   >{\centering\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2632}}@{}}
 \caption{Probabilistic Sensitivity Analysis (PSA): 1,000-Draw Monte
 Carlo Credible Intervals for Scenario 5. Generated from
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table4_psa_credible_intervals.csv}{\texttt{outputs/tables/table4\_psa\_credible\_intervals.csv}}.}\label{tbl-psa}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/outputs/tables/table4_psa_credible_intervals.csv}{\protect\texttt{outputs/tables/table4\_psa\_credible\_intervals.csv}}.}\label{tbl-psa}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Outcome Metric
@@ -2220,12 +2236,12 @@ evaluation of physician emigration from Tunisia through 2050. By
 coupling the WHO Health Labour Market Framework
 (\citeproc{ref-who2021}{World Health Organization 2021}) with a
 Calibrated Macro-Policy Proportional Hazard Framework
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014};
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014};
 \citeproc{ref-clemens2020}{Clemens and Mendola 2020}), continuous-time
 competing-risk transition mechanics
-(\citeproc{ref-amorimlopes2019}{Amorim-Lopes, Almeida, and Almada-Lobo
-2019}; \citeproc{ref-zhang2020}{X. Zhang et al. 2020}), and CHEERS 2022
-economic standards (\citeproc{ref-sanders2016}{Sanders et al. 2016};
+(\citeproc{ref-amorimlopes2019}{Amorim-Lopes et al. 2019};
+\citeproc{ref-zhang2020}{Zhang et al. 2020}), and CHEERS 2022 economic
+standards (\citeproc{ref-sanders2016}{Sanders et al. 2016};
 \citeproc{ref-husereau2022}{Husereau et al. 2022}), our findings
 generate critical scientific and policy insights into the long-term
 sustainability of the Tunisian health workforce:
@@ -2316,22 +2332,22 @@ Realization Gap}: Our calibrated realization parameters
 (\(\kappa_{\text{gen}} = 0.245, \kappa_{\text{med}} = 0.350, \kappa_{\text{surg}} = 0.490\))
 are fully consistent with multi-country panel econometrics
 (\citeproc{ref-clemens2020}{Clemens and Mendola 2020};
-\citeproc{ref-docquier2014}{Docquier, Peri, and Ruyssen 2014};
+\citeproc{ref-docquier2014}{Docquier et al. 2014};
 \citeproc{ref-creighton2013}{Creighton 2013}), proving that unadjusted
 survey intentions cannot be used directly to model longitudinal
 population flows. - \textbf{Discrete Choice Valuations}: In alignment
-with the pooled LMIC DCE meta-analysis of Mandeville, Lagarde, and
-Hanson (\citeproc{ref-mandeville2014}{2014}), non-monetary working
-condition improvements (modern diagnostic tools, reliable medication
-supplies, and physical safety) generate utility gains equivalent to a
-20\%--30\% direct salary increment. - \textbf{Public-Private Dual
-Practice Nuance}: In Tunisia, senior hospital-university faculty are
-legally permitted limited private practice within public facilities
-(\emph{Activité Privée Complémentaire} / APC, or \emph{Plein-Temps
-Aménagé}). APC acts as an institutional retention buffer for senior
-clinicians, explaining why the public-to-private transition hazard
-(\(\lambda_{\text{trans}} = 0.018\)) is concentrated primarily among
-mid-career specialists lacking APC privileges.
+with the pooled LMIC DCE meta-analysis of Mandeville et al.
+(\citeproc{ref-mandeville2014}{2014}), non-monetary working condition
+improvements (modern diagnostic tools, reliable medication supplies, and
+physical safety) generate utility gains equivalent to a 20\%--30\%
+direct salary increment. - \textbf{Public-Private Dual Practice Nuance}:
+In Tunisia, senior hospital-university faculty are legally permitted
+limited private practice within public facilities (\emph{Activité Privée
+Complémentaire} / APC, or \emph{Plein-Temps Aménagé}). APC acts as an
+institutional retention buffer for senior clinicians, explaining why the
+public-to-private transition hazard (\(\lambda_{\text{trans}} = 0.018\))
+is concentrated primarily among mid-career specialists lacking APC
+privileges.
 
 \subsection{Concrete Policy Implications for National and Global Health
 Stakeholders}\label{sec-discussion-policy}
@@ -2438,8 +2454,8 @@ Stakeholders}\label{policy-implications-for-european-destination-countries-and-m
   \end{itemize}
 \end{enumerate}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, title={Executive Policy Brief: Core Takeaways for the Ministries of Health and
-Finance}, breakable, rightrule=.15mm, leftrule=.75mm, left=2mm, coltitle=black, opacityback=0, arc=.35mm, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, colback=white, bottomtitle=1mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title={Executive Policy Brief: Core Takeaways for the Ministries of Health and
+Finance}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{itemize}
 \tightlist
@@ -2480,9 +2496,9 @@ limitations must be explicitly acknowledged:
 Behavior}\label{intention-to-migrate-vs.-observed-behavior}
 
 Although our model implements the empirical Intention-to-Action
-Realization Factor (\(\kappa \in [0.25, 0.49]\)) and applies the J.
-Zhang and Yu (\citeproc{ref-zhang1998}{1998}) transformation to prevent
-odds ratio distortion, stated preferences from cross-sectional surveys
+Realization Factor (\(\kappa \in [0.25, 0.49]\)) and applies the Zhang
+and Yu (\citeproc{ref-zhang1998}{1998}) transformation to prevent odds
+ratio distortion, stated preferences from cross-sectional surveys
 (\citeproc{ref-benromdhane2022}{Ben Romdhane et al. 2022};
 \citeproc{ref-dhouib2024}{Dhouib et al. 2024}) capture static attitudes
 rather than dynamic individual decisions. Stated intentions remain
@@ -2494,13 +2510,12 @@ vs.~Micro-DCEs}\label{macro-policy-elasticity-framing-vs.-micro-dces}
 
 To maintain structural identifiability without primary discrete choice
 panels, relative attribute weights were borrowed from pooled LMIC DCE
-meta-analyses (\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and
-Hanson 2014}), and two global scalar parameters
-(\(\beta_0, \Delta \beta_{2021+}\)) were calibrated on historical
-Tunisian series (\(df = 5\)). While this guarantees mathematical
-stability, it assumes relative trade-offs between compensation,
-infrastructure, and location in Tunisia conform to pooled LMIC
-benchmarks.
+meta-analyses (\citeproc{ref-mandeville2014}{Mandeville et al. 2014}),
+and two global scalar parameters (\(\beta_0, \Delta \beta_{2021+}\))
+were calibrated on historical Tunisian series (\(df = 5\)). While this
+guarantees mathematical stability, it assumes relative trade-offs
+between compensation, infrastructure, and location in Tunisia conform to
+pooled LMIC benchmarks.
 
 \subsubsection{3. Continuous-Time Markov Aging vs.~Tunnel
 States}\label{continuous-time-markov-aging-vs.-tunnel-states}
@@ -2580,18 +2595,18 @@ mutually exclusive event hazards, with total exit hazard
 constant hazard rates over the interval \([t, t + \Delta t)\), the
 survival probability (probability of remaining in cell \(i\)) is:
 
-\begin{equation}\phantomsection\label{eq-app-stay}{p_{\text{stay}, i} = \exp\left( -\int_{0}^{\Delta t} \Lambda_i \, du \right) = \exp(-\Lambda_i \Delta t)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-stay}{p_{\text{stay}, i} = \exp\left( -\int_{0}^{\Delta t} \Lambda_i \, du \right) = \exp(-\Lambda_i \Delta t)}\end{equation}
 
 The probability that an individual in cell \(i\) experiences event \(k\)
 during interval \(\Delta t\) before any competing event occurs is given
 by the integral of the event-specific hazard multiplied by the survival
 function:
 
-\begin{equation}\phantomsection\label{eq-app-event}{p_{k, i} = \int_{0}^{\Delta t} \lambda_{k, i} \exp(-\Lambda_i u) \, du = \frac{\lambda_{k, i}}{\Lambda_i} \left[ 1 - \exp(-\Lambda_i \Delta t) \right]}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-event}{p_{k, i} = \int_{0}^{\Delta t} \lambda_{k, i} \exp(-\Lambda_i u) \, du = \frac{\lambda_{k, i}}{\Lambda_i} \left[ 1 - \exp(-\Lambda_i \Delta t) \right]}\end{equation}
 
 Summing across all competing destinations and the stay state yields:
 
-\begin{equation}\phantomsection\label{eq-app-proof}{\sum_{k} p_{k, i} + p_{\text{stay}, i} = \sum_{k} \frac{\lambda_{k, i}}{\Lambda_i} (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} = \frac{\sum_k \lambda_{k, i}}{\Lambda_i} (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} = (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} \equiv 1.00000000}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-proof}{\sum_{k} p_{k, i} + p_{\text{stay}, i} = \sum_{k} \frac{\lambda_{k, i}}{\Lambda_i} (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} = \frac{\sum_k \lambda_{k, i}}{\Lambda_i} (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} = (1 - e^{-\Lambda_i}) + e^{-\Lambda_i} \equiv 1.00000000}\end{equation}
 
 This formulation guarantees non-negativity and exact mass conservation
 for all possible non-negative hazard values.
@@ -2604,16 +2619,16 @@ unexposed/reference group, and let \(p_1\) denote the probability in the
 exposed group. The true Relative Risk is \(\text{RR} = p_1 / p_0\),
 while the Odds Ratio is:
 
-\begin{equation}\phantomsection\label{eq-app-or-def}{\text{OR} = \frac{p_1 / (1 - p_1)}{p_0 / (1 - p_0)}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-or-def}{\text{OR} = \frac{p_1 / (1 - p_1)}{p_0 / (1 - p_0)}}\end{equation}
 
 Solving for \(p_1\) in terms of \(\text{OR}\) and \(p_0\):
 
-\begin{equation}\phantomsection\label{eq-app-p1-solve}{\frac{p_1}{1 - p_1} = \text{OR} \cdot \frac{p_0}{1 - p_0} \implies p_1 = \frac{\text{OR} \cdot p_0}{(1 - p_0) + (\text{OR} \cdot p_0)}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-p1-solve}{\frac{p_1}{1 - p_1} = \text{OR} \cdot \frac{p_0}{1 - p_0} \implies p_1 = \frac{\text{OR} \cdot p_0}{(1 - p_0) + (\text{OR} \cdot p_0)}}\end{equation}
 
-Dividing both sides by \(p_0\) yields the J. Zhang and Yu
+Dividing both sides by \(p_0\) yields the Zhang and Yu
 (\citeproc{ref-zhang1998}{1998}) transformation:
 
-\begin{equation}\phantomsection\label{eq-app-rr-zhang}{\text{RR} = \frac{p_1}{p_0} = \frac{\text{OR}}{(1 - p_0) + (p_0 \cdot \text{OR})}}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-rr-zhang}{\text{RR} = \frac{p_1}{p_0} = \frac{\text{OR}}{(1 - p_0) + (p_0 \cdot \text{OR})}}\end{equation}
 
 In our study, applying this equation to the survey findings of Ben
 Romdhane et al. (\citeproc{ref-benromdhane2022}{2022}) (\(p_0 = 0.686\))
@@ -2635,7 +2650,7 @@ The 36-cell baseline stock tensor \(S_{a,s,r,k}(0)\) was initialized by
 minimizing discrimination information subject to marginal constraints
 from INS and Carte Sanitaire 2023:
 
-\begin{equation}\phantomsection\label{eq-app-ipf}{\min \sum_{a,s,r,k} S_{a,s,r,k} \ln\left( \frac{S_{a,s,r,k}}{S_{a,s,r,k}^{(0)}} \right)}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-app-ipf}{\min \sum_{a,s,r,k} S_{a,s,r,k} \ln\left( \frac{S_{a,s,r,k}}{S_{a,s,r,k}^{(0)}} \right)}\end{equation}
 
 subject to:
 \[\sum_{a,r,k} S_{a,s,r,k} = M_{s}^{\text{INS}}, \quad \sum_{a,s,k} S_{a,s,r,k} = M_{r}^{\text{Carte}}, \quad \sum_{a,s,r} S_{a,s,r,k} = M_{k}^{\text{Carte}}\]
@@ -2669,7 +2684,7 @@ scenario levers.
   >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1429}}@{}}
 \caption{Complete Model Parameter Provenance Registry and Sampling
 Distributions. Full metadata and version control available in
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/data/metadata/parameter_registry.csv}{\texttt{data/metadata/parameter\_registry.csv}}.}\label{tbl-app-params}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/data/metadata/parameter_registry.csv}{\protect\texttt{data/metadata/parameter\_registry.csv}}.}\label{tbl-app-params}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Parameter ID
@@ -2783,8 +2798,7 @@ Interior-to-coast hazard \(\lambda_{\text{geo}}\) & 0.045 &
 \texttt{PAR\_RETURN\_MIG\_RATE} & Diaspora Return Hazard & Annual return
 hazard \(\lambda_{\text{return}}\) & 0.015 & \(\text{Beta}(15, 985)\) &
 \([0.005, 0.030]\) & Structural Benchmark
-(\citeproc{ref-amorimlopes2019}{Amorim-Lopes, Almeida, and Almada-Lobo
-2019}) & D \\
+(\citeproc{ref-amorimlopes2019}{Amorim-Lopes et al. 2019}) & D \\
 \texttt{PAR\_PUB\_PRIV\_TRANS} & Public-Private Transition & Sector
 shift hazard \(\lambda_{\text{trans}}\) & 0.018 &
 \(\text{Beta}(18, 982)\) & \([0.012, 0.025]\) & INS Series (2017--2024)
@@ -2800,18 +2814,15 @@ intercept \(\Delta \beta_{2021+}\) & +0.94 &
 \texttt{PAR\_BETA\_WAGE\_DCE} & Wage Choice Weight & Relative utility
 \(\beta_{\text{wage}}\) & +0.48 & \(\text{Normal}(0.48, 0.08)\) &
 \([0.38, 0.58]\) & Mandeville et al.~(2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}) &
-C \\
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}) & C \\
 \texttt{PAR\_BETA\_INFRA\_DCE} & Infrastructure Weight & Relative
 utility \(\beta_{\text{infra}}\) & +0.36 & \(\text{Normal}(0.36, 0.06)\)
 & \([0.27, 0.45]\) & Mandeville et al.~(2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}) &
-C \\
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}) & C \\
 \texttt{PAR\_BETA\_RURAL\_DCE} & Rural Hardship Weight & Relative
 utility \(\beta_{\text{rural}}\) & +0.31 & \(\text{Normal}(0.31, 0.06)\)
 & \([0.22, 0.40]\) & Mandeville et al.~(2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}) &
-C \\
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}) & C \\
 \texttt{PAR\_PEER\_FEEDBACK} & Peer Feedback Elasticity & Network
 feedback \(\beta_{\text{peer}}\) & +0.25 & \(\text{Beta}(25, 75)\) &
 \([0.10, 0.40]\) & Structural Model Formulation & D \\
@@ -2821,7 +2832,7 @@ feedback \(\beta_{\text{peer}}\) & +0.25 & \(\text{Beta}(25, 75)\) &
 \texttt{PAR\_SCEN1\_RRR\_WAGE} & Wage Retention RRR & Policy elasticity
 \(\text{RRR}_{\text{wage}}\) & 0.12 & \(\text{LogNormal}(-2.12, 0.18)\)
 & \([0.08, 0.18]\) & Wage Elasticity
-(\citeproc{ref-docquier2014}{Docquier, Peri, and Ruyssen 2014}) & C \\
+(\citeproc{ref-docquier2014}{Docquier et al. 2014}) & C \\
 \texttt{PAR\_SCEN2\_RRR\_INFRA} & Infrastructure RRR & Policy elasticity
 \(\text{RRR}_{\text{infra}}\) & 0.10 & \(\text{LogNormal}(-2.30, 0.18)\)
 & \([0.06, 0.16]\) & Scenario 2 Specification & E \\
@@ -3150,7 +3161,7 @@ PRISMA 2020 standards (Table~\ref{tbl-app-prisma}).
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
 \caption{PRISMA Evidence Synthesis Matrix and Search Governance.
 Complete database available in
-\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/literature/evidence_registry.csv}{\texttt{literature/evidence\_registry.csv}}.}\label{tbl-app-prisma}\tabularnewline
+\href{file:///c:/Users/drfir/Documents/physician-exodus-tunisia/literature/evidence_registry.csv}{\protect\texttt{literature/evidence\_registry.csv}}.}\label{tbl-app-prisma}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 PRISMA Domain
@@ -3182,9 +3193,9 @@ Tunisian physicians reporting emigration intention and odds ratios. &
 Ben Romdhane et al.~(2022) (\citeproc{ref-benromdhane2022}{Ben Romdhane
 et al. 2022}), Dhouib et al.~(2024) (\citeproc{ref-dhouib2024}{Dhouib et
 al. 2024}), Ben Salem et al.~(2024) (\citeproc{ref-bensalem2024}{Ben
-Salem, Triki, and Loukil 2024}). & Baseline intention
-(\(p_0 = 0.686, 0.756\)), survey odds ratios transformed via Zhang \& Yu
-(1998) to relative risks (\(\text{RR} = 1.14\text{--}1.23\)). \\
+Salem et al. 2024}). & Baseline intention (\(p_0 = 0.686, 0.756\)),
+survey odds ratios transformed via Zhang \& Yu (1998) to relative risks
+(\(\text{RR} = 1.14\text{--}1.23\)). \\
 \textbf{Maghreb Evidence} & Comparative physician migration surveys from
 Morocco, Algeria, Egypt, and Lebanon. & Sylla et al.~(2021)
 (\citeproc{ref-sylla2021}{Sylla et al. 2021}), El Morabety \& El
@@ -3196,19 +3207,19 @@ shares (Class B). \\
 \textbf{DCE Meta-Analyses} & Systematic reviews and pooled meta-analyses
 of discrete choice experiments for health worker retention in LMICs. &
 Mandeville, Lagarde, \& Hanson (2014)
-(\citeproc{ref-mandeville2014}{Mandeville, Lagarde, and Hanson 2014}),
-Lagarde \& Blaauw (2009) (\citeproc{ref-lagarde2009}{Lagarde and Blaauw
-2009}). & Relative choice utility weights for wages
+(\citeproc{ref-mandeville2014}{Mandeville et al. 2014}), Lagarde \&
+Blaauw (2009) (\citeproc{ref-lagarde2009}{Lagarde and Blaauw 2009}). &
+Relative choice utility weights for wages
 (\(\beta_{\text{wage}} = 0.48\)), infrastructure
 (\(\beta_{\text{infra}} = 0.36\)), and rural hardship
 (\(\beta_{\text{rural}} = 0.31\)). \\
 \textbf{Realization Panels} & Multi-country microdata panels evaluating
 stated intentions vs.~realized physical migration. & Clemens \& Mendola
 (2020) (\citeproc{ref-clemens2020}{Clemens and Mendola 2020}), Docquier,
-Peri, \& Ruyssen (2014) (\citeproc{ref-docquier2014}{Docquier, Peri, and
-Ruyssen 2014}), Creighton (2013) (\citeproc{ref-creighton2013}{Creighton
-2013}). & Prior distributions for the Intention-to-Action Realization
-Factor (\(\kappa \sim \text{Beta}(35, 65)\), base \(\kappa = 0.35\)). \\
+Peri, \& Ruyssen (2014) (\citeproc{ref-docquier2014}{Docquier et al.
+2014}), Creighton (2013) (\citeproc{ref-creighton2013}{Creighton 2013}).
+& Prior distributions for the Intention-to-Action Realization Factor
+(\(\kappa \sim \text{Beta}(35, 65)\), base \(\kappa = 0.35\)). \\
 \textbf{Administrative Data} & Official national census reports,
 ministerial statistical yearbooks, and foreign medical licensing
 registers. & INS Stat 123 (\citeproc{ref-ins2024}{Institut National de
@@ -3262,13 +3273,12 @@ Manar.
 
 \subsection{Authors' Contributions}\label{authors-contributions}
 
-Conceptualization: Modeling Team; Methodology and Econometric
-Specification: Modeling Team; Data Ingestion and Curation: Modeling
-Team; Software Programming and Simulation Engine: Modeling Team;
-Validation and Sensitivity Testing: Modeling Team; Economic Evaluation:
-Modeling Team; Writing -- Original Draft Preparation: Modeling Team;
-Writing -- Review and Editing: Modeling Team. All authors read and
-approved the final manuscript.
+FZ and MZ conceptualized the study. FZ designed and programmed the
+econometric methodology and dynamic Markov simulation model, acquired
+empirical data, and performed calibration and scenario simulations. FZ
+and MZ conducted the economic and sensitivity analyses, interpreted the
+findings, and drafted and critically revised the manuscript. Both
+authors read and approved the final manuscript.
 
 \subsection{Acknowledgements}\label{acknowledgements}
 
@@ -3281,11 +3291,10 @@ reports accessible.
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
-\phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{1}
 \bibitem[\citeproctext]{ref-akl2008}
-Akl, Elie A., Nadine Maroun, Sawsan Major, Chantal Afif, Brigitte
-Chahoud, Jocelyne Choucair, Maroun Sakr, and Holger J. Schünemann. 2008.
+Akl, Elie A., Nadine Maroun, Sawsan Major, et al. 2008.
 {``Post-Graduation Migration Intentions of Students of {Lebanese}
 Medical Schools: A Survey Study.''} \emph{BMC Public Health} 8 (1): 191.
 \url{https://doi.org/10.1186/1471-2458-8-191}.
@@ -3303,9 +3312,8 @@ for Return of Service in Underserved Areas: A Systematic Review.''}
 \url{https://doi.org/10.1186/1472-6963-9-86}.
 
 \bibitem[\citeproctext]{ref-benromdhane2022}
-Ben Romdhane, Meriam, Ahmed Ben Cheikh, Imed Bougmiza, Belhassen Sriha,
-Leila Merzougui, Ali Mtiraoui, and Chekib Zedini. 2022. {``Study of
-Immigration Projects Among Young {Tunisian} Physicians: A
+Ben Romdhane, Meriam, Ahmed Ben Cheikh, Imed Bougmiza, et al. 2022.
+{``Study of Immigration Projects Among Young {Tunisian} Physicians: A
 Cross-Sectional Study.''} \emph{BMC Health Services Research} 22 (1):
 1276. \url{https://doi.org/10.1186/s12913-022-08630-y}.
 
@@ -3317,9 +3325,9 @@ Incivility and Intention to Expatriate Among Healthcare Professionals in
 \url{https://doi.org/10.1016/j.hrmr.2024.101016}.
 
 \bibitem[\citeproctext]{ref-bak2024}
-Bundesärztekammer. 2024. {``{Ä}rztestatistik Zum 31. Dezember 2024:
-Ausl{ä}ndische {Ä}rztinnen Und {Ä}rzte in Deutschland.''} Berlin,
-Germany: German Medical Association Statistical Yearbooks.
+Bundesärztekammer. 2024. \emph{{Ä}rztestatistik Zum 31. Dezember 2024:
+Ausl{ä}ndische {Ä}rztinnen Und {Ä}rzte in Deutschland}. German Medical
+Association Statistical Yearbooks.
 \url{https://www.bundesaerztekammer.de/ueber-uns/aerztestatistik}.
 
 \bibitem[\citeproctext]{ref-clemens2020}
@@ -3330,9 +3338,8 @@ Developing Countries: Selection, Sorting, and the Role of Knowledge.''}
 
 \bibitem[\citeproctext]{ref-cnom2025}
 Conseil National de l'Ordre des Médecins de Tunisie. 2025.
-{``Statistiques Annuelles Des Attestations de Bonne Conduite Et
-d{é}parts m{é}dicaux (2015--2024).''} Tunis, Tunisia: CNOM Statistical
-Communiqu{é}.
+\emph{Statistiques Annuelles Des Attestations de Bonne Conduite Et
+d{é}parts m{é}dicaux (2015--2024)}. CNOM Statistical Communiqu{é}.
 \url{https://www.tunisie-tribune.com/2025/01/07/1450-medecins-ont-quitte-la-tunisie-en-2024/}.
 
 \bibitem[\citeproctext]{ref-creighton2013}
@@ -3342,17 +3349,16 @@ Process: Evidence from the {Mexican Migration Project}.''}
 \url{https://doi.org/10.1111/imre.12027}.
 
 \bibitem[\citeproctext]{ref-dhouib2024}
-Dhouib, Wafa, Jihene Maatoug, Asma Ben Cheikh, Sana Bhiri, Rim Ghammem,
-Nawel Zammit, Mouna Fredj, and Hassen Ghannem. 2024. {``Migration
+Dhouib, Wafa, Jihene Maatoug, Asma Ben Cheikh, et al. 2024. {``Migration
 Intentions Among Medical Residents in {Tunisia}: A National Survey of
 Determinants and Destination Preferences.''} \emph{Human Resources for
 Health} 22 (1): 45. \url{https://doi.org/10.1186/s12960-024-00977-z}.
 
 \bibitem[\citeproctext]{ref-drees2024}
 Direction de la Recherche, des Études, de l'Évaluation et des
-Statistiques (DREES). 2024. {``R{é}pertoire Partag{é} Des Professionnels
-de Sant{é} ({RPPS}) Et Praticiens {à} Dipl{ô}me Hors Union Europ{é}enne
-({PADHUE}).''} Paris, France: Minist{è}re du Travail, de la Sant{é} et
+Statistiques (DREES). 2024. \emph{R{é}pertoire Partag{é} Des
+Professionnels de Sant{é} ({RPPS}) Et Praticiens {à} Dipl{ô}me Hors
+Union Europ{é}enne ({PADHUE})}. Minist{è}re du Travail, de la Sant{é} et
 des Solidarit{é}s, France. \url{https://data.drees.sante.gouv.fr}.
 
 \bibitem[\citeproctext]{ref-docquier2014}
@@ -3364,7 +3370,7 @@ Cross-Country Determinants of Potential and Actual Migration.''}
 \bibitem[\citeproctext]{ref-drummond2015}
 Drummond, Michael F., Mark J. Sculpher, Karl Claxton, Greg L. Stoddart,
 and George W. Torrance. 2015. \emph{Methods for the Economic Evaluation
-of Health Care Programmes}. 4th ed. Oxford: Oxford University Press.
+of Health Care Programmes}. 4th ed. Oxford University Press.
 
 \bibitem[\citeproctext]{ref-elmorabety2022}
 El Morabety, Adil, and Mohamed El Morabety. 2022. {``The Impact of Brain
@@ -3386,17 +3392,16 @@ Physicians Want to Leave {Egypt}.''} \emph{Eastern Mediterranean Health
 Journal} 27 (6): 615--23. \url{https://doi.org/10.26719/emhj.21.050}.
 
 \bibitem[\citeproctext]{ref-husereau2022}
-Husereau, Don, Michael Drummond, Federico Augustovski, Esther de
-Bekker-Grob, Andrew H. Briggs, Chris Carswell, Liz Caulley, et al. 2022.
+Husereau, Don, Michael Drummond, Federico Augustovski, et al. 2022.
 {``Consolidated Health Economic Evaluation Reporting Standards 2022
 ({CHEERS} 2022) Statement: Updated Reporting Guidance for Health
 Economic Evaluations.''} \emph{Journal of Medical Economics} 25 (1):
 364--72. \url{https://doi.org/10.1080/13696998.2022.2043695}.
 
 \bibitem[\citeproctext]{ref-ins2024}
-Institut National de la Statistique. 2024. {``Indicateurs de Sant{é}:
-Effectif Des m{é}decins Par Secteur d'activit{é} (2015--2024).''} Tunis,
-Tunisia: National Statistical Portal, Statistical Series Stat 123.
+Institut National de la Statistique. 2024. \emph{Indicateurs de Sant{é}:
+Effectif Des m{é}decins Par Secteur d'activit{é} (2015--2024)}. National
+Statistical Portal, Statistical Series Stat 123.
 \url{https://ins.tn/en/statistiques/123}.
 
 \bibitem[\citeproctext]{ref-kline2003}
@@ -3419,26 +3424,25 @@ Medicine} 114: 148--58.
 
 \bibitem[\citeproctext]{ref-mejia1978}
 Mejia, Alfonso, Helena Pizurki, and Erica Royston. 1978. \emph{Physician
-and Nurse Migration: Analysis and Policy Implications}. Geneva: World
-Health Organization.
+and Nurse Migration: Analysis and Policy Implications}. World Health
+Organization.
 
 \bibitem[\citeproctext]{ref-ms2023}
-Ministère de la Santé, République Tunisienne. 2023. {``Carte Sanitaire
-2023: Statistiques Annuelles Du Secteur Public de La Sant{é}.''} Tunis,
-Tunisia: Direction des {É}tudes et de la Planification.
+Ministère de la Santé, République Tunisienne. 2023. \emph{Carte
+Sanitaire 2023: Statistiques Annuelles Du Secteur Public de La Sant{é}}.
+Direction des {É}tudes et de la Planification.
 \url{https://santetunisie.rns.tn/images/carte-sanitaire-2023.pdf}.
 
 \bibitem[\citeproctext]{ref-oecd2019}
 OECD. 2019. \emph{Recent Trends in International Migration of Doctors,
-Nurses and Medical Students}. Paris: OECD Publishing.
+Nurses and Medical Students}. OECD Publishing.
 \url{https://doi.org/10.1787/5571c8da-en}.
 
 \bibitem[\citeproctext]{ref-sanders2016}
-Sanders, Gillian D., Peter J. Neumann, Anirban Basu, Dan W. Brock, David
-Feeny, Murray Krahn, Karen M. Kuntz, et al. 2016. {``Recommendations for
-Conduct, Methodological Practices, and Reporting of Cost-Effectiveness
-Analyses: {Second Panel on Cost-Effectiveness in Health and
-Medicine}.''} \emph{JAMA} 316 (10): 1093--103.
+Sanders, Gillian D., Peter J. Neumann, Anirban Basu, et al. 2016.
+{``Recommendations for Conduct, Methodological Practices, and Reporting
+of Cost-Effectiveness Analyses: {Second Panel on Cost-Effectiveness in
+Health and Medicine}.''} \emph{JAMA} 316 (10): 1093--103.
 \url{https://doi.org/10.1001/jama.2016.12195}.
 
 \bibitem[\citeproctext]{ref-sousa2023}
@@ -3457,8 +3461,8 @@ Journal of Public Health} 31 (Supplement\_3): ckab165.448.
 
 \bibitem[\citeproctext]{ref-who2021}
 World Health Organization. 2021. \emph{A Labour Market Approach to
-Investing in Health and Social Care Workforce Development}. Geneva:
-World Health Organization.
+Investing in Health and Social Care Workforce Development}. World Health
+Organization.
 \url{https://iris.who.int/bitstream/handle/10665/348069/9789240035546-eng.pdf}.
 
 \bibitem[\citeproctext]{ref-zhang1998}

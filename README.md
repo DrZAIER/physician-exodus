@@ -240,7 +240,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 ```bibtex
 @article{tunisia_physician_exodus_2026,
   title={Physician Exodus from Tunisia: Dynamic Workforce Projections, Retention Policy Counterfactuals, and Economic Evaluation to 2050},
-  author={Health Workforce and Health Economics Research Consortium for Tunisia},
+  author={ZAIER, Firas and ZRIBI, Mariem},
   year={2026},
   journal={Health Policy and Planning / Human Resources for Health},
   note={Reproducible R Simulation Engine v1.0.0-final}
