@@ -1,0 +1,10 @@
+year,physicians_total,public_sector,private_sector,definition,source,notes
+2010,12996,,,"Physicians in practice (WHO/UN estimate)","WHO Global Health Workforce Statistics via UN Statistical Yearbook 2024","Used only as an initial-condition anchor; series has definitional breaks"
+2017,14892,6753,8139,"Physicians in practice, public + private","INS / Ministry of Public Health (sante.tunisie.rns.tn)","Public sector from 'loi des cadres'; private from CNOM"
+2018,15136,6783,8353,"Physicians in practice, public + private","INS / Ministry of Public Health",""
+2019,15426,6843,8583,"Physicians in practice, public + private","INS / Ministry of Public Health",""
+2020,14792,6118,8674,"Physicians in practice, public + private","INS / Ministry of Public Health","COVID-19 year; public-sector count falls sharply (possible reporting artefact)"
+2021,14981,6252,8729,"Physicians in practice, public + private","INS / Ministry of Public Health","Carte Sanitaire 2021 reports 16,199 physicians in exercise (different compilation)"
+2022,15013,6116,8897,"Physicians in practice, public + private","INS / Ministry of Public Health",""
+2023,15108,5911,9197,"Physicians in practice, public + private","INS / Ministry of Public Health; Carte Sanitaire 2022-2023","Carte Sanitaire 2022-2023: 5,674 GPs + 9,434 specialists"
+2024,15315,6113,9202,"Physicians in practice, public + private","INS / Ministry of Public Health",""

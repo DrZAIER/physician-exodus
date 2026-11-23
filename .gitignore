@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.venv/
+venv/
+env/
+.pytest_cache/
+.ipynb_checkpoints/
+~$*
+_review_tmp/
+outputs/mc_draws.csv
+outputs/environment.txt
