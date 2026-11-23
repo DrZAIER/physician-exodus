@@ -1,37 +1,43 @@
 # Reporting checklist
 
-This study is reported against the domains of the good practice reporting
-guideline for health workforce projection models proposed by Lee et al.
-(*Human Resources for Health* 2024;22:25). The guideline contains 30 items; the
-table below groups them by domain and indicates where each is addressed. Items
-that are not applicable are marked.
+This study is reported against the 30-item Good Practice Reporting Guideline for
+Health Workforce Models proposed by Lee et al. (*Human Resources for Health*
+2024;22:25). The item-level checklist is reproduced in Additional file 1,
+Table S13. This document records the status of each item and the reasons for
+items that are not applicable to a supply-only model.
 
-| Domain | Item / requirement | Where addressed | Comment |
+| Item | Guideline requirement | Where addressed | Status |
 |---|---|---|---|
-| Study identification | Title, aims, rationale | Title; Background | |
-| Model type | Explicit statement of model class | Methods, "Model structure" | Cohort-component stock-and-flow model |
-| Scope | Occupations, sectors, geographical scope | Methods, "Definitions and data" | Physicians in active practice, national |
-| Time horizon | Base year, projection horizon, time step | Methods | 2008 base; 2017–2024 calibration; annual to 2040 |
-| Population | Definition of the workforce counted | Methods; Table 1 | Practising physicians, excluding most residents |
-| Data sources | Sources, periods, definitions, limitations | Table 1; Additional file 1 | |
-| Data quality | Treatment of missing, incomplete or inconsistent data | Methods; Results, "The emigration level is not identifiable" | Explicit identifiability analysis |
-| Model structure | Equations and flow diagram | Methods; Additional file 1, Fig. S1 | |
-| Entry | Training pipeline and lag | Methods | Five-year lag; 29–33 entry ages |
-| Exits | Retirement, mortality, emigration | Methods | Age-specific hazards |
-| Migration | Immigration, emigration, return | Methods | Pre-entry and post-entry emigration; return pool |
-| Assumptions | List of key assumptions and their basis | Methods; Table 2; Additional file 1 | Observed / estimated / assumed status |
-| Parameterisation | Values, ranges, sources | Table 2; Additional file 1 | |
-| Calibration | Target data and method | Methods, "Calibration and identifiability" | 2024 stock; root finding |
-| Historical validation | Comparison with observed data | Results, "Retrospective fit"; Fig. 1 | Hindcast, not external validation |
-| Uncertainty | Parameter and structural uncertainty | Methods; Results; Figs. 1–3, 6, 8 | Monte Carlo and structural scenarios |
-| Sensitivity | Which parameters matter | Results, "Sensitivity"; Fig. 6 | PRCC and one-at-a-time |
-| Scenario definitions | Policy levers and effect sizes | Table 3; Additional file 1 | Range-tested assumptions |
-| Results | Workforce, flows, density | Tables 4–5; Figs. 1–5 | |
-| Interpretation | What the model can and cannot establish | Discussion | |
-| Generalisability | Applicability beyond Tunisia | Discussion | Methodological relevance to other LMICs |
-| Limitations | Data, structure, validation | Strengths and limitations | |
-| Reproducibility | Code, data, software | Declarations; README | Public repository |
-| Ethical considerations | Data governance | Declarations | Aggregate secondary data |
+| 1 | Identify the study as health workforce planning and specify the professionals | Title; Background | Reported |
+| 2 | Structured abstract with context, methods, results and alternative analyses | Abstract | Reported |
+| 3 | Context, aims and practical relevance | Background | Reported |
+| 4 | Study population characteristics | Methods, "Definitions and data"; Table 1 | Reported |
+| 5 | Geographical area and level | Methods; Title | Reported (national) |
+| 6 | Whether a specific health condition is the focus | Methods, "Design" | Reported (none; workforce supply) |
+| 7 | Health professionals covered | Title; Methods | Reported (physicians) |
+| 8 | Time horizon | Methods, "Design" | Reported (2008–2040; projection 2024–2040) |
+| 9 | Scope of activities | Methods, "Design" | Reported (healthcare only) |
+| 10 | Overall analytical framework | Methods, "Model structure"; Figure S1 | Reported |
+| 11 | Parameters and variables, and how estimated | Methods; Table 2; Table S4 | Reported |
+| 12 | Demand-side model and statistical approach | — | NA: supply-only model |
+| 13 | Supply-side model and statistical approach | Methods, "Model structure" | Reported |
+| 14 | Gap analysis methodology | — | NA: no demand projection |
+| 15 | Budgetary analysis methodology | Methods, "Illustrative costs"; Table 6 | Partially reported: illustrative cost per physician-year, not a fiscal budget model |
+| 16 | Characterising uncertainty | Methods, "Uncertainty and sensitivity"; Table S4 | Reported |
+| 17 | Key assumptions and justification | Methods; Table 2; "Strengths and limitations" | Reported |
+| 18 | Methods for validation and scenario parameter derivation | Methods; Table S12 | Reported (internal consistency and hindcast; no external validation) |
+| 19 | Data sources, quality and relevance | Table 1; Additional file 1 | Reported |
+| 20 | Summary of projection results for each profession | Results; Table 5; Table S5 | Reported |
+| 21 | Projections for geographical areas | — | NA: national model |
+| 22 | Supply–demand gap over time | — | NA: no demand model |
+| 23 | Geographical distribution | — | NA: no regional disaggregation |
+| 24 | Effects of policies and scenarios, including financial impact | Results, "Policy scenarios"; Tables 5–6 | Reported (supply effects and illustrative costs) |
+| 25 | Effects of uncertainty and sensitivity | Results, "Sensitivity"; Fig. 6; Table S5 | Reported |
+| 26 | Model validation and robustness | Results, "Structural uncertainty"; Table 7; Table S12 | Reported (internal robustness; no external validation) |
+| 27 | Key findings, implications and limitations | Discussion | Reported |
+| 28 | Policy recommendations on planning, education, training, recruitment and retention | Discussion, "Policy implications" | Reported |
+| 29 | Source of funding | Declarations | Reported |
+| 30 | Conflicts of interest | Declarations | Reported |
 
 ## Notes on items that are only partly met
 
@@ -41,6 +47,9 @@ that are not applicable are marked.
 - **Demand-side projections.** The model is supply-only, so the guideline's
   demand–supply gap items are not applicable. This is stated in the Methods and
   Limitations.
+- **Budgetary analysis.** The cost analysis is illustrative: it attaches unit
+  costs to supply effects but does not model the government budget, financing
+  mix or cost offsets from improved health outcomes.
 - **Micro-level heterogeneity.** The model does not represent individual
   physicians, specialty choice or region. This is a deliberate trade-off
   between transparency and granularity, justified by data availability.
@@ -51,4 +60,6 @@ that are not applicable are marked.
 - Libraries: NumPy, pandas, SciPy, Matplotlib
 - Random seed: 20261121
 - Entry point: `python run_all.py`
-- Outputs: `outputs/figures/`, `outputs/tables/`, `outputs/results_summary.json`
+- Tests: `pytest -q`
+- Outputs: `outputs/figures/`, `outputs/tables/`, `outputs/results_summary.json`,
+  `outputs/key_numbers.md`, `outputs/validation_report.md`

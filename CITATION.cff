@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this model or the accompanying manuscript, please cite the manuscript."
+title: "Retention, return or training? A stock-and-flow simulation of Tunisia's physician workforce under incomplete migration data"
+version: "1.1.0"
+license: MIT
+type: software
+authors:
+  - name: "Physician Exodus authors"
+repository-code: "https://github.com/[owner]/physician-exodus"
+keywords:
+  - health workforce
+  - physician migration
+  - Tunisia
+  - stock-and-flow model
+  - health policy

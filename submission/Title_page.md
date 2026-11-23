@@ -10,8 +10,8 @@
 
 **Corresponding author:** [Name], [Department, Institution, City, Country]. Email: [email]. ORCID: [ORCID iD]
 
-**Word count:** 3 220 (abstract and main text; excluding tables, figures, references and additional files)
+**Word count:** 4 000 (abstract and main text; excluding tables, figures, references and additional files)
 
-**Tables:** 5 **Figures:** 8 **Additional files:** 1
+**Tables:** 7 **Figures:** 9 **Additional files:** 1
 
 **Keywords:** health workforce; physician migration; brain drain; Tunisia; stock-and-flow model; health policy; uncertainty analysis
