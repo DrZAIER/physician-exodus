@@ -8,7 +8,7 @@
 
 **Corresponding author:** [Name], [Department, Institution, City, Country]. Email: [email]
 
-**Word count:** 4 000 (abstract and main text; excluding tables, figures, references and additional files)
+**Word count:** 3 959 (abstract and main text; excluding tables, figures, references and additional files)
 
 **Tables:** 7 **Figures:** 9 **Additional files:** 1
 
@@ -66,7 +66,7 @@ The model tracks practising physicians by single year of age, N_a(t), and a retu
 
 **Return.** R(t) = ρ(t) D(t), distributed over ages 33–50. The pool evolves as D(t+1) = D(t)[1 − ρ(t) − δ] + M(t) + X(t) + re-emigration, where δ captures death abroad, onward migration and permanent settlement. Return migrants remain in practice with probability 0.85; the remainder rejoin the pool. The pool is a return-eligible stock, not a diaspora estimate. With δ = 0.08 and ρ = 0.02, mean duration is about 10 years and eventual return probability about 20%; both are varied in sensitivity analysis.
 
-**Retirement and mortality.** Hazards reflect Tunisian legal ages: 0 below 60, 0.20 at 60–61, 0.45 at 62, 0.35 at 63–64, 0.45 at 65–69, 1.00 at 70+. Mortality is 0.1% at 25–54, 0.4% at 55–64, 1.5% at 65–74 and 5% at 75+. Mortality is applied first, then retirement among survivors: N_{a+1}(t+1) = N_a(t)(1 − q_a)(1 − r_a)(1 − e_a). The 75+ group is open-ended.
+**Retirement and mortality.** Hazards reflect Tunisian legal ages: 0 below 60, 0.20 at 60–61, 0.45 at 62, 0.35 at 63–64, 0.45 at 65–69, 1.00 at 70+. Mortality is 0.1% at 25–54, 0.4% at 55–64, 1.5% at 65–74 and 5% at 75+. Mortality is applied first, then retirement among survivors: N_{a+1}(t+1) = N_a(t)(1 − q_a)(1 − r_a)(1 − e_a). 
 
 **Initial conditions.** The 2008 age distribution came from the CNOM 2007–2008 report [40], scaled to 12 600 practising physicians (WHO 2010: 12 996 [41]). The initial return-eligible pool was 4 000, consistent with OECD country-of-birth estimates [42]. Sensitivity to both is reported.
 
@@ -98,7 +98,7 @@ The central calibration implies 600 entries, 491 pre-entry emigrants, 349 post-e
 
 ### What the stock path can identify
 
-The fit surface is a ridge, not a point (Fig. 2). Across σ = 0.30–0.80 and training multipliers of 0.85–1.50, the RMSE ranges from 238 to 515. The best fit (σ = 0.38, multiplier 0.85) implies 582 emigrants in 2024; the central calibration implies 841. Under the acceptable fit threshold (RMSE ≤302), the implied range is 582–1 497 annual emigrants; under the strict threshold (RMSE ≤262), it is 582–1 450. A destination-stock check narrows the range to 582–1 405, because the higher-output combinations imply a return-eligible pool of 10 000 or more, about 2.5 times the OECD country-of-birth lower bound. The range is conditional on the other parameters and is not a confidence interval.
+The fit surface is a ridge, not a point (Fig. 2). Across σ = 0.30–0.80 and training multipliers of 0.85–1.50, the RMSE ranges from 238 to 515. The best fit (σ = 0.38, multiplier 0.85) implies 582 emigrants in 2024; the central calibration implies 841. Under the acceptable fit threshold (RMSE ≤302), the implied range is 582–1 497 annual emigrants; under the strict threshold (RMSE ≤262), it is 582–1 450. A destination-stock check narrows the range to 582–1 405, because the higher-output combinations imply a return-eligible pool of 10 000 or more, about 2.5 times the OECD country-of-birth lower bound. 
 
 This is the central result. The stock path constrains net flow, not gross flow. A country that trains more and loses more can look like one that trains less and loses less. The model therefore does not estimate the true emigration level; it carries the identified range through the scenarios.
 
@@ -116,7 +116,7 @@ Training expansion was slow and leaky: its effect appeared only after 2035, and 
 
 ### Break-even
 
-The policy ranking is largely arithmetic. A 9.6% reduction in emigration (applied to both margins) matches the 30% training expansion by 2040; conversely, training output would need to rise by 94% to match a 30% retention effect (Fig. 9). The ranking is robust to plausible effect sizes but is not an empirical discovery: a retention effect below about 10% would not beat the 30% training expansion within 15 years.
+The policy ranking is largely arithmetic. A 9.6% reduction in emigration (applied to both margins) matches the 30% training expansion by 2040; conversely, training output would need to rise by 94% to match a 30% retention effect (Fig. 9). The ranking is robust but is not an empirical discovery: a retention effect below about 10% would not beat the 30% training expansion.
 
 ### Sensitivity
 
@@ -150,7 +150,7 @@ Four findings stand out. First, the level of emigration cannot be identified fro
 
 ### Interpretation
 
-Retention dominates training because an emigrant is lost for the rest of their working life, while a new graduate takes at least five years to replace them and may also leave. The training pipeline is also leaky: a 30% expansion increases pre-entry emigration by about 30%, so a substantial share of the additional graduates never enters the Tunisian stock. The return scenario is smaller because the pool is modest once attrition is accounted for. Hungarian evidence that more than half return at some point [21] suggests our attrition assumption may be too pessimistic, but return is often temporary and many physicians move to domestic non-clinical jobs.
+Retention dominates training because an emigrant is lost for the rest of their working life, while a new graduate takes at least five years to replace them and may also leave. The training pipeline is also leaky: a 30% expansion increases pre-entry emigration by about 30%, so a substantial share of the additional graduates never enters the Tunisian stock.  Hungarian evidence that more than half return at some point [21] suggests our attrition assumption may be too pessimistic, but return is often temporary and many physicians move to domestic non-clinical jobs.
 
 A 10% wage increase in Ghana reduced attrition by about 12.5% relative [19]. A 30% real increase might therefore reduce emigration by roughly a third, our remuneration effect size. But the Ghanaian outcome is payroll attrition, not international emigration; wage gaps remain large; and non-wage drivers are prominent in Tunisian surveys [22–24]. A broader package may be needed, and its effect is uncertain.
 

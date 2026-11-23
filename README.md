@@ -186,8 +186,8 @@ page and line numbering, double spacing, and editable table objects.
 | `Figures/Fig1.pdf` … `Fig9.pdf`, `FigS1.pdf` | Figure files, renamed for submission |
 | `Submission_checklist.md` | Requirement-by-requirement checklist and author actions |
 
-Current length: 3 661 words (Background–Conclusions) and 339 words (abstract),
-i.e. 4 000 words including the abstract, within the 4 000-word limit.
+Current length: 3 620 words (Background–Conclusions) and 339 words (abstract),
+i.e. 3 959 words including the abstract, within the 4 000-word limit.
 
 ## Version control
 

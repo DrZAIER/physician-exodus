@@ -7,7 +7,7 @@
 
 | Requirement | Status | Where / note |
 |---|---|---|
-| Maximum 4 000 words (excluding tables, figures, additional files) | Met | 4 000 words including abstract (3 661 words Background–Conclusions) |
+| Maximum 4 000 words (excluding tables, figures, additional files) | Met | 3 959 words including abstract (3 620 words Background–Conclusions) |
 | Abstract ≤350 words, structured (Background, Methods, Results, Conclusions) | Met | 339 words |
 | No references in abstract | Met | — |
 | 3–10 keywords | Met | 7 keywords |
