@@ -1,6 +1,6 @@
 # Figure Revision Register
 
-**Revision:** 2.1.1
+**Revision:** 2.1.2
 **Original figure files preserved:** `submission/Figures/` (v1.1.0), `revision/figures/` (v2.0.0) and `revision_round2/source_preserved/` (manuscript files). The original PDFs were not overwritten.
 
 All figures were regenerated from the corrected model. PNG and PDF versions are in `revision_round2/outputs/figures/`. The register below records why each figure changed.

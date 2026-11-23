@@ -1,7 +1,7 @@
 # Scientific Audit Report
 
 **Project:** Tunisia physician workforce stock-and-flow model
-**Revision:** 2.1.1 (scientific and computational audit)
+**Revision:** 2.1.2 (scientific and computational audit)
 **Prepared in:** `revision_round2/`
 **Original state preserved in:** `revision/`, `revision_round2/source_preserved/`, and Git tags `v1.1.0`, `v2.0.0` and `pre-review-baseline`
 
@@ -182,7 +182,7 @@ The central qualitative conclusion is narrower than in v1.1.0: combined and remu
 
 ---
 
-## Round 2 revision (v2.1.0–v2.1.1)
+## Round 2 revision (v2.1.0–v2.1.2)
 
 ### R2.1 Return-pool accounting
 
@@ -222,7 +222,7 @@ The reconstructed 2008 age structure shifts the 2040 baseline from 14 961 to 16 
 
 Bootstrap 90% intervals from 1 000 resamples are narrow (e.g., future emigration −0.82 to −0.80; φ 0.14–0.20; return retention −0.04 to 0.01). PRCCs are conditional on priors and calibration, not causal. Cost ratios are exploratory and fiscal/resource categories are explicitly non-comparable; the cost column was removed from Table 5. Table 6 and Fig. S2 report fiscal transfers and resource costs in separate columns and panels; they are not summed, stacked or ranked.
 
-### R2.9 Pre-submission corrections (v2.1.1)
+### R2.9 Pre-submission corrections (v2.1.1–v2.1.2)
 
 | Item | Correction |
 |---|---|
@@ -233,3 +233,4 @@ Bootstrap 90% intervals from 1 000 resamples are narrow (e.g., future emigration
 | Reproducibility | Repository contains processed inputs, data dictionary, parameter definitions, seed, tests and the one-command pipeline; the pipeline regenerates tables, figures, key numbers and validation report. DOCX assembly is a separate documented step |
 | Figure package | Nine main and two supplementary PDFs present in `figures/`; captions cross-checked against the manuscript and supplement |
 | Cost categories | Removed the summed “total cost” and mixed “cost per additional physician” columns; Table 6 and Fig. S2 now report fiscal transfers and resource costs separately per additional physician-year, with no stacking, summing or ranking. Fig. S2 has two panels |
+| Declarations and repository | Funding: none; competing interests: none; contributions: equal with FZ leading technical work; acknowledgements: not applicable; both ORCIDs supplied; public GitHub repository and tag `v2.1.2` inserted |

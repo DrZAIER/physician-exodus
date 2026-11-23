@@ -1,6 +1,6 @@
 # Revision Log
 
-**Revision:** 2.1.1
+**Revision:** 2.1.2
 **Date:** 23 November 2026
 **Original state preserved:** Git tags `v1.1.0`, `v2.0.0`; `revision/` and `revision_round2/source_preserved/`
 
@@ -136,3 +136,6 @@ eturn_recycling parameter | src/model.py | Test re-emigration loop vs permanent 
 | Documented reproducibility contents and figure package | audit, QA, README | Pre-submission review D–E |
 | Removed summed cost columns; split Fig. S2 into fiscal and resource panels | manuscript Table 6, supplement S11, `src/analysis.py` | Categories not commensurable |
 | Fixed figure legibility: rotated Fig. 4 labels, renamed Fig. 6 parameters, moved Fig. 9 legend, separated Fig. S1 lanes | `src/analysis.py`, `src/fig_flow.py` | Visual audit |
+| Completed declarations: no funding, no competing interests, equal contributions, acknowledgements N/A | manuscript | Author instructions |
+| Added Mariem Zribi ORCID and public repository URL/tag | manuscript | Author instructions |
+| Pushed release tag `v2.1.2` to `DrZAIER/physician-exodus` | Git remote | Data availability |

@@ -1,6 +1,6 @@
 # Final QA Report — Round 2
 
-**Revision:** 2.1.1
+**Revision:** 2.1.2
 **Date:** 23 November 2026
 **Pipeline:** `revision_round2/run_all.py`
 **Seed:** 20261121
@@ -15,7 +15,7 @@
 | Full pipeline executed | Pass (exit 0) |
 | Tests (`pytest -q`) | Pass (14 tests) |
 | Validation report | Pass (all checks) |
-| Manuscript DOCX | `Manuscript_HRH_Revised_R2.docx` (8 tables, 192 paragraphs) |
+| Manuscript DOCX | `Manuscript_HRH_Revised_R2.docx` (8 tables, 194 paragraphs) |
 | Supplement DOCX | `Additional_file_1_Revised_R2.docx` (17 tables, 61 paragraphs) |
 | Figures | 9 main + Fig. S1 + Fig. S2; PNG and PDF |
 | Word count | 3 996 including abstract; 3 646 main text |
@@ -102,13 +102,14 @@
 
 | Issue | Status | Action required |
 |---|---|---|
-| Funding statement | Placeholder | Author completion |
-| Competing interests | Placeholder | Author completion |
-| Authors' contributions | Placeholder | Author completion |
-| Acknowledgements | Placeholder | Author completion |
-| Repository DOI/URL | Placeholder | Author completion |
-| AI-tool statement | Present; tool names should be confirmed | Author confirmation |
-| Mariem Zribi ORCID | Not supplied; not invented | Author confirmation if desired |
+| Funding statement | Declared: no specific funding | None |
+| Competing interests | Declared: none | None |
+| Authors' contributions | Specific contributions listed | None |
+| Acknowledgements | Declared not applicable | None |
+| Repository | Public GitHub repository, tag `v2.1.2` | Optional archived DOI |
+| AI-tool statement | Placeholder in manuscript | Author confirmation of tool names, purpose and extent |
+| ORCID | Both authors supplied | None |
+| Cover letter | Not created | Author action |
 | 1 900 press cohort | Unverified | Not used; flagged |
 | φ = 0.50 | Assumption, not observed | Reported with 0–1 sensitivity |
 | 2008 age distribution | Reconstruction | 1 600-physician range reported |

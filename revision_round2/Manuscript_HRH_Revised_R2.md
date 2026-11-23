@@ -8,7 +8,7 @@
 
 **Corresponding author:** Firas Zaier, Faculty of Medicine of Tunis, University of Tunis El Manar, Tunis, Tunisia. Email: dr.firas.zaier@gmail.com. ORCID: https://orcid.org/0009-0006-4887-1819
 
-**Co-author:** Mariem Zribi. Email: mariem.zribi@fmt.utm.tn
+**Co-author:** Mariem Zribi. Email: mariem.zribi@fmt.utm.tn. ORCID: https://orcid.org/0009-0004-5917-984X
 
 **Word count:** 3 996 (abstract and main text; excluding tables, figures, references and additional files)
 
@@ -204,23 +204,27 @@ Not applicable.
 
 ### Availability of data and materials
 
-The datasets generated and analysed during the current study, together with all model code, tests and a one-command reproduction pipeline, will be available in the [repository name] repository, [persistent identifier and URL]. The source data are publicly available from the sources listed in Table 1.
+The datasets generated and analysed during the current study, together with all model code, tests and a one-command reproduction pipeline, are available in the GitHub repository at https://github.com/DrZAIER/physician-exodus (tag v2.1.2). The source data are publicly available from the sources listed in Table 1.
 
 ### Competing interests
 
-[To be completed by the authors.]
+The authors declare that they have no competing interests.
 
 ### Funding
 
-[To be completed by the authors.]
+This research received no specific grant from any funding agency in the public, commercial or not-for-profit sectors.
 
 ### Authors' contributions
 
-[To be completed by the authors: specific contributions of Firas Zaier and Mariem Zribi.]
+FZ and MZ contributed equally to the conception and design of the study and to the interpretation of the results. FZ led the computational modelling, software development, data curation, formal analysis and visualisation. MZ contributed to the epidemiological and policy interpretation, literature synthesis, validation and critical revision of the manuscript. Both authors read and approved the final manuscript.
 
 ### Acknowledgements
 
-[To be completed by the authors.]
+Not applicable.
+
+### Use of artificial intelligence
+
+[To be completed by the authors: names of any generative AI tools used, their purpose (for example, code assistance or language editing) and the extent of use.]
 
 ### Authors' information
 

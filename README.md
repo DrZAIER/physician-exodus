@@ -191,7 +191,7 @@ i.e. 3 985 words including the abstract, within the 4 000-word limit.
 
 ## Round 2 revision
 
-The Round-2 scientific revision (v2.1.1) is in `revision_round2/`. It corrects the return-pool accounting, bounds the policy-ranking claims, adds conservative-effect, training-completion, calibration-endpoint and PRCC-stability analyses, separates fiscal from resource costs, and includes the revised manuscript and supplement. See `revision_round2/README.md`.
+The Round-2 scientific revision (v2.1.2) is in `revision_round2/`. It corrects the return-pool accounting, bounds the policy-ranking claims, adds conservative-effect, training-completion, calibration-endpoint and PRCC-stability analyses, separates fiscal from resource costs, and includes the revised manuscript and supplement. See `revision_round2/README.md`.
 
 ## Version control
 

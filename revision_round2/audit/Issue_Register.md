@@ -25,8 +25,8 @@
 | A18 | Policy ranking presented as robust | Major | Rank distribution computed; only combined/remuneration robust; career/training/return overlap | Closed |
 | A19 | Reporting checklist incomplete | Moderate | Item-level 30-item checklist in Table S13 | Closed |
 | A20 | Author metadata placeholders | Required | Firas Zaier and Mariem Zribi metadata applied exactly; third author removed | Closed |
-| A21 | Declarations invented or incomplete | Required | Contributions, funding, competing interests, acknowledgements retained as placeholders | Open (author action) |
-| A22 | Repository DOI placeholder | Required | Data availability statement flagged as pending | Open (author action) |
+| A21 | Declarations invented or incomplete | Required | Completed from author instructions: no specific funding; no competing interests; equal contributions with FZ leading technical work; acknowledgements not applicable; both ORCIDs supplied | Closed |
+| A22 | Repository DOI placeholder | Required | Public GitHub repository and tag inserted: https://github.com/DrZAIER/physician-exodus (tag v2.1.2); archived DOI optional | Closed |
 | A23 | Reference details unverified for some sources | Moderate | Reference audit created; key empirical claims checked; media sources flagged | Documented |
 | A24 | 2020–2021 discontinuity attribution | Moderate | Described as unresolved; no assertion of reporting artefact | Documented |
 | A25 | Temporary vs permanent migration | Moderate | Modelled implicitly via return retention/attrition; limitation stated | Documented |
@@ -54,4 +54,4 @@
 | R2-14 | Return transition equation easy to misread; metrics were continuous-time approximations | Moderate | Explicit discrete-time equation with gross attempts, successful returns, recycled attempts and net θρ removal; exact competing-risk metrics in text and S17 | Closed |
 | R2-15 | Fig. S2 silently missing from supplement DOCX | Moderate | Image paths corrected; both supplementary figures verified embedded | Closed |
 | R2-16 | Figure package and reproducibility not verifiable from DOCX | Moderate | Figure inventory and captions cross-checked; repository contents and pipeline scope documented in QA/README | Documented (author check) |
-| R2-17 | Declarations and repository identifiers incomplete | Required | Cannot be invented; retained as explicit placeholders and listed as submission blockers | Open (author action) |
+| R2-17 | Declarations and repository identifiers incomplete | Required | Author supplied no funding, no competing interests, contribution split, ORCID and repository; declarations completed and repository tag v2.1.2 pushed | Closed |
