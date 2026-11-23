@@ -94,11 +94,11 @@ We attached illustrative 2025 Tunisian dinar (TND) unit costs: a 30% increment o
 
 The model reproduced the 2024 stock exactly (calibration error 0.04 physicians) and tracked the 2017–2024 series with an RMSE of 277 physicians (1.8% of the mean stock) and a mean absolute percentage error of 1.4% (Fig. 1). The largest discrepancies were in 2020–2023, when the model over-predicted the observed stock by 232–519 physicians after the 2020 public-sector drop; excluding 2020–2021, the RMSE was 188, and the 2017–2019 RMSE was 120.
 
-The central calibration implies 600 entries, 491 pre-entry emigrants, 349 post-entry emigrants, 117 returns, 367 retirements and 26 deaths in 2024, a net change of −25 (Table 4). Total emigration was about 841, with 59% before entry, above the administrative proxy (about 374) and below press estimates (1 300–1 450).
+The central calibration implies 600 entries, 491 pre-entry emigrants, 349 post-entry emigrants, 117 returns, 367 retirements and 26 deaths in 2024, a net change of −25 (Table 4). Total emigration was about 840, with 58% before entry, above the administrative proxy (about 374) and below press estimates (1 300–1 450).
 
 ### What the stock path can identify
 
-The fit surface is a ridge, not a point (Fig. 2). Across σ = 0.30–0.80 and training multipliers of 0.85–1.50, the RMSE ranges from 238 to 515. The best fit (σ = 0.38, multiplier 0.85) implies 582 emigrants in 2024; the central calibration implies 841. Under the acceptable fit threshold (RMSE ≤302), the implied range is 582–1 497 annual emigrants; under the strict threshold (RMSE ≤262), it is 582–1 450. A destination-stock check narrows the range to 582–1 405, because the higher-output combinations imply a return-eligible pool of 10 000 or more, about 2.5 times the OECD country-of-birth lower bound. 
+The fit surface is a ridge, not a point (Fig. 2). Across σ = 0.30–0.80 and training multipliers of 0.85–1.50, the RMSE ranges from 238 to 515. The best fit (σ = 0.38, multiplier 0.85) implies 582 emigrants in 2024; the central calibration implies 840. Under the acceptable fit threshold (RMSE ≤302), the implied range is 582–1 497 annual emigrants; under the strict threshold (RMSE ≤262), it is 582–1 450. A destination-stock check narrows the range to 582–1 405, because the higher-output combinations imply a return-eligible pool of 10 000 or more, about 2.5 times the OECD country-of-birth lower bound. 
 
 This is the central result. The stock path constrains net flow, not gross flow. A country that trains more and loses more can look like one that trains less and loses less. The model therefore does not estimate the true emigration level; it carries the identified range through the scenarios.
 
@@ -288,9 +288,9 @@ Not applicable.
 | Pipeline retention, σ | 0.55 | Beta (mean 0.55, SD 0.12), 0.30–0.80 | Estimated (weakly identified) |
 | Post-entry emigration, 2024, m | 349 | Calibrated per draw | Estimated (weakly identified) |
 | Historical emigration trend, 2017–2024 | 0.60 → 1.00 | — | Assumption (relative to 2024 intensity) |
-| Total emigration, 2024 | 841 | 582–1 497 (acceptable); 582–1 405 (destination-consistent) | Estimated (conditional) |
+| Total emigration, 2024 | 840 | 582–1 497 (acceptable); 582–1 405 (destination-consistent) | Estimated (conditional) |
 | Pipeline non-entry share, 1−σ | 0.45 | 0.20–0.70 | Assumption (implied by σ) |
-| Pre-entry share of total emigration, 2024 | 0.59 | Varies with σ and training output | Derived |
+| Pre-entry share of total emigration, 2024 | 0.58 | Varies with σ and training output | Derived |
 | Return rate, ρ | 0.020 | Beta (mean 0.02, SD 0.01), 0.005–0.050 | Assumption |
 | Diaspora attrition, δ | 0.08 | Uniform, 0.04–0.15 | Assumption |
 | Return retention | 0.85 | Uniform, 0.75–0.95 | Assumption |
