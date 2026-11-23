@@ -58,7 +58,7 @@
 8. Rebuild the DOCX after any edit: `python src/build_docx.py`.
 9. Re-run the pipeline and checks before submission: `python run_all.py` and `pytest -q`.
 10. Optionally add a non-English abstract (French), ≤350 words, after the English abstract.
-11. The canonical `Manuscript_HRH.docx` was open in Word during the revision, so the rebuilt file is `Manuscript_HRH_revised.docx`. Close Word and run `python src/build_docx.py` to regenerate the canonical filename before submission.
+11. Rebuild the canonical DOCX with `python src/build_docx.py` after any further edits; the current file has been rebuilt (7 tables, 9 figure legends).
 
 ## Notes on journal style
 
