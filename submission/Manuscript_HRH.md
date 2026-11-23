@@ -92,7 +92,7 @@ We attached illustrative 2025 Tunisian dinar (TND) unit costs: a 30% increment o
 
 ### Retrospective fit and calibration
 
-The model reproduced the 2024 stock exactly (calibration error 0.04 physicians) and tracked the 2017–2024 series with an RMSE of 277 physicians (1.8% of the mean stock) and a mean absolute percentage error of 1.4% (Fig. 1). The largest discrepancies were in 2020–2023, when the model over-predicted the observed stock by 234–527 physicians after the 2020 public-sector drop; excluding 2020–2021, the RMSE was 188, and the 2017–2019 RMSE was 120.
+The model reproduced the 2024 stock exactly (calibration error 0.04 physicians) and tracked the 2017–2024 series with an RMSE of 277 physicians (1.8% of the mean stock) and a mean absolute percentage error of 1.4% (Fig. 1). The largest discrepancies were in 2020–2023, when the model over-predicted the observed stock by 232–519 physicians after the 2020 public-sector drop; excluding 2020–2021, the RMSE was 188, and the 2017–2019 RMSE was 120.
 
 The central calibration implies 600 entries, 491 pre-entry emigrants, 349 post-entry emigrants, 117 returns, 367 retirements and 26 deaths in 2024, a net change of −25 (Table 4). Total emigration was about 841, with 59% before entry, above the administrative proxy (about 374) and below press estimates (1 300–1 450).
 
@@ -132,7 +132,7 @@ With post-entry emigration intensity rising 3% per year, the baseline reaches 14
 
 ### Return and diaspora sensitivity
 
-The central return-eligible pool is 6 234 in 2024, about 1.6 times the OECD country-of-birth lower bound, and 8 275 in 2040. Across δ = 0.02–0.15, initial pool 2 000–8 000 and ρ = 0.005–0.04, the 2024 pool ranges from 3 441 to 13 983 and the return scenario's 2040 advantage ranges from 210 to 4 755 physicians. The eventual return probability ranges from 3% to 67%. The central assumptions imply 20%, below the Hungarian evidence of more than 50% [21]; if that evidence applies, the return scenario would be larger but would require a larger pool or lower attrition. Return alone is therefore not a reliable substitute for retention.
+The central return-eligible pool is 6 234 in 2024, about 1.6 times the OECD country-of-birth lower bound, and 8 275 in 2040. Across δ = 0.02–0.15, initial pool 2 000–8 000 and ρ = 0.005–0.04, the 2024 pool ranges from 3 441 to 13 986 and the return scenario's 2040 advantage ranges from 210 to 4 756 physicians. The eventual return probability ranges from 3% to 67%. The central assumptions imply 20%, below the Hungarian evidence of more than 50% [21]; if that evidence applies, the return scenario would be larger but would require a larger pool or lower attrition. Return alone is therefore not a reliable substitute for retention.
 
 ### Training-output baselines
 
