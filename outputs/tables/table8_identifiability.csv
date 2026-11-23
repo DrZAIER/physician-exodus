@@ -1,0 +1,5 @@
+Case,Pipeline retention,Training multiplier,RMSE,Implied emigration 2024,Return-eligible pool 2024
+Best fit,0.375,0.85,238.36586057221777,581.9324023778001,4830.680680827459
+Central,0.55,1.0,276.8552077574581,840.2848841531784,6233.678504107658
+Acceptable set (RMSE ≤ 2% of mean stock),0.30–0.70,0.85–1.50,≤ 302,582–1497,4831–10568
+Strict set (RMSE ≤ 1.10 × best),0.30–0.55,0.85–1.50,≤ 262,582–1450,—
