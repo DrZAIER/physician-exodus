@@ -10,7 +10,7 @@
 
 **Corresponding author:** [Name], [Department, Institution, City, Country]. Email: [email]. ORCID: [ORCID iD]
 
-**Word count:** 3 959 (abstract and main text; excluding tables, figures, references and additional files)
+**Word count:** 3 985 (abstract and main text; excluding tables, figures, references and additional files)
 
 **Tables:** 7 **Figures:** 9 **Additional files:** 1
 

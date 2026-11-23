@@ -8,7 +8,7 @@
 
 **Corresponding author:** [Name], [Department, Institution, City, Country]. Email: [email]
 
-**Word count:** 3 959 (abstract and main text; excluding tables, figures, references and additional files)
+**Word count:** 3 985 (abstract and main text; excluding tables, figures, references and additional files)
 
 **Tables:** 7 **Figures:** 9 **Additional files:** 1
 
@@ -62,7 +62,7 @@ The model tracks practising physicians by single year of age, N_a(t), and a retu
 
 **Entry.** A cohort graduating in year t−5 enters in year t: E(t) = G(t−5) × σ(t), where G is graduates and σ the share entering Tunisian practice. The remainder, X(t) = G(t−5) × [1 − σ(t)], is pre-entry emigration. Entrants are spread over ages 29–33. Because residents are not counted in the practising stock, emigration during residency and failure to enter practice are observationally equivalent; σ absorbs both.
 
-**Emigration.** Post-entry emigration is a total annual flow M(t), allocated by a fixed relative age profile w_a: e_a(t) = min{M(t) w_a / Σ_b N_b(t) w_b, 0.35}, with M(t) = m(t) × Π(t). The profile peaks at 30–34 and declines after 35 (Additional file 1, Table S2); it is an assumption. A projection-only shock, ε, multiplies M after 2024 and represents uncertainty about future intensity without disturbing the 2024 calibration.
+**Emigration.** Post-entry emigration is a total annual flow M(t), allocated by a fixed relative age profile w_a: e_a(t) = min{M(t) w_a / Σ_b N_b(t) w_b, 0.35}, with M(t) = m(t) × Π(t). The profile peaks at 30–34 and declines after 35 (Additional file 1, Table S2); it is an assumption. A projection-only shock, ε, multiplies M after 2024 and represents uncertainty about future intensity without disturbing the 2024 calibration. Post-entry intensity is assumed to rise linearly from 60% of its 2024 value in 2017 to 100% in 2024; this is an assumption, not an estimate.
 
 **Return.** R(t) = ρ(t) D(t), distributed over ages 33–50. The pool evolves as D(t+1) = D(t)[1 − ρ(t) − δ] + M(t) + X(t) + re-emigration, where δ captures death abroad, onward migration and permanent settlement. Return migrants remain in practice with probability 0.85; the remainder rejoin the pool. The pool is a return-eligible stock, not a diaspora estimate. With δ = 0.08 and ρ = 0.02, mean duration is about 10 years and eventual return probability about 20%; both are varied in sensitivity analysis.
 
@@ -287,6 +287,7 @@ Not applicable.
 | Medical graduates, 2013 / 2021 / 2024 | 987 / 1 128 / 1 305 | 987–1 900 | Observed or reconstructed |
 | Pipeline retention, σ | 0.55 | Beta (mean 0.55, SD 0.12), 0.30–0.80 | Estimated (weakly identified) |
 | Post-entry emigration, 2024, m | 349 | Calibrated per draw | Estimated (weakly identified) |
+| Historical emigration trend, 2017–2024 | 0.60 → 1.00 | — | Assumption (relative to 2024 intensity) |
 | Total emigration, 2024 | 841 | 582–1 497 (acceptable); 582–1 405 (destination-consistent) | Estimated (conditional) |
 | Pipeline non-entry share, 1−σ | 0.45 | 0.20–0.70 | Assumption (implied by σ) |
 | Pre-entry share of total emigration, 2024 | 0.59 | Varies with σ and training output | Derived |
