@@ -132,7 +132,7 @@ COL = {
 LABELS = {
     "BAU": "Business as usual", "REMUN": "Remuneration / conditions",
     "CAREER": "Career development", "RETURN": "Return migration",
-    "TRAINING": "Training expansion", "COMBINED": "Combined strategy",
+    "TRAINING": "Graduate-output expansion", "COMBINED": "Combined strategy",
 }
 
 
@@ -737,6 +737,10 @@ def run_diaspora_sensitivity(central: dict) -> dict:
                 b = simulate(p, end_year=2040)
                 r = simulate(p, scenario=_scen_dict("RETURN"), end_year=2040)
                 theta = CENTRAL.return_retention
+                # Exact discrete-time competing risks under the implemented
+                # annual order: returns (successful or not), then attrition.
+                denom = 1.0 - (1.0 - theta * rho) * (1.0 - delta)
+                denom_attempt = 1.0 - (1.0 - rho) * (1.0 - delta)
                 rows.append({
                     "diaspora_attrition": delta,
                     "initial_diaspora_2008": d0,
@@ -746,9 +750,9 @@ def run_diaspora_sensitivity(central: dict) -> dict:
                     "bau_2040": b["stock"][-1],
                     "return_2040": r["stock"][-1],
                     "return_diff_2040": r["stock"][-1] - b["stock"][-1],
-                    "eventual_attempt_prob": rho / (rho + delta),
-                    "eventual_success_prob": (theta * rho) / (theta * rho + delta),
-                    "mean_duration_years": 1.0 / (theta * rho + delta),
+                    "eventual_attempt_prob": rho / denom_attempt,
+                    "eventual_success_prob": (theta * rho) / denom,
+                    "mean_duration_years": 1.0 / denom,
                 })
     df = pd.DataFrame(rows)
     df.to_csv(os.path.join(TAB, "diaspora_sensitivity.csv"), index=False)
@@ -976,11 +980,13 @@ def run_return_accounting_sensitivity(central: dict) -> dict:
         theta = p.return_retention
         i24 = list(b["years"]).index(2024)
         if recycling:
-            success = theta * p.rho / (theta * p.rho + p.diaspora_attrition)
-            duration = 1.0 / (theta * p.rho + p.diaspora_attrition)
+            denom = 1.0 - (1.0 - theta * p.rho) * (1.0 - p.diaspora_attrition)
         else:
-            success = theta * p.rho / (p.rho + p.diaspora_attrition)
-            duration = 1.0 / (p.rho + p.diaspora_attrition)
+            denom = 1.0 - (1.0 - p.rho) * (1.0 - p.diaspora_attrition)
+        denom_attempt = 1.0 - (1.0 - p.rho) * (1.0 - p.diaspora_attrition)
+        success = theta * p.rho / denom
+        duration = 1.0 / denom
+        attempt = p.rho / denom_attempt
         out[str(recycling)] = {
             "recycling": recycling, "m_base": m,
             "diaspora_2024": float(b["diaspora"][i24]),
@@ -988,7 +994,7 @@ def run_return_accounting_sensitivity(central: dict) -> dict:
             "bau_2040": float(b["stock"][-1]),
             "return_2040": float(r["stock"][-1]),
             "return_diff_2040": float(r["stock"][-1] - b["stock"][-1]),
-            "eventual_attempt_prob": float(p.rho / (p.rho + p.diaspora_attrition)),
+            "eventual_attempt_prob": float(attempt),
             "eventual_success_prob": float(success),
             "mean_duration_years": float(duration),
         }
@@ -1232,36 +1238,31 @@ def run_costs(central: dict) -> dict:
         fiscal, resource = _scenario_costs(k, o, base, 1.0)
         fiscal_lo, resource_lo = _scenario_costs(k, o, base, COSTS["unit_cost_low"])
         fiscal_hi, resource_hi = _scenario_costs(k, o, base, COSTS["unit_cost_high"])
-        total = fiscal + resource
-        total_lo = fiscal_lo + resource_lo
-        total_hi = fiscal_hi + resource_hi
         py = max(s["physician_years"], 1.0)
-        add = max(s["stock_diff_2040"], 1.0)
         out[k] = {
             "fiscal_transfer_tnd": fiscal,
             "resource_cost_tnd": resource,
-            "total_cost_tnd": total,
-            "total_cost_low": total_lo, "total_cost_high": total_hi,
-            "cost_per_py_total": total / py,
-            "cost_per_py_total_low": total_lo / py,
-            "cost_per_py_total_high": total_hi / py,
             "cost_per_py_fiscal": fiscal / py,
+            "cost_per_py_fiscal_low": fiscal_lo / py,
+            "cost_per_py_fiscal_high": fiscal_hi / py,
             "cost_per_py_resource": resource / py,
-            "cost_per_additional_physician": total / add,
+            "cost_per_py_resource_low": resource_lo / py,
+            "cost_per_py_resource_high": resource_hi / py,
             "physician_years": s["physician_years"],
             "stock_diff_2040": s["stock_diff_2040"],
         }
-        rows.append([k, fiscal, resource, total, total / py,
-                     total_lo / py, total_hi / py, fiscal / py, resource / py,
-                     total / add, s["physician_years"], s["stock_diff_2040"]])
+        rows.append([k, fiscal, resource, fiscal / py, resource / py,
+                     fiscal_lo / py, fiscal_hi / py,
+                     resource_lo / py, resource_hi / py,
+                     s["physician_years"], s["stock_diff_2040"]])
     pd.DataFrame(rows, columns=[
         "Scenario", "Fiscal transfer (TND)", "Real resource cost (TND)",
-        "Total cost (TND)", "Cost per physician-year, total",
-        "Cost per physician-year, low unit costs",
-        "Cost per physician-year, high unit costs",
-        "Cost per physician-year, fiscal", "Cost per physician-year, resource",
-        "Cost per additional physician in 2040", "Physician-years vs BAU",
-        "Additional physicians in 2040"]).to_csv(
+        "Fiscal transfer per additional physician-year", "Resource cost per additional physician-year",
+        "Fiscal per additional physician-year, low unit costs",
+        "Fiscal per additional physician-year, high unit costs",
+        "Resource per additional physician-year, low unit costs",
+        "Resource per additional physician-year, high unit costs",
+        "Physician-years vs BAU", "Additional physicians in 2040"]).to_csv(
         os.path.join(TAB, "costs.csv"), index=False)
     return out
 
@@ -1403,7 +1404,7 @@ def fig_scenarios(plt, central, mc):
                    ("REMUN", "Remuneration / conditions"),
                    ("CAREER", "Career development"),
                    ("RETURN", "Return migration"),
-                   ("TRAINING", "Training expansion"),
+                   ("TRAINING", "Graduate-output expansion"),
                    ("COMBINED", "Combined strategy")]:
         axes[0].plot(years[mask], np.array(central["trajectories"][k])[mask],
                      color=COL[k], lw=2.0 if k != "BAU" else 1.8,
@@ -1441,7 +1442,7 @@ def fig_scenarios(plt, central, mc):
 
 def fig_outcomes(plt, central, costs):
     keys = ["REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"]
-    labels = ["Remuneration", "Career", "Return", "Training", "Combined"]
+    labels = ["Remuneration", "Career", "Return", "Graduate\noutput", "Combined"]
     fig, axes = plt.subplots(1, 3, figsize=(9.2, 3.2))
     x = np.arange(len(keys))
 
@@ -1453,14 +1454,14 @@ def fig_outcomes(plt, central, costs):
     axes[0].errorbar(x, med, yerr=[np.array(med) - lo, np.array(hi) - med],
                      fmt="none", ecolor="black", capsize=2, lw=0.8)
     axes[0].axhline(0, color="black", ls="--", lw=0.9)
-    axes[0].set_xticks(x, labels, fontsize=7, rotation=20)
+    axes[0].set_xticks(x, labels, fontsize=7, rotation=25, ha="right")
     axes[0].set_ylabel("Difference from BAU in 2040")
     axes[0].set_title("A. Workforce difference", loc="left", fontsize=9)
 
     med = [central["scenarios"][k]["cum_emigration"] for k in keys]
     axes[1].bar(x, med, color=[COL[k] for k in keys], alpha=0.85, width=0.65)
     axes[1].axhline(central["bau"]["cum_emigration"], color="black", ls="--", lw=0.9)
-    axes[1].set_xticks(x, labels, fontsize=7, rotation=20)
+    axes[1].set_xticks(x, labels, fontsize=7, rotation=25, ha="right")
     axes[1].set_ylabel("Cumulative emigrants, 2026–2040")
     axes[1].set_title("B. Emigration", loc="left", fontsize=9)
 
@@ -1471,7 +1472,7 @@ def fig_outcomes(plt, central, costs):
     axes[2].errorbar(x, med, yerr=[np.array(med) - lo, np.array(hi) - med],
                      fmt="none", ecolor="black", capsize=2, lw=0.8)
     axes[2].axhline(0, color="black", lw=0.8)
-    axes[2].set_xticks(x, labels, fontsize=7, rotation=20)
+    axes[2].set_xticks(x, labels, fontsize=7, rotation=25, ha="right")
     axes[2].set_ylabel("Physician-years vs BAU")
     axes[2].set_title("C. Retention benefit", loc="left", fontsize=9)
 
@@ -1480,26 +1481,38 @@ def fig_outcomes(plt, central, costs):
 
 
 def fig_cost(plt, costs):
-    keys = ["REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"]
-    labels = ["Remuneration", "Career", "Return", "Training", "Combined"]
-    fig, ax = plt.subplots(figsize=(6.0, 3.4))
-    x = np.arange(len(keys))
-    fiscal = [costs[k]["cost_per_py_fiscal"] for k in keys]
-    resource = [costs[k]["cost_per_py_resource"] for k in keys]
-    total = [costs[k]["cost_per_py_total"] for k in keys]
-    lo = [costs[k]["cost_per_py_total_low"] for k in keys]
-    hi = [costs[k]["cost_per_py_total_high"] for k in keys]
-    ax.bar(x, fiscal, color="#9E9E9E", alpha=0.9, width=0.65,
-           label="Fiscal transfer")
-    ax.bar(x, resource, bottom=fiscal, color="#1B7837", alpha=0.85,
-           width=0.65, label="Real resource cost")
-    ax.errorbar(x, total, yerr=[np.array(total) - lo, np.array(hi) - total],
-                fmt="none", ecolor="black", capsize=2, lw=0.8)
-    ax.set_xticks(x, labels, fontsize=7, rotation=20)
-    ax.set_ylabel("TND per physician-year")
-    ax.set_title("Exploratory fiscal and resource ratios (not comparable)",
-                 loc="left", fontsize=8)
-    ax.legend(frameon=False, fontsize=6.5, loc="upper left")
+    fiscal_keys = ["REMUN", "COMBINED"]
+    resource_keys = ["CAREER", "RETURN", "TRAINING", "COMBINED"]
+    fiscal_labels = ["Remuneration", "Combined"]
+    resource_labels = ["Career", "Return", "Graduate output", "Combined"]
+    fig, (ax0, ax1) = plt.subplots(
+        1, 2, figsize=(7.2, 3.4), gridspec_kw={"width_ratios": [2, 3]})
+
+    x0 = np.arange(len(fiscal_keys))
+    fiscal = [costs[k]["cost_per_py_fiscal"] for k in fiscal_keys]
+    f_lo = [costs[k]["cost_per_py_fiscal_low"] for k in fiscal_keys]
+    f_hi = [costs[k]["cost_per_py_fiscal_high"] for k in fiscal_keys]
+    ax0.bar(x0, fiscal, color="#9E9E9E", alpha=0.9, width=0.55)
+    ax0.errorbar(x0, fiscal,
+                 yerr=[np.array(fiscal) - f_lo, np.array(f_hi) - fiscal],
+                 fmt="none", ecolor="black", capsize=2, lw=0.8)
+    ax0.set_xticks(x0, fiscal_labels, fontsize=7, rotation=20)
+    ax0.set_ylabel("TND per additional physician-year")
+    ax0.set_title("A  Fiscal transfer", loc="left", fontsize=8, fontweight="bold")
+
+    x1 = np.arange(len(resource_keys))
+    resource = [costs[k]["cost_per_py_resource"] for k in resource_keys]
+    r_lo = [costs[k]["cost_per_py_resource_low"] for k in resource_keys]
+    r_hi = [costs[k]["cost_per_py_resource_high"] for k in resource_keys]
+    ax1.bar(x1, resource, color="#1B7837", alpha=0.85, width=0.55)
+    ax1.errorbar(x1, resource,
+                 yerr=[np.array(resource) - r_lo, np.array(r_hi) - resource],
+                 fmt="none", ecolor="black", capsize=2, lw=0.8)
+    ax1.set_xticks(x1, resource_labels, fontsize=7, rotation=20)
+    ax1.set_ylabel("TND per additional physician-year")
+    ax1.set_title("B  Real resource cost", loc="left", fontsize=8,
+                  fontweight="bold")
+
     fig.tight_layout()
     _save(fig, "figS2_cost_ratios")
 
@@ -1534,8 +1547,11 @@ def fig_sensitivity(plt, sens):
         "retire_shift": "Retirement age",
         "emig_tilt": "Age profile of emigration",
         "initial_stock_2008": "Initial stock (2008)",
-        "diaspora_attrition": "Diaspora attrition",
+        "initial_diaspora_2008": "Initial return pool (2008)",
+        "diaspora_attrition": "Return-pool attrition",
         "return_retention": "Return retention",
+        "mortality_mult": "Mortality multiplier",
+        "phi": "φ",
     }
     fig, axes = plt.subplots(1, 2, figsize=(10.6, 3.6),
                              gridspec_kw={"width_ratios": [1.1, 1.0]})
@@ -1628,19 +1644,19 @@ def fig_breakeven(plt, be):
     grid = pd.read_csv(os.path.join(TAB, "breakeven_grid.csv"), index_col=0)
     rs = np.array([float(c) for c in grid.columns])
     ts = np.array([float(i) for i in grid.index])
-    fig, ax = plt.subplots(figsize=(6.4, 4.2))
+    fig, ax = plt.subplots(figsize=(6.4, 4.8))
     cs = ax.contourf(rs * 100, ts * 100, grid.values, levels=16, cmap="RdYlBu")
     lines = ax.contour(rs * 100, ts * 100, grid.values,
                        levels=[16000, 18000, 20000, 22000, 24000],
                        colors="black", linewidths=0.6)
     ax.clabel(lines, fmt="%d", fontsize=6, inline=True)
     ax.plot([0], [30], marker="o", color="#2166AC", ms=6,
-            label="Training +30% only")
+            label="Graduate output +30% only")
     ax.plot([30], [0], marker="o", color="#B2182B", ms=6,
             label="Retention −30% only")
     ax.plot([0], [be["training_match_30pct_retention"] * 100], marker="s",
             color="#2166AC", ms=6,
-            label=f"Training to match −30% retention ({be['training_match_30pct_retention']*100:.0f}%)")
+            label=f"Graduate output to match −30% retention ({be['training_match_30pct_retention']*100:.0f}%)")
     ax.axhline(30, color="grey", lw=0.5, ls=":")
     ax.axvline(be["retention_match_30pct_training"] * 100, color="#B2182B",
                lw=0.9, ls="--")
@@ -1648,14 +1664,18 @@ def fig_breakeven(plt, be):
             f"break-even\n{be['retention_match_30pct_training']*100:.1f}%\nemigration reduction",
             fontsize=7, color="#B2182B")
     ax.set_xlabel("Reduction in emigration (%)")
-    ax.set_ylabel("Training expansion (%)")
-    ax.set_ylim(0, 100)
-    ax.set_title("Workforce in 2040 under combined retention and training",
+    ax.set_ylabel("Graduate-output expansion (%)")
+    ax.set_xlim(-2, 52)
+    ax.set_ylim(-2, 102)
+    ax.set_title("Workforce in 2040 under retention and graduate-output expansion",
                  loc="left", fontsize=9)
     cb = fig.colorbar(cs, ax=ax, fraction=0.046, pad=0.02)
     cb.set_label("Physicians in 2040", fontsize=7.5)
-    ax.legend(frameon=False, fontsize=6.5, loc="upper right")
-    fig.tight_layout()
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, fontsize=6.2,
+               frameon=False, bbox_to_anchor=(0.5, 0.01),
+               handlelength=1.4, columnspacing=1.0)
+    fig.tight_layout(rect=(0, 0.11, 1, 1))
     _save(fig, "fig9_breakeven")
 
 
@@ -1860,19 +1880,18 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads,
     for k in ["REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"]:
         c = costs[k]
         rows.append([k, c["fiscal_transfer_tnd"], c["resource_cost_tnd"],
-                     c["total_cost_tnd"], c["cost_per_py_total"],
-                     c["cost_per_py_total_low"], c["cost_per_py_total_high"],
                      c["cost_per_py_fiscal"], c["cost_per_py_resource"],
-                     c["cost_per_additional_physician"],
+                     c["cost_per_py_fiscal_low"], c["cost_per_py_fiscal_high"],
+                     c["cost_per_py_resource_low"], c["cost_per_py_resource_high"],
                      c["physician_years"], c["stock_diff_2040"]])
     pd.DataFrame(rows, columns=[
         "Scenario", "Fiscal transfer (TND)", "Real resource cost (TND)",
-        "Total cost (TND)", "Cost per physician-year, total",
-        "Cost per physician-year, low unit costs",
-        "Cost per physician-year, high unit costs",
-        "Cost per physician-year, fiscal", "Cost per physician-year, resource",
-        "Cost per additional physician in 2040", "Physician-years vs BAU",
-        "Additional physicians in 2040"]).to_csv(
+        "Fiscal transfer per additional physician-year", "Resource cost per additional physician-year",
+        "Fiscal per additional physician-year, low unit costs",
+        "Fiscal per additional physician-year, high unit costs",
+        "Resource per additional physician-year, low unit costs",
+        "Resource per additional physician-year, high unit costs",
+        "Physician-years vs BAU", "Additional physicians in 2040"]).to_csv(
         os.path.join(TAB, "table9_costs.csv"), index=False)
 
     # Table 11. Age structure
@@ -1986,11 +2005,10 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora,
         lines.append(f"  - low/high 2040: {f(r['stock_2040_low'])} / {f(r['stock_2040_high'])}; "
                      f"post-only +3%: {f(r['stock_2040_escalating_post'])}; "
                      f"both +3%: {f(r['stock_2040_escalating_both'])}")
-        lines.append(f"  - cost/PY total: {f(costs[k]['cost_per_py_total'])} "
-                     f"({f(costs[k]['cost_per_py_total_low'])}–{f(costs[k]['cost_per_py_total_high'])}); "
-                     f"fiscal {f(costs[k]['cost_per_py_fiscal'])}; "
-                     f"resource {f(costs[k]['cost_per_py_resource'])}; "
-                     f"cost/additional physician: {f(costs[k]['cost_per_additional_physician'])}")
+        lines.append(f"  - fiscal/additional PY: {f(costs[k]['cost_per_py_fiscal'])} "
+                     f"({f(costs[k]['cost_per_py_fiscal_low'])}–{f(costs[k]['cost_per_py_fiscal_high'])}); "
+                     f"resource/additional PY: {f(costs[k]['cost_per_py_resource'])} "
+                     f"({f(costs[k]['cost_per_py_resource_low'])}–{f(costs[k]['cost_per_py_resource_high'])})")
     lines.append(f"- BAU 2040: {f(c['bau']['stock_2040'])}; density {c['bau']['density_2040']:.2f}")
 
     lines.append("\n## Age structure (% of practising physicians)\n")
@@ -2016,7 +2034,7 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora,
 
     lines.append("\n## Break-even\n")
     lines.append(f"- Retention reduction matching 30% training: {be['retention_match_30pct_training']*100:.1f}%")
-    lines.append(f"- Training expansion matching 30% retention: {be['training_match_30pct_retention']*100:.1f}%")
+    lines.append(f"- Graduate-output expansion matching 30% retention: {be['training_match_30pct_retention']*100:.1f}%")
     lines.append(f"- 2040 stock, training +30%: {f(be['stock_training_30'])}; retention −30%: {f(be['stock_retention_30'])}; BAU: {f(be['bau_2040'])}")
 
     lines.append("\n## Diaspora sensitivity\n")
@@ -2122,9 +2140,11 @@ def validate(central, mc, ident, sens):
     checks.append(("Return retention matches flow",
                    abs(net / gross - theta) < 1e-9 if gross > 0 else True,
                    f"{net/gross:.3f}" if gross > 0 else "—"))
-    attempt = p.rho / (p.rho + p.diaspora_attrition)
-    success = theta * p.rho / (theta * p.rho + p.diaspora_attrition)
-    duration = 1.0 / (theta * p.rho + p.diaspora_attrition)
+    denom = 1.0 - (1.0 - theta * p.rho) * (1.0 - p.diaspora_attrition)
+    denom_attempt = 1.0 - (1.0 - p.rho) * (1.0 - p.diaspora_attrition)
+    attempt = p.rho / denom_attempt
+    success = theta * p.rho / denom
+    duration = 1.0 / denom
     checks.append(("Return probabilities ordered",
                    0 < success < attempt < 1 and 0 < duration < 100,
                    f"attempt {attempt:.3f}, success {success:.3f}, duration {duration:.1f}"))

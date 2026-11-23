@@ -1,9 +1,9 @@
 # Scientific Audit Report
 
 **Project:** Tunisia physician workforce stock-and-flow model
-**Revision:** 2.0 (scientific and computational audit)
-**Prepared in:** `revision/`
-**Original state preserved in:** `revision/source_preserved/` and Git tag `v1.1.0` / `pre-review-baseline`
+**Revision:** 2.1.1 (scientific and computational audit)
+**Prepared in:** `revision_round2/`
+**Original state preserved in:** `revision/`, `revision_round2/source_preserved/`, and Git tags `v1.1.0`, `v2.0.0` and `pre-review-baseline`
 
 ---
 
@@ -182,17 +182,17 @@ The central qualitative conclusion is narrower than in v1.1.0: combined and remu
 
 ---
 
-## Round 2 revision (v2.1.0)
+## Round 2 revision (v2.1.0–v2.1.1)
 
 ### R2.1 Return-pool accounting
 
-The v2.0 model subtracted gross returns ρD, added back the 15% unsuccessful attempts, and applied diaspora attrition. The pool equation was internally coherent, but the reported eventual return probability used ρ/(ρ+δ) = 20% and mean duration 1/(ρ+δ) = 10 years, ignoring the 0.85 successful-return rate. The corrected metrics are:
+The v2.0 model subtracted gross returns ρD, added back the 15% unsuccessful attempts, and applied diaspora attrition. The pool equation was internally coherent, but the manuscript labelled ρ/(ρ+δ) = 20% and 1/(ρ+δ) = 10 years as the eventual successful-return probability and duration. Those quantities ignore the 0.85 retention rate and treat the annual transition as continuous. The corrected metrics are:
 
-- attempt probability: ρ/(ρ+δ) = 20%;
-- successful-return probability: θρ/(θρ+δ) = 17.5%;
-- mean time to exit: 1/(θρ+δ) = 10.3 years.
+- attempt probability: ρ/[1−(1−ρ)(1−δ)] = 20.3%;
+- successful-return probability: θρ/[1−(1−θρ)(1−δ)] = 17.8%;
+- mean time to exit: 1/[1−(1−θρ)(1−δ)] = 10.5 years.
 
-A no-recycling sensitivity treats re-emigrants as permanently outside the pool: successful return θρ/(ρ+δ) = 17.0%, mean duration 10 years, 2024 pool 4 199 rather than 4 312, and return advantage 828 rather than 868 physicians. The central projections are unchanged under recycling; the no-recycling sensitivity is reported in Table S17.
+These are exact discrete-time competing-risk quantities implied by the implemented annual transition D(t+1) = [D(t)+X_pre(t)+M(t)](1−θρ)(1−δ), not continuous-time approximations. The earlier draft used the continuous-time closed forms (20%, 17.5%, 10.3 years); they differed only marginally but did not correspond exactly to the code. A no-recycling sensitivity treats re-emigrants as permanently outside the pool: successful return θρ/[1−(1−ρ)(1−δ)] = 17.3%, mean duration 10.2 years, 2024 pool 4 199 rather than 4 312, and return advantage 828 rather than 868 physicians. The central projections are unchanged under recycling; the no-recycling sensitivity is reported in Table S17.
 
 ### R2.2 Policy-ranking claims
 
@@ -220,4 +220,16 @@ The reconstructed 2008 age structure shifts the 2040 baseline from 14 961 to 16 
 
 ### R2.8 PRCC stability and cost framing
 
-Bootstrap 90% intervals from 1 000 resamples are narrow (e.g., future emigration −0.82 to −0.80; φ 0.14–0.20; return retention −0.04 to 0.01). PRCCs are conditional on priors and calibration, not causal. Cost ratios are exploratory and fiscal/resource categories are explicitly non-comparable; the cost panel was moved to Fig. S2 and the cost column removed from Table 5.
+Bootstrap 90% intervals from 1 000 resamples are narrow (e.g., future emigration −0.82 to −0.80; φ 0.14–0.20; return retention −0.04 to 0.01). PRCCs are conditional on priors and calibration, not causal. Cost ratios are exploratory and fiscal/resource categories are explicitly non-comparable; the cost column was removed from Table 5. Table 6 and Fig. S2 report fiscal transfers and resource costs in separate columns and panels; they are not summed, stacked or ranked.
+
+### R2.9 Pre-submission corrections (v2.1.1)
+
+| Item | Correction |
+|---|---|
+| Table 4 stock status | Second column renamed “Modelled practising stock”; the note states that the 2017 and 2020 values are modelled and gives both observed comparisons (over-prediction of 73 and 538); all flows are labelled model-implied |
+| Return transition | Manuscript now writes the implemented annual transition D(t+1) = [D(t)+X_pre(t)+M(t)](1−θρ)(1−δ), defines gross attempts ρD, successful θρD and recycled (1−θ)D, and states that net return-related removal is θρD. Metrics are exact discrete-time competing-risk quantities |
+| Table S17 | Updated to the exact discrete-time metrics (0.203 / 0.178 / 10.5; no recycling 0.203 / 0.173 / 10.2) |
+| Supplement figures | Image paths corrected so both Fig. S1 and Fig. S2 embed in the DOCX; previously Fig. S2 silently failed to embed |
+| Reproducibility | Repository contains processed inputs, data dictionary, parameter definitions, seed, tests and the one-command pipeline; the pipeline regenerates tables, figures, key numbers and validation report. DOCX assembly is a separate documented step |
+| Figure package | Nine main and two supplementary PDFs present in `figures/`; captions cross-checked against the manuscript and supplement |
+| Cost categories | Removed the summed “total cost” and mixed “cost per additional physician” columns; Table 6 and Fig. S2 now report fiscal transfers and resource costs separately per additional physician-year, with no stacking, summing or ranking. Fig. S2 has two panels |

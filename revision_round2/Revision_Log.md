@@ -1,8 +1,8 @@
 # Revision Log
 
-**Revision:** 2.0
+**Revision:** 2.1.1
 **Date:** 23 November 2026
-**Original state preserved:** Git tag `v1.1.0`; `revision/source_preserved/`
+**Original state preserved:** Git tags `v1.1.0`, `v2.0.0`; `revision/` and `revision_round2/source_preserved/`
 
 ---
 
@@ -114,7 +114,7 @@ The pipeline writes `outputs/key_numbers.md`, `outputs/validation_report.md`, `o
 |---|---|---|
 | Added 
 eturn_recycling parameter | src/model.py | Test re-emigration loop vs permanent exit |
-| Corrected return metrics (attempt 20%, success 17.5%, duration 10.3) | src/analysis.py | Reconcile pool equation and reported probability |
+| Corrected return metrics to exact discrete-time (attempt 20.3%, success 17.8%, duration 10.5) | src/analysis.py | Reconcile pool equation and reported probability |
 | Added no-recycling sensitivity | src/analysis.py | Major issue 1 |
 | Added policy effect grid and conservative scenarios | src/analysis.py | Major issue 3 |
 | Added training completion sensitivity | src/analysis.py | Major issue 4 |
@@ -130,3 +130,9 @@ eturn_recycling parameter | src/model.py | Test re-emigration loop vs permanent 
 | Promoted age-structure uncertainty | manuscript | Major issue 7 |
 | Updated supplement S1, S9, S10, S11, S12, S14–S17 | supplement | Consistency |
 | Rebuilt DOCX files and figures | src/build_docx.py | Final outputs |
+| Renamed Table 4 stock column to “Modelled practising stock”; added 2020 observed comparison and model-implied flow note | manuscript | Pre-submission review A |
+| Replaced approximate return metrics with exact discrete-time transition and competing-risk quantities; matched equation to code | manuscript, `src/analysis.py`, supplement S9/S17 | Pre-submission review B |
+| Corrected supplement image paths so Fig. S2 embeds | supplement | Pre-submission review D |
+| Documented reproducibility contents and figure package | audit, QA, README | Pre-submission review D–E |
+| Removed summed cost columns; split Fig. S2 into fiscal and resource panels | manuscript Table 6, supplement S11, `src/analysis.py` | Categories not commensurable |
+| Fixed figure legibility: rotated Fig. 4 labels, renamed Fig. 6 parameters, moved Fig. 9 legend, separated Fig. S1 lanes | `src/analysis.py`, `src/fig_flow.py` | Visual audit |

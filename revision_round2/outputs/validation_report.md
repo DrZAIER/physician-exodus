@@ -11,7 +11,7 @@ Overall: PASS
 - [x] PRCCs within [-1, 1]
 - [x] Return flow components additive
 - [x] Return retention matches flow (0.850)
-- [x] Return probabilities ordered (attempt 0.200, success 0.175, duration 10.3)
+- [x] Return probabilities ordered (attempt 0.203, success 0.178, duration 10.5)
 - [x] No-recycling flow identity holds
 - [x] Workforce flow identity holds for all scenarios
 - [x] Graduate pipeline identity holds for all scenarios

@@ -1,6 +1,6 @@
 # Final QA Report — Round 2
 
-**Revision:** 2.1.0
+**Revision:** 2.1.1
 **Date:** 23 November 2026
 **Pipeline:** `revision_round2/run_all.py`
 **Seed:** 20261121
@@ -16,9 +16,9 @@
 | Tests (`pytest -q`) | Pass (14 tests) |
 | Validation report | Pass (all checks) |
 | Manuscript DOCX | `Manuscript_HRH_Revised_R2.docx` (8 tables, 192 paragraphs) |
-| Supplement DOCX | `Additional_file_1_Revised_R2.docx` (17 tables, 58 paragraphs) |
+| Supplement DOCX | `Additional_file_1_Revised_R2.docx` (17 tables, 61 paragraphs) |
 | Figures | 9 main + Fig. S1 + Fig. S2; PNG and PDF |
-| Word count | 3 987 including abstract; 3 637 main text |
+| Word count | 3 996 including abstract; 3 646 main text |
 | Abstract | 350 words |
 | References | 44, all cited |
 | Tables | 8 main tables |
@@ -36,7 +36,7 @@
 | Graduate pipeline identity, all scenarios | Pass |
 | Return flow components additive | Pass |
 | Return retention matches flow | Pass (0.850) |
-| Return probabilities ordered | Pass (attempt 0.200, success 0.175, duration 10.3) |
+| Return probabilities ordered | Pass (attempt 0.203, success 0.178, duration 10.5) |
 | No-recycling flow identity | Pass |
 | Age distributions non-negative | Pass |
 | Density calculation | Pass |
@@ -54,7 +54,7 @@
 
 | Issue | Resolution |
 |---|---|
-| Return-pool accounting | Metrics corrected: 20% attempt, 17.5% successful return, 10.3 years; no-recycling sensitivity 17.0%, 10.0 years, advantage 828 vs 868 |
+| Return-pool accounting | Metrics corrected to exact discrete-time: 20.3% attempt, 17.8% successful return, 10.5 years; no-recycling 17.3%, 10.2 years, advantage 828 vs 868 |
 | Remuneration “robustly” beats training | Bounded to Monte Carlo φ prior; at φ=0 remuneration 16 671 vs training 16 698 |
 | Policy effects too confident | Conservative grid: 10% remuneration 16 576; 5% career 16 198; 1.35× return 16 238; all below training 16 914; combined 20% + 1.35× 17 701 |
 | Training scenario | Relabelled hypothetical graduate-output expansion; completion 80/90/100% gives 16 695/16 804/16 914 |
@@ -76,16 +76,22 @@
 | Affiliations, email, ORCID | Applied exactly as specified |
 | No third-author placeholder | Pass |
 | Abstract ≤350 words | Pass (350) |
-| Main text ≤4 000 words | Pass (3 637 main; 3 987 including abstract) |
+| Main text ≤4 000 words | Pass (3 646 main; 3 996 including abstract) |
 | Tables cited in order | Pass (1–8) |
 | Figures cited in order | Pass (1–9; S1–S2 in supplement) |
+| Table 4 stock column labelled modelled | Pass |
+| Table 4 observed 2017/2020 comparisons | Pass (73 / 538 over-prediction) |
 | Table 4 cohort-year note | Pass |
+| Return transition equation matches code | Pass (recycling and no-recycling forms) |
+| Supplement figures embedded | Pass (S1 and S2) |
+| Figure manifest complete | Pass (11 PDFs) |
 | Deterministic vs Monte Carlo values labelled | Pass |
 | Density values consistent | Pass (1.25 deterministic and MC median) |
 | δ prior mean matches central 0.08 | Pass |
 | Initial pool varies in MC | Pass (2 000–8 000) |
 | Emigration cap diagnostic | Pass |
 | Cost table exploratory and separate | Pass |
+| Fiscal and resource costs not summed or stacked | Pass (Table 6 and Fig. S2 report separately) |
 | Reporting checklist item-level (1–30) | Pass (Table S13) |
 | All references cited | Pass (44/44) |
 | 1 900 figure not used as baseline | Pass (flagged unverified) |
@@ -122,6 +128,7 @@
 - Figure register: `revision_round2/Figure_Revision_Register.md`
 - Reference audit: `revision_round2/Reference_Audit.csv`
 - Issue register: `revision_round2/audit/Issue_Register.md`
+- Submission checklist: `revision_round2/Submission_Readiness_Checklist.md`
 - Key numbers: `revision_round2/outputs/key_numbers.md`
 - Validation: `revision_round2/outputs/validation_report.md`
 - Tables: `revision_round2/outputs/tables/`
@@ -137,7 +144,6 @@ pip install -r requirements.txt
 python run_all.py
 pytest -q
 python src/build_docx.py
-python src/fig_flow.py
 ```
 
-The seed is fixed. The pipeline regenerates every table, figure, key number and validation report. The DOCX is built from the markdown source; no manual numerical corrections are applied to the DOCX. Calibration checks confirm the numerical procedure, not predictive validity.
+The seed is fixed. `run_all.py` regenerates every table, every main and supplementary figure (including the flow diagram), key numbers and the validation report. The DOCX is built from the markdown source; no manual numerical corrections are applied to the DOCX. Calibration checks confirm the numerical procedure, not predictive validity.

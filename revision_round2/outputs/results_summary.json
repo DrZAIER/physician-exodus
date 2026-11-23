@@ -3006,90 +3006,72 @@
     "BAU": {
       "fiscal_transfer_tnd": 0.0,
       "resource_cost_tnd": 0.0,
-      "total_cost_tnd": 0.0,
-      "total_cost_low": 0.0,
-      "total_cost_high": 0.0,
-      "cost_per_py_total": 0.0,
-      "cost_per_py_total_low": 0.0,
-      "cost_per_py_total_high": 0.0,
       "cost_per_py_fiscal": 0.0,
+      "cost_per_py_fiscal_low": 0.0,
+      "cost_per_py_fiscal_high": 0.0,
       "cost_per_py_resource": 0.0,
-      "cost_per_additional_physician": 0.0,
+      "cost_per_py_resource_low": 0.0,
+      "cost_per_py_resource_high": 0.0,
       "physician_years": 0.0,
       "stock_diff_2040": 0.0
     },
     "REMUN": {
       "fiscal_transfer_tnd": 2176780913.6333537,
       "resource_cost_tnd": 0.0,
-      "total_cost_tnd": 2176780913.6333537,
-      "total_cost_low": 1088390456.8166769,
-      "total_cost_high": 4353561827.266707,
-      "cost_per_py_total": 124176.08201592846,
-      "cost_per_py_total_low": 62088.04100796423,
-      "cost_per_py_total_high": 248352.16403185693,
       "cost_per_py_fiscal": 124176.08201592846,
+      "cost_per_py_fiscal_low": 62088.04100796423,
+      "cost_per_py_fiscal_high": 248352.16403185693,
       "cost_per_py_resource": 0.0,
-      "cost_per_additional_physician": 960652.2417123378,
+      "cost_per_py_resource_low": 0.0,
+      "cost_per_py_resource_high": 0.0,
       "physician_years": 17529.79219745499,
       "stock_diff_2040": 2265.9405965194
     },
     "CAREER": {
       "fiscal_transfer_tnd": 0.0,
       "resource_cost_tnd": 731130785.8277062,
-      "total_cost_tnd": 731130785.8277062,
-      "total_cost_low": 365565392.9138531,
-      "total_cost_high": 1462261571.6554124,
-      "cost_per_py_total": 83443.03867847491,
-      "cost_per_py_total_low": 41721.51933923746,
-      "cost_per_py_total_high": 166886.07735694983,
       "cost_per_py_fiscal": 0.0,
+      "cost_per_py_fiscal_low": 0.0,
+      "cost_per_py_fiscal_high": 0.0,
       "cost_per_py_resource": 83443.03867847491,
-      "cost_per_additional_physician": 645780.7079062213,
+      "cost_per_py_resource_low": 41721.51933923746,
+      "cost_per_py_resource_high": 166886.07735694983,
       "physician_years": 8762.0345256711,
       "stock_diff_2040": 1132.165728824899
     },
     "RETURN": {
       "fiscal_transfer_tnd": 0.0,
       "resource_cost_tnd": 35584829.89218308,
-      "total_cost_tnd": 35584829.89218308,
-      "total_cost_low": 17792414.94609154,
-      "total_cost_high": 71169659.78436616,
-      "cost_per_py_total": 5345.97399086106,
-      "cost_per_py_total_low": 2672.98699543053,
-      "cost_per_py_total_high": 10691.94798172212,
       "cost_per_py_fiscal": 0.0,
+      "cost_per_py_fiscal_low": 0.0,
+      "cost_per_py_fiscal_high": 0.0,
       "cost_per_py_resource": 5345.97399086106,
-      "cost_per_additional_physician": 40993.297474766965,
+      "cost_per_py_resource_low": 2672.98699543053,
+      "cost_per_py_resource_high": 10691.94798172212,
       "physician_years": 6656.379165520695,
       "stock_diff_2040": 868.0645882192566
     },
     "TRAINING": {
       "fiscal_transfer_tnd": 0.0,
       "resource_cost_tnd": 978750000.0,
-      "total_cost_tnd": 978750000.0,
-      "total_cost_low": 489375000.0,
-      "total_cost_high": 1957500000.0,
-      "cost_per_py_total": 299443.30942665477,
-      "cost_per_py_total_low": 149721.65471332739,
-      "cost_per_py_total_high": 598886.6188533095,
       "cost_per_py_fiscal": 0.0,
+      "cost_per_py_fiscal_low": 0.0,
+      "cost_per_py_fiscal_high": 0.0,
       "cost_per_py_resource": 299443.30942665477,
-      "cost_per_additional_physician": 895945.342037924,
+      "cost_per_py_resource_low": 149721.65471332739,
+      "cost_per_py_resource_high": 598886.6188533095,
       "physician_years": 3268.565264904453,
       "stock_diff_2040": 1092.421550821089
     },
     "COMBINED": {
       "fiscal_transfer_tnd": 2625628504.700635,
       "resource_cost_tnd": 18265847.195731204,
-      "total_cost_tnd": 2643894351.896366,
-      "total_cost_low": 1321947175.948183,
-      "total_cost_high": 5287788703.792732,
-      "cost_per_py_total": 101357.93593996878,
-      "cost_per_py_total_low": 50678.96796998439,
-      "cost_per_py_total_high": 202715.87187993756,
       "cost_per_py_fiscal": 100657.68535369773,
+      "cost_per_py_fiscal_low": 50328.842676848864,
+      "cost_per_py_fiscal_high": 201315.37070739546,
       "cost_per_py_resource": 700.2505862710627,
-      "cost_per_additional_physician": 791401.6677956322,
+      "cost_per_py_resource_low": 350.12529313553136,
+      "cost_per_py_resource_high": 1400.5011725421255,
       "physician_years": 26084.729600869774,
       "stock_diff_2040": 3340.774298922899
     }
@@ -3104,9 +3086,9 @@
       "bau_2040": 15821.173726880761,
       "return_2040": 16689.238315100018,
       "return_diff_2040": 868.0645882192566,
-      "eventual_attempt_prob": 0.19999999999999998,
-      "eventual_success_prob": 0.1752577319587629,
-      "mean_duration_years": 10.309278350515463
+      "eventual_attempt_prob": 0.20325203252032534,
+      "eventual_success_prob": 0.1777498954412381,
+      "mean_duration_years": 10.455876202425769
     },
     "return_diff_range": [
       133.99523188550302,
@@ -3117,16 +3099,16 @@
       10898.471128152347
     ],
     "eventual_attempt_range": [
-      0.03225806451612903,
-      0.6666666666666667
+      0.03241491085899514,
+      0.6756756756756753
     ],
     "eventual_success_range": [
-      0.02755267423014587,
-      0.6296296296296297
+      0.02766701928553991,
+      0.637659414853713
     ],
     "mean_duration_range": [
-      5.434782608695652,
-      41.23711340206185
+      5.589714924538847,
+      41.38216428719223
     ]
   },
   "graduate_baselines": {
@@ -4125,9 +4107,9 @@
       "bau_2040": 15821.173726880761,
       "return_2040": 16689.238315100018,
       "return_diff_2040": 868.0645882192566,
-      "eventual_attempt_prob": 0.19999999999999998,
-      "eventual_success_prob": 0.1752577319587629,
-      "mean_duration_years": 10.309278350515463
+      "eventual_attempt_prob": 0.20325203252032534,
+      "eventual_success_prob": 0.1777498954412381,
+      "mean_duration_years": 10.455876202425769
     },
     "False": {
       "recycling": false,
@@ -4137,9 +4119,9 @@
       "bau_2040": 15811.093226731971,
       "return_2040": 16639.02058754724,
       "return_diff_2040": 827.9273608152671,
-      "eventual_attempt_prob": 0.19999999999999998,
-      "eventual_success_prob": 0.17,
-      "mean_duration_years": 10.0
+      "eventual_attempt_prob": 0.20325203252032534,
+      "eventual_success_prob": 0.17276422764227656,
+      "mean_duration_years": 10.162601626016267
     }
   },
   "effect_sensitivity": {

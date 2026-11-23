@@ -10,7 +10,7 @@
 
 **Co-author:** Mariem Zribi. Email: mariem.zribi@fmt.utm.tn
 
-**Word count:** 3 987 (abstract and main text; excluding tables, figures, references and additional files)
+**Word count:** 3 996 (abstract and main text; excluding tables, figures, references and additional files)
 
 **Tables:** 8 **Figures:** 9 **Additional files:** 1
 
@@ -22,7 +22,7 @@
 
 **Methods.** We built an annual, single-year-of-age cohort-component model of practising physicians in Tunisia (2008–2040), calibrated to the 2024 stock. Pipeline non-entry is split into international pre-entry emigration (φ = 0.50 central) and domestic non-entry; only international emigration enters a return-eligible pool with attrition. We compared business as usual with remuneration and working conditions, career development, return migration, 30% graduate-output expansion and a combined strategy. We used 4 000 Monte Carlo draws, true partial rank correlations, structural escalation, break-even analysis and return-accounting checks.
 
-**Results.** The 2024 stock was 15 315 (1.28/1 000). The baseline reaches 15 821 in 2040 (median 15 830; 90% interval 14 407–17 438; density 1.25/1 000), but the reconstructed 2008 age structure shifts it to 14 961–16 570. The stock path is consistent with 262–1 017 international emigrants (φ = 0.50), or 502–1 540 if all non-entry were emigration. Combined adds 3 341 physicians (19 162; 26 085 physician-years); remuneration adds 2 266, career development 1 132, training 1 092 and return migration 868. A 14.5% emigration reduction matches 30% training; training needs 62% to match 30% retention. In the φ prior (0.25–0.75), combined ranked first in all draws and remuneration second in 99.8%; at φ = 0, remuneration is 27 below training. Career, training and return overlap. With post-entry emigration rising 3% a year, the baseline reaches 14 461 and combined 18 315; if both margins rise, 13 184 and 17 519.
+**Results.** The 2024 stock was 15 315 (1.28/1 000). The baseline reaches 15 821 in 2040 (median 15 830; 90% interval 14 407–17 438; density 1.25/1 000), but the reconstructed 2008 age structure shifts it to 14 961–16 570. The stock path is consistent with 262–1 017 international emigrants (φ = 0.50), or 502–1 540 if all non-entry were emigration. Combined adds 3 341 physicians (19 162; 26 085 physician-years); remuneration adds 2 266, career development 1 132, expansion 1 092 and return migration 868. A 14.5% emigration reduction matches a 30% graduate-output expansion; 62% expansion matches 30% retention. In the φ prior (0.25–0.75), combined ranked first in all draws and remuneration second in 99.8%; at φ = 0, remuneration 27 below the expansion. Career, expansion and return overlap. With post-entry emigration rising 3% a year, the baseline reaches 14 461 and combined 18 315; if both margins rise, 13 184 and 17 519.
 
 **Conclusions.** Under the central assumptions, reducing international emigration produces larger 15-year gains than 30% graduate-output expansion, but the ranking is conditional on φ, the assumed policy effects, the age structure and the postgraduate lag. The model does not identify Tunisia's true gross emigration flow; its main implication is the need for linked, cohort-consistent data distinguishing registration, practice, entry, domestic non-entry and international migration.
 
@@ -70,7 +70,7 @@ E(t) = G(t−L) − X_pre(t) − X_dom(t).
 
 φ is the share of non-entry assumed to be international emigration; it is unobserved, with central 0.50 and alternatives 0–1. Only X_pre enters D. Post-entry emigration is M(t), allocated by age profile w_a: e_a = min{M w_a / ΣN_b w_b, 0.35}, M = mΠε. A projection-only shock ε applies after 2024. Post-entry intensity rises linearly from 60% of its 2024 value in 2017 to 100% in 2024; this is an assumption.
 
-Return attempts are ρD; θ = 0.85 succeed and enter practice, while 15% re-emigrate. Under central recycling they rejoin D immediately; the pool evolves as D(t+1) = D(t)[1 − ρ − δ] + X_pre + M + re-emigration, and successful return removes θρD from the pool. With δ = 0.08 and ρ = 0.02, the attempt probability is 20%, successful return 17.5%, and mean time to exit 10.3 years. A no-recycling sensitivity makes re-emigrants permanently ineligible; success is then 17.0% and duration 10 years. The pool is an accounting stock, not a diaspora estimate.
+Return attempts are ρ times the pool including current-year inflows. θ = 0.85 succeed and enter practice; (1−θ)ρ re-emigrate and, under central recycling, rejoin D immediately. The exact annual transition is D(t+1) = [D(t) + X_pre(t) + M(t)](1−θρ)(1−δ): gross attempts ρD, successful θρD, unsuccessful (1−θ)ρD returned, so the net return-related reduction is θρD, then attrition δ. With δ = 0.08 and ρ = 0.02, the exact discrete-time attempt probability is 20.3%, successful return 17.8%, and mean time to exit 10.5 years. A no-recycling sensitivity makes re-emigrants permanently ineligible; success is 17.3% and duration 10.2 years. The pool is an accounting stock, not a diaspora estimate.
 
 Retirement hazards approximate Tunisian legal ages (60 private, 62 public, extensions for professors): 0 below 60, 0.20 at 60–61, 0.45 at 62, 0.35 at 63–64, 0.45 at 65–69, 1.00 at 70+. Mortality is 0.1% at 25–54, 0.4% at 55–64, 1.5% at 65–74 and 5% at 75+. Mortality is applied first, then retirement among survivors; ages advance one year. The 75+ group is open-ended.
 
@@ -108,7 +108,7 @@ The fit surface is a ridge (Fig. 2). RMSE ranges 238–559. The best fit (σ = 0
 
 ### Return accounting
 
-Under central recycling, the probability of at least one return attempt is 20%, eventual successful return is 17.5%, and mean time to exit is 10.3 years. Without recycling, successful return is 17.0%, duration 10 years, the 2024 pool is 4 199 rather than 4 312, and the return advantage is 828 rather than 868 physicians (Table S9). The qualitative conclusion is unchanged.
+Under central recycling, the probability of at least one return attempt is 20.3%, eventual successful return is 17.8%, and mean time to exit is 10.5 years. Without recycling, successful return is 17.3%, duration 10.2 years, the 2024 pool is 4 199 rather than 4 312, and the return advantage is 828 rather than 868 physicians (Table S9). The qualitative conclusion is unchanged.
 
 ### Baseline projection
 
@@ -118,7 +118,7 @@ The stock reaches 15 821 in 2040 (median 15 830; 90% interval 14 407–17 438; F
 
 All five policies produce higher stocks than business as usual (Table 5, Fig. 3A, Fig. 4). Combined: 19 162 (+3 341; 26 085 physician-years). Remuneration: 18 087 (+2 266; 17 530); career: 16 953 (+1 132; 8 762); training: 16 914 (+1 092; 3 269); return: 16 689 (+868; 6 656).
 
-Within the Monte Carlo φ prior (0.25–0.75), combined ranks first in all draws and remuneration second in 99.8%. At φ = 0, remuneration is 16 671 and training 16 698, so remuneration is 27 below training. Career, training and return overlap: career beats training in 65% of draws, training beats return in 68%, and return is last in 66%. The central order is combined > remuneration > career > training > return, but career and training differ by 39. The remuneration advantage is bounded to the Monte Carlo prior.
+Within the Monte Carlo φ prior (0.25–0.75), combined ranks first in all draws and remuneration second in 99.8%. At φ = 0, remuneration is 16 671 and training 16 698, so remuneration 27 below the expansion. Career, training and return overlap: career beats training in 65% of draws, training beats return in 68%, and return is last in 66%. The central order is combined > remuneration > career > training > return, but career and training differ by 39. The remuneration advantage is bounded to the Monte Carlo prior.
 
 Training is slow and leaky: it increases cumulative emigration (9 520 vs 9 079) because larger cohorts produce more non-entrants, half of whom are assumed to emigrate. With 80% completion of additional admissions, the 2040 effect is 16 695 rather than 16 914.
 
@@ -148,20 +148,20 @@ Under business as usual, the share aged 55–64 rises from 20.7% in 2024 to 26.2
 
 ### Illustrative costs
 
-Cost ratios are exploratory and not commensurable (Table 6; Fig. S2). Remuneration is almost entirely a fiscal transfer: about TND 2.18 billion over 2026–2040, or TND 124 176 per physician-year. Combined costs about TND 2.64 billion (2.63 billion transfer). Career, return and training are resource costs: TND 83 443, 5 346 and 299 443 per physician-year. The categories should not be ranked against each other; this is not an economic evaluation.
+Costs are exploratory and not commensurable (Table 6; Fig. S2). Remuneration is a fiscal transfer of TND 2.18 billion over 2026–2040 (TND 124 176 per additional physician-year). Combined involves TND 2.63 billion in transfers and TND 18 million in resource costs. Career, return and training cost TND 83 443, 5 346 and 299 443 per additional physician-year. Categories are not ranked; this is not an economic evaluation.
 
 
 ## Discussion
 
 ### Principal findings
 
-Four findings. First, the emigration level is not identified: 262–1 017 under φ = 0.50, or 502–1 540 if all non-entry is emigration. The annualised 374 proxy lies inside the central range; press estimates (1 300–1 450) lie near the φ = 1 upper bound, not the central range. Second, the baseline is a plateau: about 500 more physicians over 16 years, falling density, and an age reconstruction that shifts 2040 by about 1 600. Third, under the central assumptions combined and remuneration exceed 30% graduate-output expansion, but the threshold is 14.5%; conservative 10% remuneration, 5% career and 1.35× return effects fall below training. Fourth, return alone is smaller; accounting changes the advantage only from 868 to 828, and the career/training/return ranking is unstable.
+Four findings. First, the emigration level is not identified: 262–1 017 under φ = 0.50, or 502–1 540 if all non-entry is emigration. The annualised 374 proxy lies inside the central range; press estimates (1 300–1 450) lie near the φ = 1 upper bound, not the central range. Second, the baseline is a plateau: about 500 more physicians over 16 years, falling density, and an age reconstruction that shifts 2040 by about 1 600. Third, under the central assumptions combined and remuneration exceed 30% graduate-output expansion, but the threshold is 14.5%; conservative 10% remuneration, 5% career and 1.35× return effects fall below the expansion. Fourth, return alone is smaller; accounting changes the advantage only from 868 to 828, and the career/expansion/return ranking is unstable.
 
 ### Interpretation
 
 Under the central assumptions, reducing international emigration yields earlier and larger gains than 30% graduate output, because graduates enter after the lag. Size and ranking depend on φ, effects and age structure. A 30% expansion increases non-entry by 30%, half assumed emigration. Return is smaller because only international emigrants enter the pool and attrition applies. Hungarian evidence that more than half return [21] suggests attrition may be pessimistic, but return is often temporary and many move to domestic non-clinical jobs.
 
-A 10% wage increase in Ghana reduced attrition by about 12.5% relative [19]. If that relative effect transferred to international emigration, a 30% real increase would correspond to about a one-third reduction, our illustrative remuneration effect. This is an assumption, not an estimate: the Ghanaian outcome is payroll attrition, wage gaps remain large, and non-wage drivers are prominent in Tunisian surveys [22–24]. The conservative 10% effect is below training, so the policy conclusion depends on effect size.
+A 10% wage increase in Ghana reduced attrition by about 12.5% relative [19]. If that relative effect transferred to international emigration, a 30% real increase would correspond to about a one-third reduction, our illustrative remuneration effect. This is an assumption, not an estimate: the Ghanaian outcome is payroll attrition, wage gaps remain large, and non-wage drivers are prominent in Tunisian surveys [22–24]. The conservative 10% effect is below the expansion, so the policy conclusion depends on effect size.
 
 Slow growth is not stability: the baseline assumes about 1 300 graduates, 55% entry, φ = 0.50 and constant emigration. The 2020–2021 discontinuity, uncertain output, the age reconstruction and possible escalation imply that the true path could be lower or higher; calibrating to 2019 or 2022 gives 2040 baselines of 16 032 and 15 247. At 3% annual growth in post-entry emigration, the workforce falls 9% below the baseline by 2040; if both margins rise, it falls 16% below it. This is a major structural assumption.
 
@@ -204,7 +204,7 @@ Not applicable.
 
 ### Availability of data and materials
 
-The datasets generated and analysed during the current study, together with all model code, tests and a one-command reproduction pipeline, will be available in the [repository name] repository, [persistent identifier and URL]. The source data are publicly available from the sources listed in Table 1. The repository identifier must be completed before submission.
+The datasets generated and analysed during the current study, together with all model code, tests and a one-command reproduction pipeline, will be available in the [repository name] repository, [persistent identifier and URL]. The source data are publicly available from the sources listed in Table 1.
 
 ### Competing interests
 
@@ -216,7 +216,7 @@ The datasets generated and analysed during the current study, together with all 
 
 ### Authors' contributions
 
-[To be completed by the authors. Firas Zaier and Mariem Zribi meet the ICMJE authorship criteria; specific contributions should be listed before submission.]
+[To be completed by the authors: specific contributions of Firas Zaier and Mariem Zribi.]
 
 ### Acknowledgements
 
@@ -326,7 +326,7 @@ Low and high effect sizes are in Additional file 1, Table S3. Effect sizes are a
 
 ### Table 4. Modelled flow decomposition, selected years
 
-| Year | Stock | Entries | Pipeline non-entry | Pre-entry emigration | Domestic non-entry | Post-entry emigration | Returns | Retirements | Deaths | Net change | Density (per 1 000) | Return-eligible pool |
+| Year | Modelled practising stock | Entries | Pipeline non-entry | Pre-entry emigration | Domestic non-entry | Post-entry emigration | Returns | Retirements | Deaths | Net change | Density (per 1 000) | Return-eligible pool |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 2017 | 14 965 | 534 | 437 | 218 | 218 | 190 | 72 | 205 | 23 | +188 | 1.32 | 3 837 |
 | 2020 | 15 330 | 561 | 459 | 230 | 230 | 245 | 74 | 285 | 25 | +80 | 1.31 | 3 955 |
@@ -335,7 +335,7 @@ Low and high effect sizes are in Additional file 1, Table S3. Effect sizes are a
 | 2035 | 15 808 | 718 | 587 | 294 | 294 | 317 | 99 | 410 | 30 | +59 | 1.27 | 5 244 |
 | 2040 | 15 821 | 718 | 587 | 294 | 294 | 317 | 103 | 542 | 31 | −70 | 1.25 | 5 454 |
 
-Values are rounded. The table reports model-simulated stocks; the observed 2017 value is 14 892, so the model over-predicts 2017 by 73. The 600 entries in 2024 are from the 2019 graduate cohort (1 091), not the 2024 cohort (1 305), which enters from 2029. Pipeline non-entry is split into pre-entry international emigration and domestic non-entry; only pre-entry emigration enters the return-eligible pool.
+Values are rounded. The table reports model-simulated stocks, not the observed series: over-prediction is 73 in 2017 and 538 in 2020. All flows are model-implied. The 600 entries in 2024 are from the 2019 graduate cohort (1 091), not the 2024 cohort (1 305), which enters from 2029. Pipeline non-entry is split into pre-entry international emigration and domestic non-entry; only pre-entry emigration enters the return-eligible pool.
 
 ### Table 5. Projected workforce and policy outcomes in 2040
 
@@ -352,15 +352,15 @@ BAU: business as usual; MC: Monte Carlo. Deterministic values are from the centr
 
 ### Table 6. Exploratory fiscal and resource cost ratios, 2026–2040
 
-| Scenario | Fiscal transfer (TND million) | Real resource cost (TND million) | Total cost (TND million) | Cost per physician-year, total (TND) | Low unit costs | High unit costs | Cost per additional physician in 2040 (TND) |
-|---|---|---|---|---|---|---|---|
-| Remuneration and conditions | 2 177 | 0 | 2 177 | 124 176 | 62 088 | 248 352 | 960 652 |
-| Career development | 0 | 731 | 731 | 83 443 | 41 722 | 166 886 | 645 781 |
-| Return migration | 0 | 36 | 36 | 5 346 | 2 673 | 10 692 | 40 993 |
-| Hypothetical graduate-output expansion | 0 | 979 | 979 | 299 443 | 149 722 | 598 887 | 895 945 |
-| Combined strategy | 2 626 | 18 | 2 644 | 101 358 | 50 679 | 202 716 | 791 402 |
+| Scenario | Fiscal transfer (TND million) | Real resource cost (TND million) | Fiscal transfer per additional physician-year (TND) | Resource cost per additional physician-year (TND) | Additional physicians 2040 |
+|---|---|---|---|---|---|
+| Remuneration and conditions | 2 177 | 0 | 124 176 | 0 | 2 266 |
+| Career development | 0 | 731 | 0 | 83 443 | 1 132 |
+| Return migration | 0 | 36 | 0 | 5 346 | 868 |
+| Hypothetical graduate-output expansion | 0 | 979 | 0 | 299 443 | 1 092 |
+| Combined strategy | 2 626 | 18 | 100 658 | 700 | 3 341 |
 
-Assumptions: 30% increment on an average public-sector compensation of TND 72 000 per physician-year; TND 3 000 per practising physician-year for career development; TND 250 000 per additional graduate; TND 40 000 per additional return migrant. Fiscal transfers are payments; resource costs are training, career-development and return-programme costs. Costs are undiscounted 2025 TND and exclude infrastructure, demand-side costs and health gains. Fiscal transfers and real resource costs are not commensurable and should not be ranked against each other. This is not a cost-effectiveness, budget-impact or value-for-money analysis.
+Assumptions: 30% increment on an average public-sector compensation of TND 72 000 per physician-year; TND 3 000 per practising physician-year for career development; TND 250 000 per additional graduate; TND 40 000 per additional return migrant. Fiscal transfers are payments; resource costs are training, career-development and return-programme costs. Costs are undiscounted 2025 TND; ratios use physician-years relative to business as usual. They exclude infrastructure, demand-side costs and health gains. Fiscal transfers and real resource costs are not commensurable, are reported separately and are not summed. The combined package is costed as a 35% public-sector increment plus return-programme costs; no separate career-development line is added. Unit-cost ranges (0.5–2.0×) are shown in Fig. S2. This is not a cost-effectiveness, budget-impact or value-for-money analysis.
 
 ### Table 7. Specification sensitivity
 
@@ -381,7 +381,7 @@ Assumptions: 30% increment on an average public-sector compensation of TND 72 00
 
 φ is the share of pipeline non-entry assumed to be international emigration. The lag is the interval between graduation and entry into practice. The younger and older age shapes shift the reconstructed 2008 distribution by two years. All values are deterministic central-calibration projections; the retention match is the reduction in emigration needed to equal the 30% graduate-output expansion in 2040. At φ = 0, remuneration (16 671) is 27 below training (16 698); the remuneration advantage is therefore bounded to φ ≥ 0.25. The age-shape range (14 961–16 570) exceeds the central training effect. Retirement and mortality sensitivity is in Additional file 1, Table S10.
 
-### Table 8. Conservative effects, training implementation and calibration endpoints
+### Table 8. Conservative effects, expansion implementation and calibration endpoints
 
 | Scenario or specification | Workforce 2040 | Difference from central BAU | Difference from 30% graduate-output expansion | Above 30% expansion? |
 |---|---|---|---|---|
@@ -403,7 +403,7 @@ The conservative rows show that small retention and return effects do not beat t
 
 **Fig. 2 Identifiability of emigration and the return-eligible pool.** (A) Root mean squared error across pipeline retention (σ) and the training-output multiplier, with the post-entry flow recalibrated at each point. White cells cannot reproduce the 2024 stock even with zero post-entry emigration; the dashed contour is the acceptable-fit threshold (RMSE 302); the star is the best fit and the circle the central calibration. (B) Implied international emigration in 2024 under φ = 0.50. (C) Upper bound if all pipeline non-entry were international emigration (φ = 1). (D) Implied return-eligible pool in 2024; dashed lines mark 4 000 (OECD country-of-birth lower bound) and 10 000. The grid is a two-dimensional slice conditional on the other parameters.
 
-**Fig. 3 Policy scenarios under constant and rising emigration intensity.** (A) Constant emigration intensity; the shaded area is the baseline 90% simulation interval. (B) Post-entry emigration intensity rising 3% per year. (C) Both pre-entry international and post-entry margins rising 3% per year. Retention and return scenarios phase in from 2026; the training expansion affects graduate cohorts from 2031 and entrants after the postgraduate lag.
+**Fig. 3 Policy scenarios under constant and rising emigration intensity.** (A) Constant emigration intensity; the shaded area is the baseline 90% simulation interval. (B) Post-entry emigration intensity rising 3% per year. (C) Both pre-entry international and post-entry margins rising 3% per year. Retention and return scenarios phase in from 2026; the graduate-output expansion affects graduate cohorts from 2031 and entrants after the postgraduate lag.
 
 **Fig. 4 Workforce, emigration and retention benefit by scenario.** (A) Difference from business as usual in 2040; error bars show low and high scenario effect sizes. (B) Cumulative emigration 2026–2040; the dashed line is business as usual. (C) Physician-years retained relative to business as usual; error bars show low and high effect sizes. Values are deterministic central-calibration estimates. Cost ratios are exploratory and shown separately in Fig. S2.
 
@@ -419,7 +419,7 @@ The conservative rows show that small retention and return effects do not beat t
 
 **Fig. S1 Model flow diagram.** Pipeline non-entry is split into pre-entry international emigration and domestic non-entry. Only international emigration enters the return-eligible pool. Return attempts occur at rate ρD; 85% are successful and 15% re-emigrate. Under the central recycling assumption, re-emigrants rejoin the pool immediately; the no-recycling sensitivity removes them permanently. The diagram is illustrative, not to scale.
 
-**Fig. S2 Exploratory fiscal and resource cost ratios, 2026–2040.** Stacked bars show fiscal transfers (grey) and real resource costs (green) per physician-year; error bars show low and high unit-cost assumptions. Fiscal and resource costs are not commensurable and are not a cost-effectiveness or budget-impact analysis.
+**Fig. S2 Exploratory fiscal and resource cost ratios, 2026–2040.** (A) Fiscal transfers and (B) real resource costs per additional physician-year relative to business as usual; error bars show 0.5–2.0× unit-cost assumptions. The panels are separate, the bars are not stacked and no total is formed. Fiscal and resource costs are not commensurable; this is not a cost-effectiveness or budget-impact analysis.
 
 ## Additional files
 

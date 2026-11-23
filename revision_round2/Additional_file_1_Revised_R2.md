@@ -28,15 +28,19 @@
 | w_a | Relative age profile of emigration |
 | L | Postgraduate training lag (central 5 years) |
 
+Under the central recycling specification, the implemented annual pool transition is D(t+1) = [D(t) + X_pre(t) + M(t)](1−θρ)(1−δ). Gross return attempts are ρD after current-year inflows; θρD succeed and enter R(t), (1−θ)ρD rejoin D immediately, and δ is applied to the surviving pool. The net return-related reduction is therefore θρD, not a second subtraction of successful returns. Under no recycling, failed attempts leave permanently and the pool transition is D(t+1) = [D(t) + X_pre(t) + M(t)](1−ρ)(1−δ).
+
 ### Figure S1. Model flow diagram
 
-![Model flow diagram](../outputs/figures/figS1_flow_diagram.png)
+![Model flow diagram](outputs/figures/figS1_flow_diagram.png)
+
+Pipeline non-entry is split into pre-entry international emigration and domestic non-entry. Only international emigration enters the return-eligible pool. Return attempts occur at rate ρD; 85% succeed and 15% re-emigrate; under central recycling, failed attempts rejoin the pool. The diagram is illustrative, not to scale.
 
 ### Figure S2. Exploratory fiscal and resource cost ratios, 2026–2040
 
-![Exploratory cost ratios](../outputs/figures/figS2_cost_ratios.png)
+![Exploratory cost ratios](outputs/figures/figS2_cost_ratios.png)
 
-Fiscal transfers (grey) and real resource costs (green) per physician-year, with low/high unit-cost error bars. The categories are not commensurable and this is not a cost-effectiveness or budget-impact analysis.
+(A) Fiscal transfers and (B) real resource costs per additional physician-year relative to business as usual, with 0.5–2.0× unit-cost error bars. The panels are separate and are not stacked or summed. The categories are not commensurable and this is not a cost-effectiveness or budget-impact analysis.
 
 ### Table S2. Assumed relative age profile of emigration
 
@@ -139,7 +143,7 @@ All values are deterministic central-calibration projections. The two margins ar
 
 ### Table S8. Break-even grid (selected values): workforce in 2040
 
-| Training expansion | Retention 0% | Retention 10% | Retention 20% | Retention 30% | Retention 40% | Retention 50% |
+| Graduate-output expansion | Retention 0% | Retention 10% | Retention 20% | Retention 30% | Retention 40% | Retention 50% |
 |---|---|---|---|---|---|---|
 | 0% | 15 821 | 16 576 | 17 331 | 18 087 | 18 844 | 19 601 |
 | 30% | 16 914 | 17 710 | 18 508 | 19 306 | 20 104 | 20 904 |
@@ -147,25 +151,25 @@ All values are deterministic central-calibration projections. The two margins ar
 | 94% | 19 244 | 20 131 | 21 018 | 21 905 | 22 794 | 23 682 |
 | 100% | 19 463 | 20 358 | 21 253 | 22 149 | 23 046 | 23 943 |
 
-The full grid is in `outputs/tables/breakeven_grid.csv`. A 14.5% reduction in emigration matches a 30% training expansion; a 62% training expansion matches a 30% retention effect.
+The full grid is in `outputs/tables/breakeven_grid.csv`. A 14.5% reduction in emigration matches a 30% graduate-output expansion; a 62% graduate-output expansion matches a 30% retention effect.
 
 ### Table S9. Diaspora sensitivity (selected values, initial pool 4 000)
 
 | Diaspora attrition δ | Return rate ρ | Pool 2024 | BAU 2040 | Return scenario 2040 | Return advantage 2040 | Attempt probability | Successful-return probability | Mean duration (years) |
 |---|---|---|---|---|---|---|---|---|
-| 0.02 | 0.005 | 8 055 | 16 267 | 16 729 | 463 | 0.200 | 0.175 | 41.2 |
-| 0.02 | 0.020 | 8 050 | 16 436 | 18 074 | 1 638 | 0.500 | 0.459 | 27.0 |
-| 0.02 | 0.040 | 8 044 | 16 635 | 19 443 | 2 808 | 0.667 | 0.630 | 18.5 |
-| 0.08 | 0.005 | 4 288 | 16 101 | 16 333 | 232 | 0.059 | 0.050 | 11.9 |
-| 0.08 | 0.020 | 4 312 | 15 821 | 16 689 | 868 | 0.200 | 0.175 | 10.3 |
-| 0.08 | 0.040 | 4 342 | 15 519 | 17 109 | 1 590 | 0.333 | 0.298 | 8.8 |
+| 0.02 | 0.005 | 8 055 | 16 267 | 16 729 | 463 | 0.201 | 0.176 | 41.4 |
+| 0.02 | 0.020 | 8 050 | 16 436 | 18 074 | 1 638 | 0.505 | 0.464 | 27.3 |
+| 0.02 | 0.040 | 8 044 | 16 635 | 19 443 | 2 808 | 0.676 | 0.638 | 18.8 |
+| 0.08 | 0.005 | 4 288 | 16 101 | 16 333 | 232 | 0.059 | 0.051 | 11.9 |
+| 0.08 | 0.020 | 4 312 | 15 821 | 16 689 | 868 | 0.203 | 0.178 | 10.5 |
+| 0.08 | 0.040 | 4 342 | 15 519 | 17 109 | 1 590 | 0.342 | 0.306 | 9.0 |
 | 0.15 | 0.005 | 2 367 | 16 082 | 16 218 | 137 | 0.032 | 0.028 | 6.5 |
-| 0.15 | 0.020 | 2 406 | 15 742 | 16 270 | 529 | 0.118 | 0.102 | 6.0 |
-| 0.15 | 0.040 | 2 456 | 15 350 | 16 362 | 1 012 | 0.211 | 0.185 | 5.4 |
+| 0.15 | 0.020 | 2 406 | 15 742 | 16 270 | 529 | 0.120 | 0.103 | 6.1 |
+| 0.15 | 0.040 | 2 456 | 15 350 | 16 362 | 1 012 | 0.217 | 0.190 | 5.6 |
 
-The attempt probability is ρ/(ρ+δ); the successful-return probability is θρ/(θρ+δ); mean duration is 1/(θρ+δ). The full sensitivity over initial pool 2 000–8 000 is in `outputs/tables/diaspora_sensitivity.csv`. The return advantage ranges from 134 to 3 556 physicians; the 2024 pool ranges from 2 232 to 10 898; successful-return probability ranges from 0.028 to 0.630.
+The exact discrete-time probabilities under the implemented annual order are: attempt = ρ/[1−(1−ρ)(1−δ)]; successful return = θρ/[1−(1−θρ)(1−δ)]; mean duration = 1/[1−(1−θρ)(1−δ)]. These are competing-risk approximations to the annual transition, not continuous-time limits. The full sensitivity over initial pool 2 000–8 000 is in `outputs/tables/diaspora_sensitivity.csv`. The return advantage ranges from 134 to 3 556 physicians; the 2024 pool ranges from 2 232 to 10 898; successful-return probability ranges from 0.028 to 0.638.
 
-**No-recycling sensitivity (central parameters).** With re-emigrants permanently outside the pool: pool 2024 4 199, successful returns 2024 79, BAU 2040 15 811, return 2040 16 639, return advantage 828, attempt probability 0.20, successful-return probability 0.170, mean duration 10.0 years. The full table is in `outputs/tables/return_accounting_sensitivity.csv`.
+**No-recycling sensitivity (central parameters).** With re-emigrants permanently outside the pool: pool 2024 4 199, successful returns 2024 79, BAU 2040 15 811, return 2040 16 639, return advantage 828, attempt probability 0.203, successful-return probability 0.173, mean duration 10.2 years. The full table is in `outputs/tables/return_accounting_sensitivity.csv`.
 
 ### Table S10. Specification sensitivity: lag, age shape, retirement and mortality
 
@@ -190,15 +194,15 @@ The lag is the interval between graduation and entry into practice. The younger 
 
 ### Table S11. Exploratory fiscal and resource cost ratios, 2026–2040
 
-| Scenario | Fiscal transfer (TND million) | Real resource cost (TND million) | Total cost (TND million) | Cost per physician-year, total (TND) | Low unit costs | High unit costs | Cost per additional physician in 2040 (TND) |
-|---|---|---|---|---|---|---|---|
-| Remuneration and conditions | 2 177 | 0 | 2 177 | 124 176 | 62 088 | 248 352 | 960 652 |
-| Career development | 0 | 731 | 731 | 83 443 | 41 722 | 166 886 | 645 781 |
-| Return migration | 0 | 36 | 36 | 5 346 | 2 673 | 10 692 | 40 993 |
-| Hypothetical graduate-output expansion | 0 | 979 | 979 | 299 443 | 149 722 | 598 887 | 895 945 |
-| Combined strategy | 2 626 | 18 | 2 644 | 101 358 | 50 679 | 202 716 | 791 402 |
+| Scenario | Fiscal transfer (TND million) | Real resource cost (TND million) | Fiscal transfer per additional physician-year (TND) | Resource cost per additional physician-year (TND) | Additional physicians 2040 |
+|---|---|---|---|---|---|
+| Remuneration and conditions | 2 177 | 0 | 124 176 | 0 | 2 266 |
+| Career development | 0 | 731 | 0 | 83 443 | 1 132 |
+| Return migration | 0 | 36 | 0 | 5 346 | 868 |
+| Hypothetical graduate-output expansion | 0 | 979 | 0 | 299 443 | 1 092 |
+| Combined strategy | 2 626 | 18 | 100 658 | 700 | 3 341 |
 
-Assumptions: 30% increment on an average public-sector compensation of TND 72 000 per physician-year; TND 3 000 per practising physician-year for career development; TND 250 000 per additional graduate; TND 40 000 per additional return migrant. Fiscal transfers are payments; resource costs are training, career-development and return-programme costs. Costs are undiscounted 2025 TND and exclude infrastructure, demand-side costs and health gains. Fiscal transfers and resource costs are not commensurable and should not be ranked against each other. This is not a cost-effectiveness, budget-impact or value-for-money analysis.
+Assumptions: 30% increment on an average public-sector compensation of TND 72 000 per physician-year; TND 3 000 per practising physician-year for career development; TND 250 000 per additional graduate; TND 40 000 per additional return migrant. Fiscal transfers are payments; resource costs are training, career-development and return-programme costs. Costs are undiscounted 2025 TND; ratios use physician-years relative to business as usual. They exclude infrastructure, demand-side costs and health gains. Fiscal transfers and resource costs are not commensurable, are reported separately and are not summed. The combined package is costed as a 35% public-sector increment plus return-programme costs; no separate career-development line is added. Unit-cost ranges (0.5–2.0×) are in Fig. S2. This is not a cost-effectiveness, budget-impact or value-for-money analysis.
 
 ### Table S12. Validation checks
 
@@ -217,7 +221,7 @@ Assumptions: 30% increment on an average public-sector compensation of TND 72 00
 | PRCCs within [−1, 1] | Pass | — |
 | Return flow components additive | Pass | Gross = successful + re-emigration |
 | Return retention matches flow | Pass | 0.85 |
-| Return probabilities ordered | Pass | 0.170 < 0.200 < 1 |
+| Return probabilities ordered | Pass | success 0.178 < attempt 0.203 < 1 |
 | No-recycling flow identity | Pass | — |
 
 These checks establish numerical consistency, not external validity.
@@ -263,7 +267,7 @@ Number formatting in this file uses spaces as thousands separators, matching the
 
 ### Table S14. Calibration endpoint sensitivity
 
-| Calibration target | Target stock | Calibrated flow | Simulated 2024 stock | BAU 2040 | Combined 2040 | Training 2040 |
+| Calibration target | Target stock | Calibrated flow | Simulated 2024 stock | BAU 2040 | Combined 2040 | Graduate-output 2040 |
 |---|---|---|---|---|---|---|
 | 2019 | 15 426 | 306.4 | 15 426 | 16 032 | 19 316 | 17 125 |
 | 2022 | 15 013 | 346.1 | 15 013 | 15 247 | 18 743 | 16 340 |
@@ -271,19 +275,19 @@ Number formatting in this file uses spaces as thousands separators, matching the
 
 The 2019 and 2022 endpoints are sensitivity analyses for the 2020–2021 public-sector discontinuity, not alternative validations. Full results are in calibration_endpoint_sensitivity.csv.
 
-### Table S15. Policy effect and training implementation sensitivity
+### Table S15. Policy effect and expansion implementation sensitivity
 
-| Scenario or specification | Workforce 2040 | Difference from central BAU | Difference from 30% training |
+| Scenario or specification | Workforce 2040 | Difference from central BAU | Difference from 30% graduate output |
 |---|---|---|---|
 | Remuneration, 10% reduction | 16 576 | +755 | −338 |
 | Career development, 5% reduction | 16 198 | +377 | −715 |
 | Return migration, 1.35× | 16 238 | +417 | −676 |
 | Combined, 20% reduction + 1.35× return | 17 701 | +1 880 | +787 |
-| Training, +30% graduate output | 16 914 | +1 092 | 0 |
-| Training, +27% (90% completion) | 16 804 | +983 | −109 |
-| Training, +24% (80% completion) | 16 695 | +874 | −219 |
+| Graduate output, +30% | 16 914 | +1 092 | 0 |
+| Graduate output, +27% (90% completion) | 16 804 | +983 | −109 |
+| Graduate output, +24% (80% completion) | 16 695 | +874 | −219 |
 
-Small retention and return effects do not beat the 30% graduate-output expansion; only the constructed combined package does. Full grids are in effect_retention.csv, effect_return.csv, effect_training.csv and 	raining_implementation.csv.
+Small retention and return effects do not beat the 30% graduate-output expansion; only the constructed combined package does. Full grids are in effect_retention.csv, effect_return.csv, effect_training.csv and training_implementation.csv.
 
 ### Table S16. PRCC bootstrap stability
 
@@ -308,7 +312,7 @@ Bootstrap 90% intervals from 1 000 resamples of the 4 000 Monte Carlo draws. Poi
 
 | Specification | Pool 2024 | Successful returns 2024 | BAU 2040 | Return 2040 | Return advantage 2040 | Attempt probability | Successful-return probability | Mean duration (years) |
 |---|---|---|---|---|---|---|---|---|
-| Recycling (central) | 4 312 | 81 | 15 821 | 16 689 | 868 | 0.200 | 0.175 | 10.3 |
-| No recycling | 4 199 | 79 | 15 811 | 16 639 | 828 | 0.200 | 0.170 | 10.0 |
+| Recycling (central) | 4 312 | 81 | 15 821 | 16 689 | 868 | 0.203 | 0.178 | 10.5 |
+| No recycling | 4 199 | 79 | 15 811 | 16 639 | 828 | 0.203 | 0.173 | 10.2 |
 
 Recycling means unsuccessful return attempts rejoin the pool immediately. No recycling removes them permanently. Both specifications use θ = 0.85, ρ = 0.02 and δ = 0.08.

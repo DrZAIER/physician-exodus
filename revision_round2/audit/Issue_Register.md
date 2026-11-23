@@ -38,7 +38,7 @@
 
 | ID | Issue | Severity | Action taken | Status |
 |---|---|---|---|---|
-| R2-1 | Return-pool accounting inconsistent with reported 20% eventual return and 10-year duration | Major | Corrected metrics: 20% attempt, 17.5% success, 10.3 years; added no-recycling sensitivity | Closed |
+| R2-1 | Return-pool accounting inconsistent with reported 20% eventual return and 10-year duration | Major | Corrected metrics to exact discrete-time: 20.3% attempt, 17.8% success, 10.5 years; added no-recycling sensitivity | Closed |
 | R2-2 | Remuneration “robustly” outperforms training, but at φ=0 it is 27 below training | Major | Bounded claim to Monte Carlo φ prior; explicit φ=0 exception in Abstract, Results, Discussion, Conclusion | Closed |
 | R2-3 | Policy effect sizes presented too confidently | Major | Added conservative effect grid; 10% remuneration, 5% career, 1.35× return below training; only combined above | Closed |
 | R2-4 | Training scenario could be read as the announced admissions policy | Major | Relabelled hypothetical graduate-output expansion; completion 80–100% sensitivity | Closed |
@@ -46,7 +46,12 @@
 | R2-6 | 2020–2023 residual and endpoint not sufficiently interrogated | Moderate | Added 2019/2022 calibration endpoints; residual described as unresolved, not migration evidence | Closed |
 | R2-7 | Age structure uncertainty underemphasised | Major | 14 961–16 570 range added to Abstract, Results, Discussion, limitations | Closed |
 | R2-8 | Administrative/press indicators compared loosely | Moderate | Defined 374 as annualised H1 2023 removal requests; press estimates near φ=1 upper bound only | Closed |
-| R2-9 | Cost analysis mixed fiscal and resource categories | Moderate | Removed cost from Table 5/abstract; moved panel to Fig. S2; explicit non-comparability | Closed |
+| R2-9 | Cost analysis mixed fiscal and resource categories | Moderate | Removed cost from Table 5/abstract; moved panel to Fig. S2; Table 6 and Fig. S2 now report categories separately without summing, stacking or ranking | Closed |
 | R2-10 | PRCC stability not documented | Moderate | Bootstrap 90% intervals from 1 000 resamples; conditional interpretation stated | Closed |
 | R2-11 | Flow decomposition cohort year ambiguous | Minor | Added 2019 cohort (1 091) note; 2024 cohort (1 305) enters 2029 | Closed |
 | R2-12 | Calibration could be read as validation | Minor | Calibration labelled fitting condition; QA wording corrected | Closed |
+| R2-13 | Table 4 “Stock” column could be read as observed | Moderate | Renamed to “Modelled practising stock”; note gives 2017 and 2020 observed comparisons and labels all flows model-implied | Closed |
+| R2-14 | Return transition equation easy to misread; metrics were continuous-time approximations | Moderate | Explicit discrete-time equation with gross attempts, successful returns, recycled attempts and net θρ removal; exact competing-risk metrics in text and S17 | Closed |
+| R2-15 | Fig. S2 silently missing from supplement DOCX | Moderate | Image paths corrected; both supplementary figures verified embedded | Closed |
+| R2-16 | Figure package and reproducibility not verifiable from DOCX | Moderate | Figure inventory and captions cross-checked; repository contents and pipeline scope documented in QA/README | Documented (author check) |
+| R2-17 | Declarations and repository identifiers incomplete | Required | Cannot be invented; retained as explicit placeholders and listed as submission blockers | Open (author action) |
