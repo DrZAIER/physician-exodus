@@ -189,6 +189,22 @@ page and line numbering, double spacing, and editable table objects.
 Current length: 3 661 words (Background–Conclusions) and 339 words (abstract),
 i.e. 4 000 words including the abstract, within the 4 000-word limit.
 
+## Version control
+
+The repository is initialised with Git. `main` holds the pre-revision baseline;
+`revision` holds the peer-review revision. To publish it on GitHub:
+
+```bash
+git remote add origin https://github.com/<owner>/physician-exodus.git
+git push -u origin main
+git push -u origin revision
+```
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs the test suite on
+every push and pull request. The `gh` command-line tool was not available in the
+authoring environment, so the remote must be created in the GitHub web interface
+or with an authenticated `gh` installation.
+
 ## Licence and citation
 
 Code: MIT licence. Derived data tables: CC BY 4.0, with attribution to the
