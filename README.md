@@ -191,13 +191,16 @@ i.e. 3 985 words including the abstract, within the 4 000-word limit.
 
 ## Version control
 
-The repository is initialised with Git. `main` holds the pre-revision baseline;
-`revision` holds the peer-review revision. To publish it on GitHub:
+The repository is initialised with Git. `main` holds the current revision; the
+pre-revision baseline is commit `3f40cfb`, tagged `pre-review-baseline`.
+`revision` is the development branch used for the peer-review response. To
+publish it on GitHub:
 
 ```bash
 git remote add origin https://github.com/<owner>/physician-exodus.git
 git push -u origin main
 git push -u origin revision
+git push --tags
 ```
 
 A GitHub Actions workflow (`.github/workflows/ci.yml`) runs the test suite on
