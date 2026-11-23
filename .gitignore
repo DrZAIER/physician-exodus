@@ -10,3 +10,4 @@ env/
 ~$*
 _review_tmp/
 outputs/mc_draws.csv
+revision/outputs/mc_draws.csv

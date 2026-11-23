@@ -1,0 +1,17 @@
+Parameter,Central value,Range / distribution,Status,Source
+"Practising physicians, 2024",15 315,—,Observed,INS / Ministry of Health
+"Practising physicians, 2017–2024",14 892–15 426,—,Observed,INS / Ministry of Health
+"Medical graduates, 2013 / 2021 / 2024",987 / 1 128 / 1 305,987–1 900,Observed / reconstructed,Zehnati 2024; ministerial statements
+"Pipeline retention, σ",0.55,0.30–0.80,"Estimated (calibrated, weakly identified)",Model calibration; flow reconciliation
+"Post-entry emigration, 2024, m",317,calibrated per draw,"Estimated (calibrated, weakly identified)",Model calibration
+"Total emigration, 2024",563,262–1017 (consistent set),Estimated (model-consistent),Derived; conditional on other parameters
+"Pipeline non-entry share, 1−σ",0.45,0.20–0.70,Assumption (implied by σ),Model structure
+"Pre-entry share of total emigration, 2024",0.44,varies with σ and training output,Derived,Model output
+"Return rate from return-eligible pool, ρ",0.020,0.005–0.050,Assumption,No Tunisian data; informed by Varga 2017
+"Diaspora attrition (death, onward migration, settlement)",0.08,0.02–0.15,Assumption,Calibrated to keep pool near destination stocks
+Return retention (share of returns remaining in practice),0.85,0.75–0.95,Assumption,Re-emigration and non-practice of return migrants
+Retirement age,60–70,±1.5 years,Observed (legal) + assumption,Law 2019-37; CNRPS/CNSS
+"Initial practising stock, 2008",12 600,Normal (SD 400),Indirect estimate,WHO 2010; CNOM 2008
+"Initial return-eligible pool, 2008",4 000,2 000–8 000,Indirect estimate,OECD 2018; CNOM France; German statistics
+"Population, 2024",11 972 169,—,Observed,INS 2024 census
+"Population growth, 2024–2040",0.33%/yr,UN WPP medium variant,Projected,UN WPP 2024
