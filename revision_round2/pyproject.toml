@@ -1,0 +1,19 @@
+[project]
+name = "physician-exodus"
+version = "1.1.0"
+description = "Stock-and-flow model of Tunisia's physician workforce with retention, return and training scenarios"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Physician Exodus authors" }]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+    "python-docx>=1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

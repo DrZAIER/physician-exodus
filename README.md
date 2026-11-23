@@ -189,6 +189,10 @@ page and line numbering, double spacing, and editable table objects.
 Current length: 3 646 words (Background–Conclusions) and 339 words (abstract),
 i.e. 3 985 words including the abstract, within the 4 000-word limit.
 
+## Round 2 revision
+
+The Round-2 scientific revision (v2.1.0) is in `revision_round2/`. It corrects the return-pool accounting, bounds the policy-ranking claims, adds conservative-effect, training-completion, calibration-endpoint and PRCC-stability analyses, and includes the revised manuscript and supplement. See `revision_round2/README.md`.
+
 ## Version control
 
 The repository is initialised with Git. `main` holds the current revision; the
