@@ -1,5 +1,5 @@
-Case,Pipeline retention,Training multiplier,RMSE,Implied emigration 2024,Return-eligible pool 2024
-Best fit,0.375,0.85,238.36586057221777,581.9324023778001,4830.680680827459
-Central,0.55,1.0,276.8552077574581,840.2848841531784,6233.678504107658
-Acceptable set (RMSE ≤ 2% of mean stock),0.30–0.70,0.85–1.50,≤ 302,582–1497,4831–10568
-Strict set (RMSE ≤ 1.10 × best),0.30–0.55,0.85–1.50,≤ 262,582–1450,—
+Case,Pipeline retention,Training multiplier,RMSE,Pipeline non-entry 2024,International emigration 2024 (φ=0.5),Upper bound if all non-entry emigrated (φ=1),Return-eligible pool 2024
+Best fit,0.225,1.6,271.35588108342296,1168.1702341141254,590.6853659123797,1174.7704829694424,4965.591888507609
+Central,0.55,1.0,339.7659657850382,423.9327462510937,429.3633695992623,641.3297427248092,3520.5769494870565
+Acceptable set (RMSE ≤ 2% of mean stock),0.23–0.55,0.80–1.60,≤ 302,339–1168,196–658,385–1204,2126–5309
+Strict set (RMSE ≤ 1.10 × best),0.23–0.53,0.80–1.60,≤ 298,—,196–658,385–1204,—

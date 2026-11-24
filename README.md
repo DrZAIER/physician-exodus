@@ -1,122 +1,42 @@
-# Physician emigration and retention policies in Tunisia
+# Physician Exodus — Tunisia physician workforce model
 
-A reproducible stock-and-flow model of Tunisia's physician workforce, with policy
-scenarios for retention, return migration and training expansion (2024–2040).
-
-This repository accompanies a manuscript prepared for *Human Resources for Health*.
-The revision responds to a major-revision review: it separates the pre- and
-post-entry emigration margins, uses exact calibration and true partial rank
-correlations, reconciles the return-eligible diaspora pool with destination-country
-stocks, adds a break-even analysis and illustrative costs, and provides an
-item-level 30-item reporting checklist.
-
----
+**Version:** 3.0.0  
+**Manuscript:** Retention, return or training? A stock-and-flow simulation of Tunisia's physician workforce under incomplete migration data  
+**Target journal:** *Health Care Science* (Wiley / Tsinghua University Press), Original Article  
+**Public repository:** https://github.com/DrZAIER/physician-exodus  
+**Release:** tag and branch `v3.0.0`. The repository's `main` branch currently contains a separate R-based project; the Python model lineage is published under `v3.0.0`, with the earlier model under `v2.1.2`.
 
 ## What the model does
 
-The model projects the number of **physicians in active practice in Tunisia** by
-single year of age. Each year, the stock changes through:
+The model projects the number of physicians in active practice in Tunisia by single year of age, 2008–2040. Each year, the stock changes through:
 
 - entry of graduates who complete postgraduate training and remain in Tunisia;
-- emigration before entry (during or immediately after training);
-- emigration from the practising stock;
-- return migration from a return-eligible diaspora pool with attrition;
+- pre-entry international emigration (the φ share of pipeline non-entry);
+- domestic non-entry (further training, non-clinical work, inactivity);
+- post-entry emigration from the practising stock;
+- return migration from a return-eligible accounting pool;
 - retirement and mortality.
 
-The model is deliberately parsimonious. It does **not** estimate demand, specialty
-mix, public/private allocation or wages. It is a supply-side cohort-component
-model in the tradition of the JRC SANDEM framework, adapted to a setting where
-age-specific migration flows are not observed.
+The model is deliberately parsimonious. It is a **supply-only** national model. It does not estimate demand, adequacy, specialty mix, regional distribution, productivity, quality of care or the causal effect of policy. The return-eligible pool is an accounting construct, not a measured diaspora.
 
-## Key results
+## Key results (central calibration)
 
-| Quantity | Central estimate |
-|---|---|
-| Practising physicians, 2024 | 15 315 (1.28 per 1 000) |
-| Baseline, 2040 | 16 019 (90% interval 14 514–17 565; 1.26 per 1 000) |
-| Combined retention and return, 2040 | 21 125 (+5 106; 39 692 physician-years) |
-| Remuneration and conditions, 2040 | 19 504 (+3 485; 26 866 physician-years) |
-| Career development, 2040 | 17 760 (+1 741; 13 427 physician-years) |
-| Return migration, 2040 | 17 320 (+1 301; 9 910 physician-years) |
-| Training expansion (+30%), 2040 | 17 131 (+1 112; 3 316 physician-years) |
-| Identified annual emigration, 2024 | 582–1 497 (582–1 405 after destination-stock check) |
-| Retention effect matching 30% training | 9.6% reduction in emigration |
-| Training expansion matching 30% retention | 94% |
+| Quantity | Value |
+|---|---:|
+| Practising physicians, 2024 | 15 315 |
+| Baseline 2040 | 17 262 |
+| Baseline Monte Carlo median (90% simulation interval) | 17 439 (15 823–19 246) |
+| Remuneration and conditions, 2040 | 19 172 (+1 910) |
+| Career development, 2040 | 18 216 (+955) |
+| Return migration, 2040 | 17 983 (+722) |
+| Doctorate-output expansion (+30%), 2040 | 18 498 (+1 237) |
+| Combined strategy, 2040 | 20 068 (+2 807) |
+| Retention reduction matching 30% training expansion | 19.4% |
+| Training expansion matching 30% retention effect | 46.3% |
 
-The baseline is a plateau, not a collapse. Retention and return outperform
-training within 15 years, but the advantage is a modest arithmetic threshold.
-The level of emigration is not identifiable from the aggregate stock path.
+The ranking is conditional on the unobserved emigration share φ, the assumed policy effect sizes, the age structure and the 9–12-year training pipeline. It is not a forecast or a causal estimate.
 
-## Key data caveats
-
-Three different quantities are often conflated in Tunisian policy debate:
-
-| Concept | Approximate magnitude | Source |
-|---|---|---|
-| Physicians **registered** with the Ordre (CNOM) | 27 935 (2022); 31 804 directory records (2026) | CNOM |
-| Physicians **in active practice** (public + private) | 15 315 (2024) | INS / Ministry of Health |
-| Physicians **trained in Tunisia** practising abroad | ≥2 500 in France and Germany alone; ~4 000 in OECD countries (2015/16) | CNOM France; German statistics; OECD |
-
-The model is calibrated to the **practising** stock, not to registrations. Annual
-emigration is **not directly observed**; it is inferred from the stock path
-conditional on training output and retirement. The repository includes an
-explicit identifiability analysis showing which combinations of parameters are
-consistent with the same observed history.
-
-The return-eligible diaspora pool is **not** a diaspora estimate. It is an
-accounting device with an explicit attrition hazard (death abroad, onward
-migration and permanent settlement), calibrated to remain within the range
-implied by destination-country stocks. Return migrants are assumed to remain in
-practice with probability 0.85.
-
-## Repository structure
-
-```
-.
-├── data/
-│   ├── raw/                     # downloaded source documents (PDF, text)
-│   └── processed/               # analysis-ready CSV files
-│       ├── tunisia_physician_workforce.csv
-│       ├── tunisia_registration_and_flows.csv
-│       └── population_tunisia.csv
-├── src/
-│   ├── model.py                 # model equations and simulation engine
-│   ├── analysis.py              # calibration, scenarios, uncertainty, figures, tables
-│   ├── build_docx.py            # submission DOCX builder
-│   └── fig_flow.py              # supplementary flow diagram
-├── tests/
-│   ├── test_model.py            # calibration, flow identity, hazards, scenarios
-│   └── test_analysis.py         # PRCC helper
-├── outputs/
-│   ├── figures/                 # publication figures (PNG + PDF)
-│   ├── tables/                  # parameter, scenario, results, sensitivity, cost tables
-│   ├── key_numbers.md           # all numbers cited in the manuscript
-│   ├── validation_report.md     # automated consistency checks
-│   ├── results_summary.json     # machine-readable summary
-│   └── environment.txt          # Python and package versions
-├── docs/
-│   ├── 01_evidence_and_data_assessment.md
-│   ├── 02_model_methodology.md
-│   └── 03_reporting_checklist.md
-├── manuscript/
-│   ├── manuscript.md            # editable copy of the submission manuscript
-│   └── additional_file_1.md
-├── submission/
-│   ├── Manuscript_HRH.md / .docx
-│   ├── Additional_file_1.md / .docx
-│   ├── Title_page.md
-│   ├── Cover_letter.md / .docx
-│   ├── Submission_checklist.md
-│   └── Figures/Fig1.pdf … Fig9.pdf, FigS1.pdf
-├── .github/workflows/ci.yml
-├── run_all.py
-├── requirements.txt
-└── README.md
-```
-
-## Reproducing the analysis
-
-Requires Python 3.10+ (tested with 3.14).
+## Reproduce
 
 ```bash
 pip install -r requirements.txt
@@ -124,98 +44,75 @@ python run_all.py
 pytest -q
 ```
 
-Runtime is about 2–4 minutes on a laptop. All outputs are written to `outputs/`.
-The random seed is fixed (`20261121`) so results are exactly reproducible.
+The pipeline uses 4 000 Monte Carlo draws and the fixed seed `20261121`. It regenerates all tables, figures, `key_numbers.md`, `results_summary.json` and `validation_report.md`.
 
-The pipeline writes:
+**Reference environment:** Python 3.14.7; NumPy 2.5.2; pandas 3.0.5; SciPy 1.18.1; Matplotlib 3.11.1; Windows 11. See `outputs/environment.txt`.
 
-- `outputs/key_numbers.md` — every number cited in the manuscript;
-- `outputs/validation_report.md` — calibration, flow-identity and ranking checks;
-- `outputs/results_summary.json` — machine-readable results;
-- `outputs/tables/` — CSV versions of all tables and sensitivity grids;
-- `outputs/figures/` — PNG and PDF versions of all figures.
+## Repository structure
 
-To rebuild the Word files after editing the markdown:
-
-```bash
-python src/build_docx.py
+```
+.
+├── VERSION
+├── RELEASE_NOTES.md
+├── CITATION.cff
+├── LICENSE
+├── requirements.txt
+├── pyproject.toml
+├── run_all.py
+├── src/
+│   ├── model.py
+│   ├── analysis.py
+│   ├── build_docx.py
+│   └── fig_flow.py
+├── data/
+│   ├── raw/
+│   └── processed/
+├── data_dictionary/
+│   └── data_provenance.md
+├── tests/
+│   ├── test_model.py
+│   └── test_analysis.py
+└── outputs/
+    ├── figures/
+    ├── tables/
+    ├── key_numbers.md
+    ├── results_summary.json
+    ├── validation_report.md
+    └── environment.txt
 ```
 
-## Model parameters
+## Data
 
-All parameters, their plausible ranges and their evidence status (observed,
-estimated, assumed) are documented in `docs/02_model_methodology.md`,
-`outputs/tables/table2_parameters.csv` and Additional file 1, Table S4.
+The processed CSVs are analysis-ready aggregate data. The raw source PDFs are retained for audit verification and remain subject to the original publishers' terms. See `data_dictionary/data_provenance.md` and supplementary Table S2 for sources, access dates, transformations and limitations.
 
-The Monte Carlo priors are chosen to cover the identified range of σ and
-training output. The post-entry emigration flow `m` is recalibrated exactly for
-every draw; the maximum absolute calibration error is 0.14 physicians across
-2 000 draws.
+Key data caveats:
 
-## What the model cannot establish
+- The practising stock is from INS/Ministry of Health; 2024 = 15 315.
+- The 2010 WHO estimate (12 996) is an initial-condition anchor only.
+- The 2013/2021 doctorate counts are from Zehnati 2024; the 2024 value (1 305) is a 5.0%/year extrapolation, not an observation.
+- Destination stocks are lower bounds with different definitions.
+- The 2020–2021 public-sector count contains a known discontinuity.
+- The return-eligible pool is an accounting construct, not a measured diaspora.
 
-- It does not identify the true level of emigration. The observed stock path is
-  consistent with 582–1 497 annual emigrants depending on how many graduates
-  enter practice; a destination-stock check narrows this to 582–1 405.
-- It does not estimate causal effects of policies. Scenario effects are
-  **assumed effect sizes**, tested across plausible ranges.
-- It does not model demand, vacancies, regional maldistribution, specialty mix
-  or quality of care.
-- It does not model temporary or circular migration explicitly; return migrants
-  are assumed to remain in practice with probability 0.85.
-- It is not externally validated. The historical comparison is a retrospective
-  consistency check (hindcast), not validation against independent data.
-- The cost figures are illustrative, undiscounted and exclude infrastructure and
-  demand-side costs. Wages are transfers, not resource costs.
+## Tests and validation
 
-## Submission package (*Human Resources for Health*)
+`pytest -q` runs 21 tests covering calibration, stock-flow identity, pipeline identity, training lags, age progression, non-negative stocks, return accounting, scenario consistency, PRCC helper, density conversion, discounting and draw reproducibility. `outputs/validation_report.md` reports PASS.
 
-The journal requires a maximum of 4 000 words (excluding tables, figures and
-additional files), a structured abstract of ≤350 words, Vancouver references,
-page and line numbering, double spacing, and editable table objects.
+## Version comparison
 
-`submission/` contains:
+See `RELEASE_NOTES.md` for the differences from `v2.1.2` (2 000 vs 4 000 draws; baseline 16 019 vs 17 262; combined 21 125 vs 20 068; uniform five-year vs cohort-specific 3–6-year post-doctorate lag; no φ separation vs separated non-entry).
 
-| File | Purpose |
-|---|---|
-| `Manuscript_HRH.docx` | Submission-formatted manuscript (double spacing, continuous line numbers, page numbers, tables, legends) |
-| `Manuscript_HRH.md` | Editable source |
-| `Title_page.md` | Standalone title page |
-| `Cover_letter.docx` / `.md` | Cover letter with the journal's required declarations |
-| `Additional_file_1.docx` / `.md` | Supplementary tables and item-level 30-item reporting checklist |
-| `Figures/Fig1.pdf` … `Fig9.pdf`, `FigS1.pdf` | Figure files, renamed for submission |
-| `Submission_checklist.md` | Requirement-by-requirement checklist and author actions |
+## Release status and remaining steps
 
-Current length: 3 646 words (Background–Conclusions) and 339 words (abstract),
-i.e. 3 985 words including the abstract, within the 4 000-word limit.
+The `v3.0.0` tag was created from the Python model lineage on 24 November 2026 and pushed to the public repository. The release contains the Round 3 cohort-specific model, 4 000-draw Monte Carlo analysis, 21 tests and the regenerated outputs.
 
-## Round 2 revision
+Remaining optional steps:
 
-The Round-2 scientific revision (v2.1.2) is in `revision_round2/`. It corrects the return-pool accounting, bounds the policy-ranking claims, adds conservative-effect, training-completion, calibration-endpoint and PRCC-stability analyses, separates fiscal from resource costs, and includes the revised manuscript and supplement. See `revision_round2/README.md`.
+1. Confirm the license (`MIT` for code; `CC-BY-4.0` recommended for documentation and derived data).
+2. Review the raw source PDFs and remove them if the publisher's terms do not permit redistribution.
+3. Archive the release on Zenodo and obtain a DOI.
+4. Add the final manuscript citation when published.
 
-## Version control
+## Citation
 
-The repository is initialised with Git. `main` holds the current revision; the
-pre-revision baseline is commit `3f40cfb`, tagged `pre-review-baseline`.
-`revision` is the development branch used for the peer-review response. To
-publish it on GitHub:
-
-```bash
-git remote add origin https://github.com/<owner>/physician-exodus.git
-git push -u origin main
-git push -u origin revision
-git push --tags
-```
-
-A GitHub Actions workflow (`.github/workflows/ci.yml`) runs the test suite on
-every push and pull request. The `gh` command-line tool was not available in the
-authoring environment, so the remote must be created in the GitHub web interface
-or with an authenticated `gh` installation.
-
-## Licence and citation
-
-Code: MIT licence. Derived data tables: CC BY 4.0, with attribution to the
-original sources listed in each file.
-
-If you use this work, please cite the accompanying manuscript (see
-`submission/Manuscript_HRH.md`).
+If you use the model, cite the manuscript and the software release. See `CITATION.cff`.

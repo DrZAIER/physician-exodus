@@ -11,7 +11,7 @@ Outputs
 - true partial rank correlations (PRCC) and one-at-a-time sensitivity
 - structural escalation on the post-entry margin only and on both margins
 - break-even analysis between retention and training
-- diaspora and graduate-output sensitivity
+- diaspora and doctorate-output sensitivity
 - illustrative cost per additional physician-year
 - publication figures and tables
 - a JSON and markdown summary of all numbers cited in the manuscript
@@ -33,7 +33,8 @@ from scipy.stats import pearsonr, rankdata, spearmanr
 
 sys.path.insert(0, os.path.dirname(__file__))
 from model import (  # noqa: E402
-    AGES, BASE_SCENARIO, Params, graduates, simulate,
+    AGES, BASE_SCENARIO, Params, graduates, mortality_hazard,
+    retirement_hazard, simulate,
 )
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,8 +70,8 @@ OECD_LOWER_BOUND = 4000
 # Scenarios
 # ---------------------------------------------------------------------------
 # Central effect sizes. `emig_mult` scales post-entry emigration;
-# `entry_retention` is the proportional reduction of pre-entry emigration
-# (equivalently, a proportional reduction of the pipeline non-entry share);
+# `entry_retention` is the proportional reduction of PRE-ENTRY INTERNATIONAL
+# emigration (phi times pipeline non-entry), not of all pipeline non-entry;
 # `return_mult` scales the annual return rate; `train_mult` scales graduates
 # from 2031.
 SCENARIOS = {
@@ -104,9 +105,15 @@ EFFECT_RANGE = {
 }
 
 CENTRAL = Params(
-    sigma=0.55, g_scale=1.0, initial_stock_2008=12600,
+    sigma=0.55, phi=0.50, g_scale=1.0, initial_stock_2008=12600,
     retire_shift=0.0, emig_tilt=1.0, rho=0.02, diaspora_attrition=0.08,
-    return_retention=0.85,
+    return_retention=0.85, return_recycling=True,
+    age_shape="uniform", mortality_mult=1.0,
+    # Round 3: cohort- and track-specific training pipeline. The total path
+    # from admission to independent practice is 9-12 years (S=6 plus L=3-6);
+    # the uniform entry_lag is retained only for sensitivity analysis.
+    cohort_lag=True, service_share=0.60, fm_share=0.50,
+    gp_share_pre2011=0.55,
 )
 
 # ---------------------------------------------------------------------------
@@ -130,7 +137,7 @@ COL = {
 LABELS = {
     "BAU": "Business as usual", "REMUN": "Remuneration / conditions",
     "CAREER": "Career development", "RETURN": "Return migration",
-    "TRAINING": "Training expansion", "COMBINED": "Combined strategy",
+    "TRAINING": "Doctorate-output expansion", "COMBINED": "Combined strategy",
 }
 
 
@@ -206,14 +213,22 @@ def summarise(o: dict, base: dict | None = None, start: int = 2026,
         "cum_emigration": float(np.sum((o["emig_pre"] + o["emig_post"])[mask])),
         "cum_emig_pre": float(np.sum(o["emig_pre"][mask])),
         "cum_emig_post": float(np.sum(o["emig_post"][mask])),
+        "cum_nonentry": float(np.sum(o["nonentry_total"][mask])),
+        "cum_nonentry_domestic": float(np.sum(o["nonentry_domestic"][mask])),
         "cum_returns": float(np.sum(o["returns_net"][mask])),
         "cum_retirements": float(np.sum(o["retirements"][mask])),
         "emigration_2024": float((o["emig_pre"] + o["emig_post"])[i(2024)]),
         "emig_pre_2024": float(o["emig_pre"][i(2024)]),
         "emig_post_2024": float(o["emig_post"][i(2024)]),
+        "nonentry_2024": float(o["nonentry_total"][i(2024)]),
+        "nonentry_domestic_2024": float(o["nonentry_domestic"][i(2024)]),
         "returns_2024": float(o["returns_net"][i(2024)]),
         "diaspora_2024": float(o["diaspora"][i(2024)]),
         "diaspora_2040": float(o["diaspora"][i(2040)]),
+        "cap_binding_any": bool(np.any(o["cap_binding"] > 0)),
+        "max_emig_hazard": float(np.max(o["emig_hazard_max"])),
+        "pipe_nonentry_share_2024": float(o["pipe_nonentry_share"][i(2024)]),
+        "pre_emig_share_2024": float(o["pre_emig_share"][i(2024)]),
     }
     if base is not None:
         diff = (o["stock"] - base["stock"])[mask]
@@ -235,11 +250,13 @@ def run_central() -> dict:
 
     out = {
         "params_central": {
-            "sigma": p.sigma, "g_scale": p.g_scale, "m_base": m,
+            "sigma": p.sigma, "phi": p.phi, "g_scale": p.g_scale, "m_base": m,
             "rho": p.rho, "retire_shift": p.retire_shift,
             "initial_stock_2008": p.initial_stock_2008,
             "diaspora_attrition": p.diaspora_attrition,
             "return_retention": p.return_retention,
+            "return_recycling": p.return_recycling,
+            "age_shape": p.age_shape, "mortality_mult": p.mortality_mult,
         },
         "fit": history_fit(p, hist),
         "bau": summarise(base),
@@ -301,8 +318,8 @@ def run_central() -> dict:
 # 2. Identifiability and destination-stock consistency
 # ---------------------------------------------------------------------------
 def run_identifiability() -> dict:
-    sigmas = np.round(np.arange(0.30, 0.801, 0.025), 3)
-    gscales = np.round(np.arange(0.85, 1.501, 0.025), 3)
+    sigmas = np.round(np.arange(0.20, 0.801, 0.025), 3)
+    gscales = np.round(np.arange(0.80, 1.601, 0.025), 3)
     rows = []
     for gs in gscales:
         for s in sigmas:
@@ -313,6 +330,7 @@ def run_identifiability() -> dict:
                     "sigma": float(s), "g_scale": float(gs), "m_base": np.nan,
                     "rmse": np.nan, "emig_post_2024": np.nan,
                     "emig_pre_2024": np.nan, "emig_total_2024": np.nan,
+                    "nonentry_2024": np.nan, "emig_total_phi1_2024": np.nan,
                     "entry_2024": np.nan, "diaspora_2024": np.nan,
                     "diaspora_2040": np.nan, "feasible": False,
                 })
@@ -327,6 +345,9 @@ def run_identifiability() -> dict:
                 "emig_post_2024": float(o["emig_post"][i24]),
                 "emig_pre_2024": float(o["emig_pre"][i24]),
                 "emig_total_2024": float(o["emig_post"][i24] + o["emig_pre"][i24]),
+                "nonentry_2024": float(o["nonentry_total"][i24]),
+                "emig_total_phi1_2024": float(o["emig_post"][i24]
+                                              + o["nonentry_total"][i24]),
                 "entry_2024": float(o["entries"][i24]),
                 "diaspora_2024": float(o["diaspora"][i24]),
                 "diaspora_2040": float(o["diaspora"][-1]),
@@ -340,8 +361,9 @@ def run_identifiability() -> dict:
     # Two thresholds are reported. The strict threshold is within 10% of the
     # best RMSE. The acceptable threshold is an RMSE of 2% of the mean observed
     # stock (about 300 physicians), which is the fit quality the historical
-    # comparison can support. The central calibration is inside the acceptable
-    # set but outside the strict set; both are reported.
+    # comparison can support. The central calibration is outside the
+    # full-period acceptable set (RMSE 340 vs 302) but inside the set when
+    # 2020-2021 is excluded; both criteria are reported.
     strict_threshold = 1.10 * best.rmse
     acceptable_threshold = 0.02 * float(np.mean(list(OBS_2017_2024.values())))
     consistent = feas[feas.rmse <= acceptable_threshold].copy()
@@ -353,18 +375,27 @@ def run_identifiability() -> dict:
             "sigma": float(best.sigma), "g_scale": float(best.g_scale),
             "m_base": float(best.m_base), "rmse": float(best.rmse),
             "emig_total_2024": float(best.emig_total_2024),
+            "emig_total_phi1_2024": float(best.emig_total_phi1_2024),
+            "nonentry_2024": float(best.nonentry_2024),
             "diaspora_2024": float(best.diaspora_2024),
         },
+        "phi": float(CENTRAL.phi),
         "threshold_rmse": float(acceptable_threshold),
         "strict_threshold_rmse": float(strict_threshold),
         "strict_n": int(len(strict)),
         "strict_emig_range": [float(strict.emig_total_2024.min()),
                               float(strict.emig_total_2024.max())],
+        "strict_emig_phi1_range": [float(strict.emig_total_phi1_2024.min()),
+                                   float(strict.emig_total_phi1_2024.max())],
         "strict_sigma_range": [float(strict.sigma.min()), float(strict.sigma.max())],
         "strict_g_range": [float(strict.g_scale.min()), float(strict.g_scale.max())],
         "consistent_n": int(len(consistent)),
         "consistent_emig_range": [float(consistent.emig_total_2024.min()),
                                   float(consistent.emig_total_2024.max())],
+        "consistent_emig_phi1_range": [float(consistent.emig_total_phi1_2024.min()),
+                                       float(consistent.emig_total_phi1_2024.max())],
+        "consistent_nonentry_range": [float(consistent.nonentry_2024.min()),
+                                      float(consistent.nonentry_2024.max())],
         "consistent_sigma_range": [float(consistent.sigma.min()),
                                    float(consistent.sigma.max())],
         "consistent_g_range": [float(consistent.g_scale.min()),
@@ -373,11 +404,16 @@ def run_identifiability() -> dict:
                                       float(consistent.diaspora_2024.max())],
         "all_emig_range": [float(feas.emig_total_2024.min()),
                            float(feas.emig_total_2024.max())],
+        "all_emig_phi1_range": [float(feas.emig_total_phi1_2024.min()),
+                                float(feas.emig_total_phi1_2024.max())],
         "all_rmse_range": [float(feas.rmse.min()), float(feas.rmse.max())],
         "destination_consistent_n": int(len(dest_ok)),
         "destination_consistent_emig_range": [
             float(dest_ok.emig_total_2024.min()),
             float(dest_ok.emig_total_2024.max())] if len(dest_ok) else None,
+        "destination_consistent_emig_phi1_range": [
+            float(dest_ok.emig_total_phi1_2024.min()),
+            float(dest_ok.emig_total_phi1_2024.max())] if len(dest_ok) else None,
         "destination_consistent_diaspora_range": [
             float(dest_ok.diaspora_2024.min()),
             float(dest_ok.diaspora_2024.max())] if len(dest_ok) else None,
@@ -387,14 +423,73 @@ def run_identifiability() -> dict:
     return summary
 
 
-def feasible_destination_check(df: pd.DataFrame,
-                               low: float = 4000.0,
-                               high: float = 10000.0) -> pd.DataFrame:
-    """Rows whose 2024 return-eligible pool falls in a plausible band.
+def run_destination_triangulation() -> dict:
+    """Stock-flow triangulation of cumulative emigration against destination stocks.
 
-    The band runs from the OECD country-of-birth lower bound to 2.5 times that
-    bound, allowing for non-OECD destinations and unregistered physicians. It
-    is a consistency screen, not an estimate.
+    The model gives cumulative international emigration over 2008-2024 for each
+    phi. Destination stocks in 2024 (4 000-8 000) and attrition/return losses
+    (10-30% of cumulative outflow) imply a required cumulative outflow
+    H / (1 - attrition). Comparing the two maps destination evidence into a
+    partial-identification band for phi. This is a consistency check, not a
+    measurement.
+    """
+    rows = []
+    for phi in np.round(np.arange(0.0, 1.001, 0.1), 2):
+        p0 = replace(CENTRAL, phi=float(phi))
+        m = calibrate_m(p0)
+        if np.isnan(m):
+            continue
+        p = replace(p0, m_base=m)
+        o = simulate(p, end_year=2024)
+        yrs = list(o["years"])
+        mask = [(y >= 2008) and (y <= 2024) for y in yrs]
+        cum = float(np.sum((o["emig_pre"] + o["emig_post"])[mask]))
+        rows.append({
+            "phi": float(phi),
+            "m_base": float(m),
+            "cumulative_emigration_2008_2024": cum,
+            "diaspora_2024": float(o["diaspora"][yrs.index(2024)]),
+        })
+    df = pd.DataFrame(rows)
+    df.to_csv(os.path.join(TAB, "destination_triangulation.csv"), index=False)
+
+    required = []
+    for stock in (4000, 6000, 8000):
+        for attrition in (0.10, 0.20, 0.30):
+            required.append({
+                "destination_stock_2024": stock,
+                "attrition_return_loss": attrition,
+                "required_cumulative_outflow": stock / (1.0 - attrition),
+            })
+    req = pd.DataFrame(required)
+    req.to_csv(os.path.join(TAB, "destination_requirements.csv"), index=False)
+
+    # Phi values whose cumulative outflow is within +/- 15% of each requirement.
+    consistency = []
+    for _, r in req.iterrows():
+        target = r["required_cumulative_outflow"]
+        band = df[(df.cumulative_emigration_2008_2024 >= 0.85 * target)
+                  & (df.cumulative_emigration_2008_2024 <= 1.15 * target)]
+        consistency.append({
+            **r.to_dict(),
+            "phi_min": float(band.phi.min()) if len(band) else np.nan,
+            "phi_max": float(band.phi.max()) if len(band) else np.nan,
+        })
+    cons = pd.DataFrame(consistency)
+    cons.to_csv(os.path.join(TAB, "destination_consistency.csv"), index=False)
+    return {"by_phi": df, "requirements": req, "consistency": cons}
+
+
+def feasible_destination_check(df: pd.DataFrame,
+                               low: float = 0.0,
+                               high: float = 8000.0) -> pd.DataFrame:
+    """Rows whose 2024 return-eligible pool does not exceed destination stocks.
+
+    The pool is an accounting subset of the stock abroad: it excludes permanent
+    settlers and emigrants lost to attrition, so destination stocks bound it
+    from above, not from below. The screen therefore requires 0 <= pool <=
+    8 000 (the upper end of the destination-stock range). It is a consistency
+    check, not an estimate.
     """
     return df[(df.diaspora_2024 >= low) & (df.diaspora_2024 <= high)]
 
@@ -423,17 +518,25 @@ def draw_params(rng: np.random.Generator) -> Params:
     """Draw structural parameters from priors that cover the identified range."""
     sigma = _truncated_beta(rng, 0.55, 0.12, 0.30, 0.80)
     gs = _truncated_lognormal(rng, 0.20, 0.85, 1.50)
+    phi = float(rng.uniform(0.25, 0.75))
     tilt = _truncated_lognormal(rng, 0.15, 0.60, 1.60)
     shift = float(rng.uniform(-1.5, 1.5))
     rho = _truncated_beta(rng, 0.020, 0.010, 0.005, 0.050)
-    delta = float(rng.uniform(0.04, 0.15))
+    delta = float(rng.uniform(0.04, 0.12))
     retention = float(rng.uniform(0.75, 0.95))
     init = float(np.clip(rng.normal(12600, 400), 11300, 13900))
+    init_d = float(np.clip(4000 * np.exp(rng.normal(0, 0.30)), 2000, 8000))
     future = _truncated_lognormal(rng, 0.10, 0.70, 1.40)
+    mort = float(rng.uniform(0.8, 1.2))
     return Params(
-        sigma=sigma, g_scale=gs, emig_tilt=tilt, retire_shift=shift,
+        sigma=sigma, phi=phi, g_scale=gs, emig_tilt=tilt, retire_shift=shift,
         rho=rho, diaspora_attrition=delta, return_retention=retention,
-        initial_stock_2008=init, emig_future_mult=future,
+        initial_stock_2008=init, initial_diaspora_2008=init_d,
+        emig_future_mult=future, mortality_mult=mort,
+        cohort_lag=CENTRAL.cohort_lag,
+        service_share=CENTRAL.service_share,
+        fm_share=CENTRAL.fm_share,
+        gp_share_pre2011=CENTRAL.gp_share_pre2011,
     )
 
 
@@ -456,11 +559,14 @@ def run_mc(n: int = 2000, seed: int = SEED) -> tuple[pd.DataFrame, dict]:
         calibration_errors.append(base["stock"][list(base["years"]).index(2024)]
                                   - TARGET_2024)
         traj.append(base["stock"])
-        rec = {"draw": len(draws), "sigma": p.sigma, "g_scale": p.g_scale,
-               "m_base": p.m_base, "rho": p.rho, "retire_shift": p.retire_shift,
-               "emig_tilt": p.emig_tilt, "initial_stock_2008": p.initial_stock_2008,
+        rec = {"draw": len(draws), "sigma": p.sigma, "phi": p.phi,
+               "g_scale": p.g_scale, "m_base": p.m_base, "rho": p.rho,
+               "retire_shift": p.retire_shift, "emig_tilt": p.emig_tilt,
+               "initial_stock_2008": p.initial_stock_2008,
+               "initial_diaspora_2008": p.initial_diaspora_2008,
                "diaspora_attrition": p.diaspora_attrition,
                "return_retention": p.return_retention,
+               "mortality_mult": p.mortality_mult,
                "emig_future_mult": p.emig_future_mult,
                "calibration_error": calibration_errors[-1]}
         rec.update({f"bau_{k}": v for k, v in summarise(base).items()})
@@ -503,7 +609,9 @@ def summarise_mc(df: pd.DataFrame, diagnostics: dict) -> dict:
     out = {"n": int(len(df)), "diagnostics": diagnostics}
     for c in ["bau_stock_2024", "bau_stock_2030", "bau_stock_2035", "bau_stock_2040",
               "bau_density_2040", "bau_cum_emigration", "bau_cum_returns",
-              "bau_diaspora_2024", "bau_diaspora_2040", "emig_total_2024", "m_base"]:
+              "bau_diaspora_2024", "bau_diaspora_2040", "bau_nonentry_2024",
+              "bau_emig_pre_2024", "bau_emig_post_2024", "emig_total_2024",
+              "m_base", "phi", "initial_diaspora_2008"]:
         out[c] = q(df[c])
     for key in SCENARIOS:
         if key == "BAU":
@@ -517,18 +625,30 @@ def summarise_mc(df: pd.DataFrame, diagnostics: dict) -> dict:
     X = df[cols].values
     out["rank_combined_first"] = float((X.argmax(axis=1) == 4).mean())
     out["rank_training_last"] = float((X.argmin(axis=1) == 3).mean())
+    out["rank_return_last"] = float((X.argmin(axis=1) == 2).mean())
     out["prob_combined_above_bau"] = float((df["COMBINED_stock_2040"] > df["bau_stock_2040"]).mean())
     out["prob_training_above_bau"] = float((df["TRAINING_stock_2040"] > df["bau_stock_2040"]).mean())
     out["prob_return_above_training"] = float((df["RETURN_stock_2040"] > df["TRAINING_stock_2040"]).mean())
+    out["prob_career_above_training"] = float((df["CAREER_stock_2040"] > df["TRAINING_stock_2040"]).mean())
+    out["prob_remun_above_training"] = float((df["REMUN_stock_2040"] > df["TRAINING_stock_2040"]).mean())
+
+    # Full rank distribution: rank 1 = highest 2040 workforce.
+    ranking = (-X).argsort(axis=1).argsort(axis=1) + 1
+    rank_names = ["REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"]
+    out["rank_distribution"] = {
+        name: [float((ranking[:, i] == r).mean()) for r in range(1, 6)]
+        for i, name in enumerate(rank_names)
+    }
     return out
 
 
 # ---------------------------------------------------------------------------
 # 4. Sensitivity: true PRCC, marginal Spearman, one-at-a-time tornado
 # ---------------------------------------------------------------------------
-SENS_PARAMS = ["sigma", "g_scale", "emig_future_mult", "rho", "retire_shift",
-               "emig_tilt", "initial_stock_2008", "diaspora_attrition",
-               "return_retention"]
+SENS_PARAMS = ["sigma", "phi", "g_scale", "emig_future_mult", "rho",
+               "retire_shift", "emig_tilt", "initial_stock_2008",
+               "initial_diaspora_2008", "diaspora_attrition",
+               "return_retention", "mortality_mult"]
 
 
 def _rank_residual(x: np.ndarray, controls: list[np.ndarray]) -> np.ndarray:
@@ -685,6 +805,11 @@ def run_diaspora_sensitivity(central: dict) -> dict:
                 p = replace(p0, m_base=m)
                 b = simulate(p, end_year=2040)
                 r = simulate(p, scenario=_scen_dict("RETURN"), end_year=2040)
+                theta = CENTRAL.return_retention
+                # Exact discrete-time competing risks under the implemented
+                # annual order: returns (successful or not), then attrition.
+                denom = 1.0 - (1.0 - theta * rho) * (1.0 - delta)
+                denom_attempt = 1.0 - (1.0 - rho) * (1.0 - delta)
                 rows.append({
                     "diaspora_attrition": delta,
                     "initial_diaspora_2008": d0,
@@ -694,7 +819,9 @@ def run_diaspora_sensitivity(central: dict) -> dict:
                     "bau_2040": b["stock"][-1],
                     "return_2040": r["stock"][-1],
                     "return_diff_2040": r["stock"][-1] - b["stock"][-1],
-                    "eventual_return_prob": rho / (rho + delta),
+                    "eventual_attempt_prob": rho / denom_attempt,
+                    "eventual_success_prob": (theta * rho) / denom,
+                    "mean_duration_years": 1.0 / denom,
                 })
     df = pd.DataFrame(rows)
     df.to_csv(os.path.join(TAB, "diaspora_sensitivity.csv"), index=False)
@@ -707,13 +834,17 @@ def run_diaspora_sensitivity(central: dict) -> dict:
                               float(df.return_diff_2040.max())],
         "diaspora_2024_range": [float(df.diaspora_2024.min()),
                                 float(df.diaspora_2024.max())],
-        "eventual_return_range": [float(df.eventual_return_prob.min()),
-                                  float(df.eventual_return_prob.max())],
+        "eventual_attempt_range": [float(df.eventual_attempt_prob.min()),
+                                   float(df.eventual_attempt_prob.max())],
+        "eventual_success_range": [float(df.eventual_success_prob.min()),
+                                   float(df.eventual_success_prob.max())],
+        "mean_duration_range": [float(df.mean_duration_years.min()),
+                                float(df.mean_duration_years.max())],
     }
 
 
 # ---------------------------------------------------------------------------
-# 8. Alternative graduate-output baselines
+# 8. Alternative doctorate-output baselines
 # ---------------------------------------------------------------------------
 def run_graduate_baselines(central: dict) -> dict:
     m = central["params_central"]["m_base"]
@@ -746,71 +877,714 @@ def run_graduate_baselines(central: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# 8b. Structural sensitivity: phi, lag, age shape, retirement/mortality
+# ---------------------------------------------------------------------------
+def retention_match_for_training(p: Params, train_mult: float = 1.30) -> float:
+    """Retention reduction that matches a training expansion in 2040."""
+    target = simulate(
+        p, scenario=dict(emig_mult=1.0, entry_retention=0.0,
+                         return_mult=1.0, train_mult=train_mult),
+        end_year=2040)["stock"][-1]
+
+    def f(r):
+        o = simulate(p, scenario=dict(
+            emig_mult=1.0 - r, entry_retention=r, return_mult=1.0,
+            train_mult=1.0), end_year=2040)
+        return o["stock"][-1] - target
+
+    if f(0.0) >= 0:
+        return 0.0
+    if f(0.50) <= 0:
+        return float("nan")
+    return float(brentq(f, 0.0, 0.50, xtol=1e-4))
+
+
+def _recalibrate(p: Params) -> Params | None:
+    m = calibrate_m(p)
+    if np.isnan(m):
+        return None
+    return replace(p, m_base=m)
+
+
+def run_phi_sensitivity(central: dict) -> dict:
+    rows = []
+    out = {}
+    for phi in (0.0, 0.25, 0.50, 0.75, 1.0):
+        p = _recalibrate(replace(CENTRAL, phi=phi))
+        if p is None:
+            continue
+        b = simulate(p, end_year=2040)
+        sb = summarise(b)
+        scen = {}
+        for k in ("REMUN", "RETURN", "TRAINING", "COMBINED"):
+            scen[k] = summarise(run_scenario(k, p), b)
+        rm = retention_match_for_training(p)
+        out[str(phi)] = {
+            "phi": phi, "m_base": p.m_base, "bau": sb,
+            "scenarios": scen, "retention_match": rm,
+        }
+        rows.append([
+            phi, p.m_base, sb["emigration_2024"], sb["nonentry_2024"],
+            sb["diaspora_2024"], sb["stock_2040"],
+            scen["REMUN"]["stock_2040"], scen["RETURN"]["stock_2040"],
+            scen["TRAINING"]["stock_2040"], scen["COMBINED"]["stock_2040"],
+            scen["COMBINED"]["physician_years"], rm,
+        ])
+    pd.DataFrame(rows, columns=[
+        "phi", "Calibrated post-entry flow", "International emigration 2024",
+        "Pipeline non-entry 2024", "Return-eligible pool 2024", "BAU 2040",
+        "Remuneration 2040", "Return 2040", "Training 2040", "Combined 2040",
+        "Combined physician-years", "Retention match for 30% training"
+    ]).to_csv(os.path.join(TAB, "phi_sensitivity.csv"), index=False)
+    return out
+
+
+def _pipeline_summary(label: str, p, **extra) -> dict:
+    b = simulate(p, end_year=2040)
+    t = run_scenario("TRAINING", p)
+    c = run_scenario("COMBINED", p)
+    rec = {
+        "specification": label,
+        "m_base": p.m_base,
+        "bau_2040": summarise(b)["stock_2040"],
+        "training_2040": summarise(t)["stock_2040"],
+        "combined_2040": summarise(c)["stock_2040"],
+        "training_py": summarise(t, b)["physician_years"],
+        "combined_py": summarise(c, b)["physician_years"],
+        "retention_match": retention_match_for_training(p),
+    }
+    rec.update(extra)
+    return rec
+
+
+def run_lag_sensitivity(central: dict) -> dict:
+    """Single-lag and cohort-specific training-pipeline sensitivity.
+
+    The single-lag rows set ``cohort_lag=False`` so that ``entry_lag`` is the
+    uniform post-doctorate lag. The cohort rows keep the legal pathway
+    durations and vary the assumptions about the pre-2011 GP share, the
+    family-medicine share and the national-service share.
+    """
+    rows = []
+    out = {}
+    for lag in (3, 4, 5, 6, 7):
+        p = _recalibrate(replace(CENTRAL, cohort_lag=False, entry_lag=lag))
+        if p is None:
+            continue
+        rec = _pipeline_summary(f"Uniform L = {lag}", p, lag=lag,
+                                service_share=None, fm_share=None,
+                                gp_share_pre2011=None)
+        out[f"uniform_{lag}"] = rec
+        rows.append(rec)
+
+    cohort_specs = [
+        ("Cohort: central", dict()),
+        ("Cohort: no national service", dict(service_share=0.0)),
+        ("Cohort: universal national service", dict(service_share=1.0)),
+        ("Cohort: family medicine 35%", dict(fm_share=0.35)),
+        ("Cohort: family medicine 65%", dict(fm_share=0.65)),
+        ("Cohort: pre-2011 GP share 45%", dict(gp_share_pre2011=0.45)),
+        ("Cohort: pre-2011 GP share 65%", dict(gp_share_pre2011=0.65)),
+    ]
+    for label, kw in cohort_specs:
+        p0 = replace(CENTRAL, cohort_lag=True, **kw)
+        p = _recalibrate(p0)
+        if p is None:
+            continue
+        rec = _pipeline_summary(
+            label, p, lag=None,
+            service_share=p.service_share, fm_share=p.fm_share,
+            gp_share_pre2011=p.gp_share_pre2011,
+        )
+        out[label] = rec
+        rows.append(rec)
+
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "lag_sensitivity.csv"),
+                              index=False)
+    return out
+
+
+def run_age_profile_sensitivity(central: dict) -> dict:
+    """Q2: alternative post-entry emigration age profiles."""
+    rows = []
+    out = {}
+    for profile in ("default", "young", "older", "two_peak"):
+        p = _recalibrate(replace(CENTRAL, emig_profile=profile))
+        if p is None:
+            continue
+        b = simulate(p, end_year=2040)
+        t = run_scenario("TRAINING", p)
+        c = run_scenario("COMBINED", p)
+        r = run_scenario("REMUN", p)
+        fit = history_fit(p, simulate(p, end_year=2024))
+        rec = {
+            "profile": profile, "m_base": p.m_base,
+            "rmse": fit["rmse"], "rmse_excl_2020_21": fit["rmse_excl_2020_21"],
+            "bau_2040": summarise(b)["stock_2040"],
+            "remuneration_2040": summarise(r)["stock_2040"],
+            "training_2040": summarise(t)["stock_2040"],
+            "combined_2040": summarise(c)["stock_2040"],
+            "training_gain": summarise(t)["stock_2040"] - summarise(b)["stock_2040"],
+            "retention_match": retention_match_for_training(p),
+        }
+        out[profile] = rec
+        rows.append(rec)
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "age_profile_sensitivity.csv"),
+                              index=False)
+    return out
+
+
+def run_ramp_sensitivity(central: dict) -> dict:
+    """Q3: alternatives to the 2017-2024 emigration ramp."""
+    rows = []
+    out = {}
+    for mode in ("ramp", "flat100", "flat60", "step2020", "ramp2015", "ramp2019"):
+        p = _recalibrate(replace(CENTRAL, trend_mode=mode))
+        if p is None:
+            continue
+        b = simulate(p, end_year=2040)
+        t = run_scenario("TRAINING", p)
+        c = run_scenario("COMBINED", p)
+        r = run_scenario("REMUN", p)
+        fit = history_fit(p, simulate(p, end_year=2024))
+        rec = {
+            "trend_mode": mode, "m_base": p.m_base,
+            "rmse": fit["rmse"], "rmse_excl_2020_21": fit["rmse_excl_2020_21"],
+            "bau_2040": summarise(b)["stock_2040"],
+            "remuneration_2040": summarise(r)["stock_2040"],
+            "training_2040": summarise(t)["stock_2040"],
+            "combined_2040": summarise(c)["stock_2040"],
+            "training_gain": summarise(t)["stock_2040"] - summarise(b)["stock_2040"],
+            "retention_match": retention_match_for_training(p),
+        }
+        out[mode] = rec
+        rows.append(rec)
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "ramp_sensitivity.csv"),
+                              index=False)
+    return out
+
+
+def run_return_validation_sensitivity(central: dict) -> dict:
+    """Q6: return-parameter ranges, including temporary-return scenarios."""
+    rows = []
+    out = {}
+    for theta in (0.50, 0.65, 0.75, 0.85, 0.95):
+        for rho in (0.005, 0.010, 0.020, 0.030, 0.050):
+            for delta in (0.02, 0.08, 0.15):
+                p0 = replace(CENTRAL, return_retention=theta, rho=rho,
+                             diaspora_attrition=delta)
+                p = _recalibrate(p0)
+                if p is None:
+                    continue
+                b = simulate(p, end_year=2040)
+                r = run_scenario("RETURN", p)
+                advantage = summarise(r)["stock_2040"] - summarise(b)["stock_2040"]
+                rec = {
+                    "return_retention": theta, "rho": rho, "delta": delta,
+                    "m_base": p.m_base, "pool_2024": summarise(b)["diaspora_2024"],
+                    "bau_2040": summarise(b)["stock_2040"],
+                    "return_2040": summarise(r)["stock_2040"],
+                    "return_advantage": advantage,
+                }
+                out[f"theta{theta:.2f}_rho{rho:.3f}_delta{delta:.2f}"] = rec
+                rows.append(rec)
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "return_validation_sensitivity.csv"),
+                              index=False)
+    summary = {
+        "advantage_min": float(min(r["return_advantage"] for r in rows)),
+        "advantage_max": float(max(r["return_advantage"] for r in rows)),
+        "pool_min": float(min(r["pool_2024"] for r in rows)),
+        "pool_max": float(max(r["pool_2024"] for r in rows)),
+        "n": len(rows),
+    }
+    return {"rows": out, "summary": summary}
+
+
+def run_changepoint_sensitivity(central: dict, calib_endpoint: dict | None = None) -> dict:
+    """Q7: quantify the 2020-2021 level break and test the ranking."""
+    p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
+    base = simulate(p, end_year=2024)
+    years = list(base["years"])
+    pred = {y: float(base["stock"][years.index(y)]) for y in CAL_YEARS}
+    resid = {y: pred[y] - OBS_2017_2024[y] for y in CAL_YEARS}
+    break_resid = float(np.mean([resid[2020], resid[2021]]))
+    # Best additive shift for 2020-2021, holding m at the 2024 calibration.
+    # A negative shift means the model over-predicts the observed stock.
+    shifts = np.arange(-1000, 201, 25)
+    rmses = []
+    for s in shifts:
+        errs = []
+        for y in CAL_YEARS:
+            adj = pred[y] + (s if y in (2020, 2021) else 0.0)
+            errs.append(adj - OBS_2017_2024[y])
+        rmses.append(float(np.sqrt(np.mean(np.square(errs)))))
+    best_i = int(np.argmin(rmses))
+    best_shift = float(shifts[best_i])
+    # Endpoint calibrations are computed in run_calibration_endpoint_sensitivity.
+    rows = []
+    if calib_endpoint:
+        labels = {"2019": "pre-break 2019", "2022": "post-break 2022",
+                  "2024": "2024 central"}
+        for key, label in labels.items():
+            v = calib_endpoint.get(key)
+            if not v:
+                continue
+            rows.append({"endpoint": label, "target": v["target_stock"],
+                         "m_base": v["m_base"],
+                         "bau_2040": v["bau_2040"],
+                         "training_2040": v["training_2040"],
+                         "combined_2040": v["combined_2040"]})
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "changepoint_sensitivity.csv"),
+                              index=False)
+    return {
+        "break_residual": break_resid,
+        "best_shift": best_shift,
+        "rmse_before": float(rmses[int(np.argmin(np.abs(shifts - 0.0)))]),
+        "rmse_after": float(rmses[best_i]),
+        "endpoints": rows,
+    }
+
+
+def run_retention_margin_sensitivity(central: dict) -> dict:
+    """Q10: separate pre-entry, post-entry, pipeline and phi margins."""
+    p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
+    base = simulate(p, end_year=2040)
+    b40 = summarise(base)["stock_2040"]
+    training = summarise(run_scenario("TRAINING", p))["stock_2040"]
+    scenarios = {
+        "Pre-entry only (-30%)": dict(emig_mult=1.0, entry_retention=0.30,
+                                      phi_mult=1.0, sigma_nonentry_mult=1.0),
+        "Post-entry only (-30%)": dict(emig_mult=0.70, entry_retention=0.0,
+                                       phi_mult=1.0, sigma_nonentry_mult=1.0),
+        "Pipeline non-entry (-20%)": dict(emig_mult=1.0, entry_retention=0.0,
+                                          phi_mult=1.0, sigma_nonentry_mult=0.80),
+        "phi halved": dict(emig_mult=1.0, entry_retention=0.0,
+                           phi_mult=0.50, sigma_nonentry_mult=1.0),
+        "Pre + post (remuneration)": dict(emig_mult=0.70, entry_retention=0.30,
+                                          phi_mult=1.0, sigma_nonentry_mult=1.0),
+    }
+    rows = []
+    for label, scen in scenarios.items():
+        o = simulate(p, scenario=scen, end_year=2040)
+        s = summarise(o, base)
+        rows.append({"specification": label, "stock_2040": s["stock_2040"],
+                     "difference_bau": s["stock_2040"] - b40,
+                     "difference_training": s["stock_2040"] - training})
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "retention_margin_sensitivity.csv"),
+                              index=False)
+    return {"rows": rows, "training_2040": training, "bau_2040": b40}
+
+
+def run_training_timing_sensitivity(central: dict) -> dict:
+    """Q9: completion and phased-admissions alternatives."""
+    p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
+    base = simulate(p, end_year=2040)
+    b40 = summarise(base)["stock_2040"]
+    rows = []
+    for path in ("single", "phased"):
+        for completion in (0.70, 0.80, 0.90, 1.00):
+            q = replace(p, train_path=path)
+            scen = dict(emig_mult=1.0, entry_retention=0.0, return_mult=1.0,
+                        train_mult=1.0 + 0.30 * completion)
+            o = simulate(q, scenario=scen, end_year=2040)
+            s = summarise(o, base)
+            rows.append({"train_path": path, "completion": completion,
+                         "graduate_multiplier": 1.0 + 0.30 * completion,
+                         "stock_2040": s["stock_2040"],
+                         "difference_bau": s["stock_2040"] - b40,
+                         "physician_years": s["physician_years"]})
+    pd.DataFrame(rows).to_csv(os.path.join(TAB, "training_timing_sensitivity.csv"),
+                              index=False)
+    return {"rows": rows, "bau_2040": b40}
+
+
+def run_age_shape_sensitivity(central: dict) -> dict:
+    rows = []
+    out = {}
+    for shape in ("uniform", "young", "old"):
+        p = _recalibrate(replace(CENTRAL, age_shape=shape))
+        if p is None:
+            continue
+        b = simulate(p, end_year=2040)
+        t = run_scenario("TRAINING", p)
+        c = run_scenario("COMBINED", p)
+        out[shape] = {
+            "shape": shape, "m_base": p.m_base,
+            "bau_2040": summarise(b)["stock_2040"],
+            "training_2040": summarise(t)["stock_2040"],
+            "combined_2040": summarise(c)["stock_2040"],
+            "training_py": summarise(t, b)["physician_years"],
+            "combined_py": summarise(c, b)["physician_years"],
+            "retention_match": retention_match_for_training(p),
+        }
+        rows.append([shape, p.m_base, out[shape]["bau_2040"],
+                     out[shape]["training_2040"], out[shape]["combined_2040"],
+                     out[shape]["training_py"], out[shape]["combined_py"],
+                     out[shape]["retention_match"]])
+    pd.DataFrame(rows, columns=[
+        "Initial age shape", "Calibrated post-entry flow", "BAU 2040",
+        "Training 2040", "Combined 2040", "Training physician-years",
+        "Combined physician-years", "Retention match for 30% training"
+    ]).to_csv(os.path.join(TAB, "age_shape_sensitivity.csv"), index=False)
+    return out
+
+
+def run_retirement_sensitivity(central: dict) -> dict:
+    rows = []
+    out = {}
+    for shift in (-2.0, -1.5, 0.0, 1.5, 2.0):
+        for mort in (0.5, 1.0, 1.5):
+            p = _recalibrate(replace(CENTRAL, retire_shift=shift,
+                                     mortality_mult=mort))
+            if p is None:
+                continue
+            b = simulate(p, end_year=2040)
+            c = run_scenario("COMBINED", p)
+            out[f"{shift:.1f}_{mort:.1f}"] = {
+                "retire_shift": shift, "mortality_mult": mort,
+                "m_base": p.m_base,
+                "bau_2040": summarise(b)["stock_2040"],
+                "combined_2040": summarise(c)["stock_2040"],
+                "combined_py": summarise(c, b)["physician_years"],
+            }
+            rows.append([shift, mort, p.m_base, out[f"{shift:.1f}_{mort:.1f}"]["bau_2040"],
+                         out[f"{shift:.1f}_{mort:.1f}"]["combined_2040"],
+                         out[f"{shift:.1f}_{mort:.1f}"]["combined_py"]])
+    pd.DataFrame(rows, columns=[
+        "Retirement shift (years)", "Mortality multiplier",
+        "Calibrated post-entry flow", "BAU 2040", "Combined 2040",
+        "Combined physician-years"
+    ]).to_csv(os.path.join(TAB, "retirement_sensitivity.csv"), index=False)
+    return out
+
+
+# ---------------------------------------------------------------------------
+# 8c. Round-2 audits: return accounting, effect sizes, training implementation,
+#     calibration endpoints and PRCC stability
+# ---------------------------------------------------------------------------
+def run_return_accounting_sensitivity(central: dict) -> dict:
+    rows = []
+    out = {}
+    for recycling in (True, False):
+        p0 = replace(CENTRAL, return_recycling=recycling)
+        m = calibrate_m(p0)
+        if np.isnan(m):
+            continue
+        p = replace(p0, m_base=m)
+        b = simulate(p, end_year=2040)
+        r = simulate(p, scenario=_scen_dict("RETURN"), end_year=2040)
+        theta = p.return_retention
+        i24 = list(b["years"]).index(2024)
+        if recycling:
+            denom = 1.0 - (1.0 - theta * p.rho) * (1.0 - p.diaspora_attrition)
+        else:
+            denom = 1.0 - (1.0 - p.rho) * (1.0 - p.diaspora_attrition)
+        denom_attempt = 1.0 - (1.0 - p.rho) * (1.0 - p.diaspora_attrition)
+        success = theta * p.rho / denom
+        duration = 1.0 / denom
+        attempt = p.rho / denom_attempt
+        out[str(recycling)] = {
+            "recycling": recycling, "m_base": m,
+            "diaspora_2024": float(b["diaspora"][i24]),
+            "returns_2024": float(b["returns_net"][i24]),
+            "bau_2040": float(b["stock"][-1]),
+            "return_2040": float(r["stock"][-1]),
+            "return_diff_2040": float(r["stock"][-1] - b["stock"][-1]),
+            "eventual_attempt_prob": float(attempt),
+            "eventual_success_prob": float(success),
+            "mean_duration_years": float(duration),
+        }
+        rows.append([recycling, m, out[str(recycling)]["diaspora_2024"],
+                     out[str(recycling)]["returns_2024"],
+                     out[str(recycling)]["bau_2040"],
+                     out[str(recycling)]["return_2040"],
+                     out[str(recycling)]["return_diff_2040"],
+                     out[str(recycling)]["eventual_attempt_prob"],
+                     out[str(recycling)]["eventual_success_prob"],
+                     out[str(recycling)]["mean_duration_years"]])
+    pd.DataFrame(rows, columns=[
+        "Return recycling", "Calibrated post-entry flow", "Pool 2024",
+        "Successful returns 2024", "BAU 2040", "Return 2040",
+        "Return advantage 2040", "Attempt probability", "Success probability",
+        "Mean duration (years)"]).to_csv(
+        os.path.join(TAB, "return_accounting_sensitivity.csv"), index=False)
+    return out
+
+
+def run_effect_sensitivity(central: dict) -> dict:
+    p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
+    b = simulate(p, end_year=2040)
+    train30 = simulate(p, scenario=_scen_dict("TRAINING"), end_year=2040)
+    b40 = float(b["stock"][-1])
+    t40 = float(train30["stock"][-1])
+
+    retention_rows = []
+    for r in (0.0, 0.05, 0.10, 0.145, 0.20, 0.30, 0.40):
+        o = simulate(p, scenario=dict(emig_mult=1.0 - r, entry_retention=r,
+                                      return_mult=1.0, train_mult=1.0),
+                     end_year=2040)
+        retention_rows.append([r, float(o["stock"][-1]),
+                               float(o["stock"][-1] - b40),
+                               float(o["stock"][-1] - t40)])
+    pd.DataFrame(retention_rows, columns=[
+        "Emigration reduction", "Workforce 2040", "Difference from BAU",
+        "Difference from 30% training"]).to_csv(
+        os.path.join(TAB, "effect_retention.csv"), index=False)
+
+    return_rows = []
+    for mult in (1.0, 1.25, 1.35, 1.50, 1.75, 2.0, 2.5):
+        o = simulate(p, scenario=dict(emig_mult=1.0, entry_retention=0.0,
+                                      return_mult=mult, train_mult=1.0),
+                     end_year=2040)
+        return_rows.append([mult, float(o["stock"][-1]),
+                            float(o["stock"][-1] - b40),
+                            float(o["stock"][-1] - t40)])
+    pd.DataFrame(return_rows, columns=[
+        "Return-rate multiplier", "Workforce 2040", "Difference from BAU",
+        "Difference from 30% training"]).to_csv(
+        os.path.join(TAB, "effect_return.csv"), index=False)
+
+    training_rows = []
+    for mult in (1.0, 1.10, 1.20, 1.30, 1.40, 1.50):
+        o = simulate(p, scenario=dict(emig_mult=1.0, entry_retention=0.0,
+                                      return_mult=1.0, train_mult=mult),
+                     end_year=2040)
+        training_rows.append([mult, float(o["stock"][-1]),
+                              float(o["stock"][-1] - b40)])
+    pd.DataFrame(training_rows, columns=[
+        "Doctorate-output multiplier", "Workforce 2040",
+        "Difference from BAU"]).to_csv(
+        os.path.join(TAB, "effect_training.csv"), index=False)
+
+    conservative = [
+        ("Remuneration, 10% reduction", dict(emig_mult=0.90, entry_retention=0.10,
+                                             return_mult=1.0, train_mult=1.0)),
+        ("Career, 5% reduction", dict(emig_mult=0.95, entry_retention=0.05,
+                                      return_mult=1.0, train_mult=1.0)),
+        ("Return, 1.35x", dict(emig_mult=1.0, entry_retention=0.0,
+                               return_mult=1.35, train_mult=1.0)),
+        ("Combined, 20% + 1.35x", dict(emig_mult=0.80, entry_retention=0.20,
+                                       return_mult=1.35, train_mult=1.0)),
+        ("Training, +30% doctorate output", dict(emig_mult=1.0, entry_retention=0.0,
+                                                return_mult=1.0, train_mult=1.30)),
+    ]
+    rows = []
+    conservative_out = {}
+    for label, scen in conservative:
+        o = simulate(p, scenario=scen, end_year=2040)
+        conservative_out[label] = float(o["stock"][-1])
+        rows.append([label, float(o["stock"][-1]),
+                     float(o["stock"][-1] - b40),
+                     float(o["stock"][-1] - t40)])
+    pd.DataFrame(rows, columns=[
+        "Scenario", "Workforce 2040", "Difference from BAU",
+        "Difference from 30% training"]).to_csv(
+        os.path.join(TAB, "conservative_scenarios.csv"), index=False)
+    return {
+        "bau_2040": b40, "training30_2040": t40,
+        "retention": retention_rows, "return": return_rows,
+        "training": training_rows, "conservative": conservative_out,
+    }
+
+
+def run_training_implementation_sensitivity(central: dict) -> dict:
+    p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
+    b = simulate(p, end_year=2040)
+    rows = []
+    out = {}
+    for completion in (0.80, 0.90, 1.00):
+        mult = 1.0 + 0.30 * completion
+        o = simulate(p, scenario=dict(emig_mult=1.0, entry_retention=0.0,
+                                      return_mult=1.0, train_mult=mult),
+                     end_year=2040)
+        s = summarise(o, b)
+        out[f"{completion:.2f}"] = {
+            "completion": completion, "graduate_multiplier": mult,
+            "stock_2040": s["stock_2040"],
+            "difference": s["stock_diff_2040"],
+            "physician_years": s["physician_years"],
+        }
+        rows.append([completion, mult, s["stock_2040"],
+                     s["stock_diff_2040"], s["physician_years"]])
+    pd.DataFrame(rows, columns=[
+        "Completion of additional admissions", "Doctorate-output multiplier",
+        "Workforce 2040", "Difference from BAU",
+        "Physician-years vs BAU"]).to_csv(
+        os.path.join(TAB, "training_implementation.csv"), index=False)
+    return out
+
+
+def run_calibration_endpoint_sensitivity(central: dict) -> dict:
+    targets = {"2019": OBS[2019], "2022": OBS[2022], "2024": OBS[2024]}
+    rows = []
+    out = {}
+    for label, target in targets.items():
+        p0 = replace(CENTRAL)
+        m = calibrate_m(p0, target=target)
+        if np.isnan(m):
+            continue
+        p = replace(p0, m_base=m)
+        b = simulate(p, end_year=2040)
+        c = run_scenario("COMBINED", p)
+        t = run_scenario("TRAINING", p)
+        i24 = list(b["years"]).index(2024)
+        out[label] = {
+            "target_year": int(label), "target_stock": float(target),
+            "m_base": m, "simulated_2024": float(b["stock"][i24]),
+            "bau_2040": float(b["stock"][-1]),
+            "combined_2040": float(c["stock"][-1]),
+            "training_2040": float(t["stock"][-1]),
+        }
+        rows.append([int(label), target, m, b["stock"][i24],
+                     b["stock"][-1], c["stock"][-1], t["stock"][-1]])
+    pd.DataFrame(rows, columns=[
+        "Calibration target year", "Target stock", "Calibrated flow",
+        "Simulated 2024 stock", "BAU 2040", "Combined 2040",
+        "Training 2040"]).to_csv(
+        os.path.join(TAB, "calibration_endpoint_sensitivity.csv"), index=False)
+    return out
+
+
+def run_prcc_stability(df: pd.DataFrame, n_boot: int = 1000,
+                       seed: int = SEED) -> dict:
+    rng = np.random.default_rng(seed)
+    y = df["bau_stock_2040"].values
+    out = {p: [] for p in SENS_PARAMS}
+    n = len(df)
+    for _ in range(n_boot):
+        idx = rng.integers(0, n, n)
+        sub = df.iloc[idx]
+        for p in SENS_PARAMS:
+            ctrl = [sub[c].values for c in SENS_PARAMS if c != p]
+            r, _ = partial_rank_correlation(sub[p].values, sub["bau_stock_2040"].values,
+                                            ctrl)
+            out[p].append(r)
+    rows = []
+    summary = {}
+    for p, vals in out.items():
+        vals = np.asarray(vals)
+        summary[p] = {
+            "median": float(np.median(vals)),
+            "lo": float(np.quantile(vals, 0.05)),
+            "hi": float(np.quantile(vals, 0.95)),
+        }
+        rows.append([p, float(np.median(vals)), float(np.quantile(vals, 0.05)),
+                     float(np.quantile(vals, 0.95))])
+    pd.DataFrame(rows, columns=["Parameter", "Bootstrap median",
+                                "5th percentile", "95th percentile"]).to_csv(
+        os.path.join(TAB, "prcc_stability.csv"), index=False)
+    return summary
+
+
+# ---------------------------------------------------------------------------
 # 9. Illustrative cost per additional physician-year
 # ---------------------------------------------------------------------------
-def _scenario_cost(key: str, o: dict, base: dict, mult: float = 1.0) -> float:
+def _scenario_costs(key: str, o: dict, base: dict,
+                    mult: float = 1.0,
+                    discount: float = 0.0) -> tuple[float, float]:
+    """Return (fiscal transfer, real resource cost) for a scenario.
+
+    Fiscal transfers are payments (primarily public-sector pay increments) that
+    redistribute resources but are not a resource cost to the economy. Real
+    resource costs are training, career-development and return-programme costs.
+    Both are illustrative. ``discount`` is an annual rate applied to 2026-2040
+    costs relative to 2025.
+    """
     years = list(o["years"])
     mask = np.array([(y >= 2026) and (y <= 2040) for y in years])
-    stock_years = np.sum(o["stock"][mask])
+    w = np.array([1.0 / (1.0 + discount) ** max(0, y - 2025) for y in years])
+    stock_years = np.sum(o["stock"][mask] * w[mask])
     public_stock_years = stock_years * COSTS["public_share"]
 
     if key == "BAU":
-        return 0.0
+        return 0.0, 0.0
     if key == "REMUN":
-        return (public_stock_years * COSTS["avg_public_compensation_tnd"]
-                * COSTS["remuneration_increment"] * mult)
+        fiscal = (public_stock_years * COSTS["avg_public_compensation_tnd"]
+                  * COSTS["remuneration_increment"] * mult)
+        return fiscal, 0.0
     if key == "CAREER":
-        return stock_years * COSTS["career_cost_per_physician_year_tnd"] * mult
+        return 0.0, (stock_years
+                     * COSTS["career_cost_per_physician_year_tnd"] * mult)
     if key == "RETURN":
-        extra_returns = max(0.0, np.sum(o["returns_net"][mask])
-                            - np.sum(base["returns_net"][mask]))
-        return extra_returns * COSTS["return_cost_per_migrant_tnd"] * mult
+        extra_returns = max(0.0, np.sum((o["returns_net"][mask]
+                                         - base["returns_net"][mask]) * w[mask]))
+        return 0.0, extra_returns * COSTS["return_cost_per_migrant_tnd"] * mult
     if key == "TRAINING":
         path = CENTRAL.grad_path
         extra_grads = sum(
-            graduates(y, train_mult=1.30, path=path)
-            - graduates(y, train_mult=1.0, path=path)
+            (graduates(y, train_mult=1.30, path=path)
+             - graduates(y, train_mult=1.0, path=path))
+            / (1.0 + discount) ** max(0, y - 2025)
             for y in range(2031, 2041))
-        return extra_grads * COSTS["training_cost_per_graduate_tnd"] * mult
+        return 0.0, extra_grads * COSTS["training_cost_per_graduate_tnd"] * mult
     if key == "COMBINED":
-        remuneration = (public_stock_years * COSTS["avg_public_compensation_tnd"]
-                        * 0.35 * mult)
-        extra_returns = max(0.0, np.sum(o["returns_net"][mask])
-                            - np.sum(base["returns_net"][mask]))
-        return remuneration + extra_returns * COSTS["return_cost_per_migrant_tnd"] * mult
-    return 0.0
+        fiscal = (public_stock_years * COSTS["avg_public_compensation_tnd"]
+                  * 0.35 * mult)
+        extra_returns = max(0.0, np.sum((o["returns_net"][mask]
+                                         - base["returns_net"][mask]) * w[mask]))
+        resource = extra_returns * COSTS["return_cost_per_migrant_tnd"] * mult
+        return fiscal, resource
+    return 0.0, 0.0
 
 
 def run_costs(central: dict) -> dict:
     p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
     base = simulate(p, end_year=2040)
     rows = []
+    disc_rows = []
     out = {}
+    bau_cum = summarise(base, start=2026, end=2040)["cum_emigration"]
     for k in ("BAU", "REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"):
         o = simulate(p, scenario=_scen_dict(k), end_year=2040)
         s = summarise(o, base)
-        cost = _scenario_cost(k, o, base, 1.0)
-        cost_lo = _scenario_cost(k, o, base, COSTS["unit_cost_low"])
-        cost_hi = _scenario_cost(k, o, base, COSTS["unit_cost_high"])
+        fiscal, resource = _scenario_costs(k, o, base, 1.0)
+        fiscal_lo, resource_lo = _scenario_costs(k, o, base, COSTS["unit_cost_low"])
+        fiscal_hi, resource_hi = _scenario_costs(k, o, base, COSTS["unit_cost_high"])
+        fiscal_d3, resource_d3 = _scenario_costs(k, o, base, 1.0, discount=0.03)
+        fiscal_d5, resource_d5 = _scenario_costs(k, o, base, 1.0, discount=0.05)
         py = max(s["physician_years"], 1.0)
-        add = max(s["stock_diff_2040"], 1.0)
+        emig_reduction_pct = max(0.0, (bau_cum - s["cum_emigration"]) / max(bau_cum, 1e-9) * 100)
+        fiscal_per_pp = fiscal / emig_reduction_pct if emig_reduction_pct > 0 else np.nan
         out[k] = {
-            "cost_tnd": cost, "cost_low": cost_lo, "cost_high": cost_hi,
-            "cost_per_py": cost / py,
-            "cost_per_py_low": cost_lo / py,
-            "cost_per_py_high": cost_hi / py,
-            "cost_per_additional_physician": cost / add,
+            "fiscal_transfer_tnd": fiscal,
+            "resource_cost_tnd": resource,
+            "fiscal_transfer_disc3_tnd": fiscal_d3,
+            "resource_cost_disc3_tnd": resource_d3,
+            "fiscal_transfer_disc5_tnd": fiscal_d5,
+            "resource_cost_disc5_tnd": resource_d5,
+            "cost_per_py_fiscal": fiscal / py,
+            "cost_per_py_fiscal_low": fiscal_lo / py,
+            "cost_per_py_fiscal_high": fiscal_hi / py,
+            "cost_per_py_resource": resource / py,
+            "cost_per_py_resource_low": resource_lo / py,
+            "cost_per_py_resource_high": resource_hi / py,
+            "fiscal_per_pp_emigration": fiscal_per_pp,
+            "emigration_reduction_pct": emig_reduction_pct,
             "physician_years": s["physician_years"],
             "stock_diff_2040": s["stock_diff_2040"],
         }
-        rows.append([k, cost, cost / py, cost_lo / py, cost_hi / py,
-                     cost / add, s["physician_years"], s["stock_diff_2040"]])
+        rows.append([k, fiscal, resource, fiscal / py, resource / py,
+                     fiscal_lo / py, fiscal_hi / py,
+                     resource_lo / py, resource_hi / py,
+                     s["physician_years"], s["stock_diff_2040"]])
+        disc_rows.append([k, fiscal_d3, resource_d3, fiscal_d5, resource_d5,
+                          emig_reduction_pct,
+                          fiscal_per_pp / 1e6 if np.isfinite(fiscal_per_pp) else np.nan])
     pd.DataFrame(rows, columns=[
-        "Scenario", "Total cost (TND, 2026-2040)", "Cost per physician-year",
-        "Cost per physician-year, low unit costs", "Cost per physician-year, high unit costs",
-        "Cost per additional physician in 2040", "Physician-years vs BAU",
-        "Additional physicians in 2040"]).to_csv(
+        "Scenario", "Fiscal transfer (TND)", "Real resource cost (TND)",
+        "Fiscal transfer per additional physician-year", "Resource cost per additional physician-year",
+        "Fiscal per additional physician-year, low unit costs",
+        "Fiscal per additional physician-year, high unit costs",
+        "Resource per additional physician-year, low unit costs",
+        "Resource per additional physician-year, high unit costs",
+        "Physician-years vs BAU", "Additional physicians in 2040"]).to_csv(
         os.path.join(TAB, "costs.csv"), index=False)
+    pd.DataFrame(disc_rows, columns=[
+        "Scenario", "Fiscal transfer, 3% discount (TND)",
+        "Resource cost, 3% discount (TND)", "Fiscal transfer, 5% discount (TND)",
+        "Resource cost, 5% discount (TND)", "Cumulative emigration reduction (%)",
+        "Fiscal transfer per percentage point (TND million)"]).to_csv(
+        os.path.join(TAB, "costs_discounted.csv"), index=False)
     return out
 
 
@@ -831,7 +1605,7 @@ def setup_mpl():
 
 
 def _save(fig, name):
-    fig.savefig(os.path.join(FIG, f"{name}.png"))
+    fig.savefig(os.path.join(FIG, f"{name}.png"), dpi=300)
     fig.savefig(os.path.join(FIG, f"{name}.pdf"))
     import matplotlib.pyplot as plt
     plt.close(fig)
@@ -870,7 +1644,8 @@ def fig_fit(plt, central, mc):
 def fig_identifiability(plt, ident):
     df = pd.read_csv(os.path.join(TAB, "identifiability_grid.csv"))
     df = df[df.feasible]
-    fig, axes = plt.subplots(1, 3, figsize=(10.4, 3.3))
+    fig, axes = plt.subplots(2, 2, figsize=(9.4, 6.6))
+    axes = axes.ravel()
 
     piv = df.pivot(index="g_scale", columns="sigma", values="rmse")
     im = axes[0].pcolormesh(piv.columns, piv.index, piv.values,
@@ -899,21 +1674,36 @@ def fig_identifiability(plt, ident):
                     colors="black", linewidths=0.6, linestyles=":")
     axes[1].set_xlabel("Pipeline retention, σ")
     axes[1].set_ylabel("Training-output multiplier")
-    axes[1].set_title("B. Implied total emigration, 2024", loc="left", fontsize=9)
+    axes[1].set_title("B. International emigration, 2024 (φ=0.5)",
+                      loc="left", fontsize=9)
     cb2 = fig.colorbar(cs, ax=axes[1], fraction=0.046, pad=0.02)
     cb2.set_label("Physicians per year", fontsize=7.5)
 
-    piv3 = df.pivot(index="g_scale", columns="sigma", values="diaspora_2024")
+    piv3 = df.pivot(index="g_scale", columns="sigma", values="emig_total_phi1_2024")
     cs3 = axes[2].pcolormesh(piv3.columns, piv3.index, piv3.values,
-                             shading="auto", cmap="Blues")
+                             shading="auto", cmap="YlOrRd")
     axes[2].contour(piv3.columns, piv3.index, piv3.values,
-                    levels=[OECD_LOWER_BOUND, 10000], colors="black",
-                    linewidths=0.7, linestyles="--")
+                    levels=[ident["consistent_emig_phi1_range"][0],
+                            ident["consistent_emig_phi1_range"][1]],
+                    colors="black", linewidths=0.6, linestyles=":")
     axes[2].set_xlabel("Pipeline retention, σ")
     axes[2].set_ylabel("Training-output multiplier")
-    axes[2].set_title("C. Return-eligible pool, 2024", loc="left", fontsize=9)
+    axes[2].set_title("C. Upper bound if all non-entry were emigration (φ=1)",
+                      loc="left", fontsize=8.5)
     cb3 = fig.colorbar(cs3, ax=axes[2], fraction=0.046, pad=0.02)
-    cb3.set_label("Physicians abroad", fontsize=7.5)
+    cb3.set_label("Physicians per year", fontsize=7.5)
+
+    piv4 = df.pivot(index="g_scale", columns="sigma", values="diaspora_2024")
+    cs4 = axes[3].pcolormesh(piv4.columns, piv4.index, piv4.values,
+                             shading="auto", cmap="Blues")
+    axes[3].contour(piv4.columns, piv4.index, piv4.values,
+                    levels=[OECD_LOWER_BOUND, 10000], colors="black",
+                    linewidths=0.7, linestyles="--")
+    axes[3].set_xlabel("Pipeline retention, σ")
+    axes[3].set_ylabel("Training-output multiplier")
+    axes[3].set_title("D. Return-eligible pool, 2024", loc="left", fontsize=9)
+    cb4 = fig.colorbar(cs4, ax=axes[3], fraction=0.046, pad=0.02)
+    cb4.set_label("Physicians abroad", fontsize=7.5)
 
     fig.tight_layout()
     _save(fig, "fig2_identifiability")
@@ -935,7 +1725,7 @@ def fig_scenarios(plt, central, mc):
                    ("REMUN", "Remuneration / conditions"),
                    ("CAREER", "Career development"),
                    ("RETURN", "Return migration"),
-                   ("TRAINING", "Training expansion"),
+                   ("TRAINING", "Doctorate-output expansion"),
                    ("COMBINED", "Combined strategy")]:
         axes[0].plot(years[mask], np.array(central["trajectories"][k])[mask],
                      color=COL[k], lw=2.0 if k != "BAU" else 1.8,
@@ -973,8 +1763,8 @@ def fig_scenarios(plt, central, mc):
 
 def fig_outcomes(plt, central, costs):
     keys = ["REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"]
-    labels = ["Remuneration", "Career", "Return", "Training", "Combined"]
-    fig, axes = plt.subplots(1, 4, figsize=(11.6, 3.2))
+    labels = ["Remuneration", "Career", "Return", "Doctorate", "Combined"]
+    fig, axes = plt.subplots(1, 3, figsize=(9.2, 3.2))
     x = np.arange(len(keys))
 
     bau = central["bau"]["stock_2040"]
@@ -985,14 +1775,14 @@ def fig_outcomes(plt, central, costs):
     axes[0].errorbar(x, med, yerr=[np.array(med) - lo, np.array(hi) - med],
                      fmt="none", ecolor="black", capsize=2, lw=0.8)
     axes[0].axhline(0, color="black", ls="--", lw=0.9)
-    axes[0].set_xticks(x, labels, fontsize=7, rotation=20)
+    axes[0].set_xticks(x, labels, fontsize=7, rotation=25, ha="right")
     axes[0].set_ylabel("Difference from BAU in 2040")
     axes[0].set_title("A. Workforce difference", loc="left", fontsize=9)
 
     med = [central["scenarios"][k]["cum_emigration"] for k in keys]
     axes[1].bar(x, med, color=[COL[k] for k in keys], alpha=0.85, width=0.65)
     axes[1].axhline(central["bau"]["cum_emigration"], color="black", ls="--", lw=0.9)
-    axes[1].set_xticks(x, labels, fontsize=7, rotation=20)
+    axes[1].set_xticks(x, labels, fontsize=7, rotation=25, ha="right")
     axes[1].set_ylabel("Cumulative emigrants, 2026–2040")
     axes[1].set_title("B. Emigration", loc="left", fontsize=9)
 
@@ -1003,21 +1793,49 @@ def fig_outcomes(plt, central, costs):
     axes[2].errorbar(x, med, yerr=[np.array(med) - lo, np.array(hi) - med],
                      fmt="none", ecolor="black", capsize=2, lw=0.8)
     axes[2].axhline(0, color="black", lw=0.8)
-    axes[2].set_xticks(x, labels, fontsize=7, rotation=20)
+    axes[2].set_xticks(x, labels, fontsize=7, rotation=25, ha="right")
     axes[2].set_ylabel("Physician-years vs BAU")
-    axes[2].set_title("C. Retention benefit", loc="left", fontsize=9)
+    axes[2].set_title("C. Physician-years vs BAU", loc="left", fontsize=9)
 
-    med = [costs[k]["cost_per_py"] for k in keys]
-    lo = [costs[k]["cost_per_py_low"] for k in keys]
-    hi = [costs[k]["cost_per_py_high"] for k in keys]
-    axes[3].bar(x, med, color=[COL[k] for k in keys], alpha=0.85, width=0.65)
-    axes[3].errorbar(x, med, yerr=[np.array(med) - lo, np.array(hi) - med],
-                     fmt="none", ecolor="black", capsize=2, lw=0.8)
-    axes[3].set_xticks(x, labels, fontsize=7, rotation=20)
-    axes[3].set_ylabel("TND per physician-year")
-    axes[3].set_title("D. Illustrative cost", loc="left", fontsize=9)
     fig.tight_layout()
     _save(fig, "fig4_policy_outcomes")
+
+
+def fig_cost(plt, costs):
+    fiscal_keys = ["REMUN", "COMBINED"]
+    resource_keys = ["CAREER", "RETURN", "TRAINING", "COMBINED"]
+    fiscal_labels = ["Remuneration", "Combined"]
+    resource_labels = ["Career", "Return", "Doctorate output", "Combined"]
+    fig, (ax0, ax1) = plt.subplots(
+        1, 2, figsize=(7.2, 3.4), gridspec_kw={"width_ratios": [2, 3]})
+
+    x0 = np.arange(len(fiscal_keys))
+    fiscal = [costs[k]["cost_per_py_fiscal"] for k in fiscal_keys]
+    f_lo = [costs[k]["cost_per_py_fiscal_low"] for k in fiscal_keys]
+    f_hi = [costs[k]["cost_per_py_fiscal_high"] for k in fiscal_keys]
+    ax0.bar(x0, fiscal, color="#9E9E9E", alpha=0.9, width=0.55)
+    ax0.errorbar(x0, fiscal,
+                 yerr=[np.array(fiscal) - f_lo, np.array(f_hi) - fiscal],
+                 fmt="none", ecolor="black", capsize=2, lw=0.8)
+    ax0.set_xticks(x0, fiscal_labels, fontsize=7, rotation=20)
+    ax0.set_ylabel("TND per additional physician-year")
+    ax0.set_title("A  Fiscal transfer", loc="left", fontsize=8, fontweight="bold")
+
+    x1 = np.arange(len(resource_keys))
+    resource = [costs[k]["cost_per_py_resource"] for k in resource_keys]
+    r_lo = [costs[k]["cost_per_py_resource_low"] for k in resource_keys]
+    r_hi = [costs[k]["cost_per_py_resource_high"] for k in resource_keys]
+    ax1.bar(x1, resource, color="#1B7837", alpha=0.85, width=0.55)
+    ax1.errorbar(x1, resource,
+                 yerr=[np.array(resource) - r_lo, np.array(r_hi) - resource],
+                 fmt="none", ecolor="black", capsize=2, lw=0.8)
+    ax1.set_xticks(x1, resource_labels, fontsize=7, rotation=20)
+    ax1.set_ylabel("TND per additional physician-year")
+    ax1.set_title("B  Real resource cost", loc="left", fontsize=8,
+                  fontweight="bold")
+
+    fig.tight_layout()
+    _save(fig, "figS2_cost_ratios")
 
 
 def fig_density(plt, central):
@@ -1050,8 +1868,11 @@ def fig_sensitivity(plt, sens):
         "retire_shift": "Retirement age",
         "emig_tilt": "Age profile of emigration",
         "initial_stock_2008": "Initial stock (2008)",
-        "diaspora_attrition": "Diaspora attrition",
+        "initial_diaspora_2008": "Initial return pool (2008)",
+        "diaspora_attrition": "Return-pool attrition",
         "return_retention": "Return retention",
+        "mortality_mult": "Mortality multiplier",
+        "phi": "φ",
     }
     fig, axes = plt.subplots(1, 2, figsize=(10.6, 3.6),
                              gridspec_kw={"width_ratios": [1.1, 1.0]})
@@ -1144,19 +1965,19 @@ def fig_breakeven(plt, be):
     grid = pd.read_csv(os.path.join(TAB, "breakeven_grid.csv"), index_col=0)
     rs = np.array([float(c) for c in grid.columns])
     ts = np.array([float(i) for i in grid.index])
-    fig, ax = plt.subplots(figsize=(6.4, 4.2))
+    fig, ax = plt.subplots(figsize=(6.4, 4.8))
     cs = ax.contourf(rs * 100, ts * 100, grid.values, levels=16, cmap="RdYlBu")
     lines = ax.contour(rs * 100, ts * 100, grid.values,
                        levels=[16000, 18000, 20000, 22000, 24000],
                        colors="black", linewidths=0.6)
     ax.clabel(lines, fmt="%d", fontsize=6, inline=True)
     ax.plot([0], [30], marker="o", color="#2166AC", ms=6,
-            label="Training +30% only")
+            label="Doctorate output +30% only")
     ax.plot([30], [0], marker="o", color="#B2182B", ms=6,
             label="Retention −30% only")
     ax.plot([0], [be["training_match_30pct_retention"] * 100], marker="s",
             color="#2166AC", ms=6,
-            label=f"Training to match −30% retention ({be['training_match_30pct_retention']*100:.0f}%)")
+            label=f"Doctorate output to match −30% retention ({be['training_match_30pct_retention']*100:.0f}%)")
     ax.axhline(30, color="grey", lw=0.5, ls=":")
     ax.axvline(be["retention_match_30pct_training"] * 100, color="#B2182B",
                lw=0.9, ls="--")
@@ -1164,21 +1985,26 @@ def fig_breakeven(plt, be):
             f"break-even\n{be['retention_match_30pct_training']*100:.1f}%\nemigration reduction",
             fontsize=7, color="#B2182B")
     ax.set_xlabel("Reduction in emigration (%)")
-    ax.set_ylabel("Training expansion (%)")
-    ax.set_ylim(0, 100)
-    ax.set_title("Workforce in 2040 under combined retention and training",
+    ax.set_ylabel("Doctorate-output expansion (%)")
+    ax.set_xlim(-2, 52)
+    ax.set_ylim(-2, 102)
+    ax.set_title("Workforce in 2040 under retention and doctorate-output expansion",
                  loc="left", fontsize=9)
     cb = fig.colorbar(cs, ax=ax, fraction=0.046, pad=0.02)
     cb.set_label("Physicians in 2040", fontsize=7.5)
-    ax.legend(frameon=False, fontsize=6.5, loc="upper right")
-    fig.tight_layout()
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, fontsize=6.2,
+               frameon=False, bbox_to_anchor=(0.5, 0.01),
+               handlelength=1.4, columnspacing=1.0)
+    fig.tight_layout(rect=(0, 0.11, 1, 1))
     _save(fig, "fig9_breakeven")
 
 
 # ---------------------------------------------------------------------------
 # 11. Tables
 # ---------------------------------------------------------------------------
-def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
+def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads,
+                 effect_sens, train_impl, calib_endpoint, return_recon):
     # Table 1. Data sources
     data_rows = [
         ["Physicians in active practice", "INS / Ministry of Health; carte sanitaire", "2017–2024",
@@ -1212,6 +2038,11 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
         ["Practising physicians, 2017–2024", "14 892–15 426", "—", "Observed", "INS / Ministry of Health"],
         ["Medical graduates, 2013 / 2021 / 2024", "987 / 1 128 / 1 305", "987–1 900", "Observed / reconstructed", "Zehnati 2024; ministerial statements"],
         ["Pipeline retention, σ", "0.55", "0.30–0.80", "Estimated (calibrated, weakly identified)", "Model calibration; flow reconciliation"],
+        ["Undergraduate lag, S (admission to doctorate)", "6 years", "6 (legal: PCEM 2 + DCEM 4)", "Observed (legal)", "Decree 2019-341; Decree 2011-4132"],
+        ["Post-doctorate lag, L", "5 years (effective, recent mixed cohort); 3–6 by track", "3–6 years; family medicine 3, 4-year specialty 4, 5-year specialty 5; plus 0–1 year national service", "Observed (legal) + assumption on track mix", "Decree 2019-341; Order of 10 May 2023"],
+        ["Total pipeline, S + L", "11 years", "9–12 years", "Derived", "Legal pathway"],
+        ["National-service share", "0.60", "0–1", "Assumption", "Law 2004-1; 2014 ministry–UGTT agreement"],
+        ["Family-medicine share of cohorts", "0.50", "0.35–0.65", "Assumption", "Residency-post mix; uncertain"],
         ["Post-entry emigration, 2024, m", f"{central['params_central']['m_base']:.0f}", "calibrated per draw", "Estimated (calibrated, weakly identified)", "Model calibration"],
         ["Total emigration, 2024", f"{r['emigration_2024']:.0f}", f"{ident['consistent_emig_range'][0]:.0f}–{ident['consistent_emig_range'][1]:.0f} (consistent set)", "Estimated (model-consistent)", "Derived; conditional on other parameters"],
         ["Pipeline non-entry share, 1−σ", "0.45", "0.20–0.70", "Assumption (implied by σ)", "Model structure"],
@@ -1251,13 +2082,15 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
     for y in [2017, 2020, 2024, 2030, 2035, 2040]:
         i = list(o["years"]).index(y)
         rows.append([y, round(o["stock"][i]), round(o["entries"][i]),
-                     round(o["emig_pre"][i]), round(o["emig_post"][i]),
+                     round(o["nonentry_total"][i]), round(o["emig_pre"][i]),
+                     round(o["nonentry_domestic"][i]), round(o["emig_post"][i]),
                      round(o["returns_net"][i]), round(o["retirements"][i]),
                      round(o["deaths"][i]),
                      round(o["stock"][i] - o["stock"][i - 1]),
                      round(o["stock"][i] / POP[y] * 1000, 2),
                      round(o["diaspora"][i])])
-    pd.DataFrame(rows, columns=["Year", "Stock", "Entries", "Pre-entry emigration",
+    pd.DataFrame(rows, columns=["Year", "Stock", "Entries", "Pipeline non-entry",
+                                "Pre-entry emigration", "Domestic non-entry",
                                 "Post-entry emigration", "Returns", "Retirements",
                                 "Deaths", "Net change", "Density (/1000)",
                                 "Return-eligible pool"]).to_csv(
@@ -1274,14 +2107,13 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
             r.get("stock_2040_low", np.nan), r.get("stock_2040_high", np.nan),
             r.get("stock_2040_escalating_post", np.nan),
             r.get("stock_2040_escalating_both", np.nan),
-            costs[k]["cost_per_py"],
         ])
     df = pd.DataFrame(rows, columns=[
         "Scenario", "Workforce 2030", "Workforce 2040", "Density 2040 (/1000)",
         "Cumulative emigration 2026–2040", "Cumulative returns 2026–2040",
         "Physician-years vs BAU", "Workforce 2040, low effect",
         "Workforce 2040, high effect", "Workforce 2040, post-entry +3%/yr",
-        "Workforce 2040, both margins +3%/yr", "Cost per physician-year (TND)"])
+        "Workforce 2040, both margins +3%/yr"])
     df["Density 2040 (/1000)"] = df["Density 2040 (/1000)"].round(2)
     num_cols = [c for c in df.columns if c not in ("Scenario", "Density 2040 (/1000)")]
     df[num_cols] = df[num_cols].round(1)
@@ -1313,29 +2145,59 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
                                 "PRCC p-value"]).to_csv(
         os.path.join(TAB, "table7_sensitivity.csv"), index=False)
 
-    # Table 8. Identifiability summary
+    # Table 8. Conservative effects and implementation sensitivity
+    bau = effect_sens["bau_2040"]
+    train = effect_sens["training30_2040"]
+    rows = []
+    for label, value in effect_sens["conservative"].items():
+        rows.append([label, value, value - bau, value - train,
+                     "Yes" if value > train else "No"])
+    for label, v in train_impl.items():
+        rows.append([f"Training +{int(round(0.30 * v['completion'] * 100))}% "
+                     f"(completion {v['completion']:.0%})",
+                     v["stock_2040"], v["difference"],
+                     v["stock_2040"] - train,
+                     "Yes" if v["stock_2040"] > train else "No"])
+    for label, v in calib_endpoint.items():
+        rows.append([f"Calibration endpoint {label}", v["bau_2040"],
+                     v["bau_2040"] - bau, v["bau_2040"] - train, "—"])
+    pd.DataFrame(rows, columns=[
+        "Scenario or specification", "Workforce 2040",
+        "Difference from central BAU", "Difference from 30% training",
+        "Above 30% training?"]).to_csv(
+        os.path.join(TAB, "table8_policy_sensitivity.csv"), index=False)
+
+    # Table 9. Identifiability summary
+    b = central["scenarios"]["BAU"]
     rows = [
         ["Best fit", ident["best"]["sigma"], ident["best"]["g_scale"],
-         ident["best"]["rmse"], ident["best"]["emig_total_2024"],
+         ident["best"]["rmse"], ident["best"]["nonentry_2024"],
+         ident["best"]["emig_total_2024"], ident["best"]["emig_total_phi1_2024"],
          ident["best"]["diaspora_2024"]],
         ["Central", 0.55, 1.0, central["fit"]["rmse"],
-         central["scenarios"]["BAU"]["emigration_2024"],
-         central["scenarios"]["BAU"]["diaspora_2024"]],
+         b["nonentry_2024"], b["emigration_2024"],
+         b["nonentry_2024"] + b["emig_post_2024"], b["diaspora_2024"]],
         ["Acceptable set (RMSE ≤ 2% of mean stock)",
          f"{ident['consistent_sigma_range'][0]:.2f}–{ident['consistent_sigma_range'][1]:.2f}",
          f"{ident['consistent_g_range'][0]:.2f}–{ident['consistent_g_range'][1]:.2f}",
          f"≤ {ident['threshold_rmse']:.0f}",
+         f"{ident['consistent_nonentry_range'][0]:.0f}–{ident['consistent_nonentry_range'][1]:.0f}",
          f"{ident['consistent_emig_range'][0]:.0f}–{ident['consistent_emig_range'][1]:.0f}",
+         f"{ident['consistent_emig_phi1_range'][0]:.0f}–{ident['consistent_emig_phi1_range'][1]:.0f}",
          f"{ident['consistent_diaspora_range'][0]:.0f}–{ident['consistent_diaspora_range'][1]:.0f}"],
         ["Strict set (RMSE ≤ 1.10 × best)",
          f"{ident['strict_sigma_range'][0]:.2f}–{ident['strict_sigma_range'][1]:.2f}",
          f"{ident['strict_g_range'][0]:.2f}–{ident['strict_g_range'][1]:.2f}",
          f"≤ {ident['strict_threshold_rmse']:.0f}",
+         "—",
          f"{ident['strict_emig_range'][0]:.0f}–{ident['strict_emig_range'][1]:.0f}",
+         f"{ident['strict_emig_phi1_range'][0]:.0f}–{ident['strict_emig_phi1_range'][1]:.0f}",
          "—"],
     ]
     pd.DataFrame(rows, columns=["Case", "Pipeline retention", "Training multiplier",
-                                "RMSE", "Implied emigration 2024",
+                                "RMSE", "Pipeline non-entry 2024",
+                                "International emigration 2024 (φ=0.5)",
+                                "Upper bound if all non-entry emigrated (φ=1)",
                                 "Return-eligible pool 2024"]).to_csv(
         os.path.join(TAB, "table8_identifiability.csv"), index=False)
 
@@ -1343,15 +2205,19 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
     rows = []
     for k in ["REMUN", "CAREER", "RETURN", "TRAINING", "COMBINED"]:
         c = costs[k]
-        rows.append([k, c["cost_tnd"], c["cost_per_py"], c["cost_per_py_low"],
-                     c["cost_per_py_high"], c["cost_per_additional_physician"],
+        rows.append([k, c["fiscal_transfer_tnd"], c["resource_cost_tnd"],
+                     c["cost_per_py_fiscal"], c["cost_per_py_resource"],
+                     c["cost_per_py_fiscal_low"], c["cost_per_py_fiscal_high"],
+                     c["cost_per_py_resource_low"], c["cost_per_py_resource_high"],
                      c["physician_years"], c["stock_diff_2040"]])
-    pd.DataFrame(rows, columns=["Scenario", "Total cost (TND)",
-                                "Cost per physician-year",
-                                "Low unit costs", "High unit costs",
-                                "Cost per additional physician in 2040",
-                                "Physician-years vs BAU",
-                                "Additional physicians in 2040"]).to_csv(
+    pd.DataFrame(rows, columns=[
+        "Scenario", "Fiscal transfer (TND)", "Real resource cost (TND)",
+        "Fiscal transfer per additional physician-year", "Resource cost per additional physician-year",
+        "Fiscal per additional physician-year, low unit costs",
+        "Fiscal per additional physician-year, high unit costs",
+        "Resource per additional physician-year, low unit costs",
+        "Resource per additional physician-year, high unit costs",
+        "Physician-years vs BAU", "Additional physicians in 2040"]).to_csv(
         os.path.join(TAB, "table9_costs.csv"), index=False)
 
     # Table 11. Age structure
@@ -1379,14 +2245,16 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
         o = simulate(p_age, scenario=_scen_dict(k), end_year=2040)
         i = list(o["years"]).index(2040)
         rows.append([k, round(o["stock"][i]), round(o["entries"][i]),
-                     round(o["emig_pre"][i]), round(o["emig_post"][i]),
+                     round(o["nonentry_total"][i]), round(o["emig_pre"][i]),
+                     round(o["nonentry_domestic"][i]), round(o["emig_post"][i]),
                      round(o["returns_net"][i]), round(o["retirements"][i]),
                      round(o["deaths"][i]), round(o["diaspora"][i]),
-                     round(o["pre_share"][i], 3)])
+                     round(o["pre_emig_share"][i], 3)])
     pd.DataFrame(rows, columns=["Scenario", "Stock 2040", "Entries",
-                                "Pre-entry emigration", "Post-entry emigration",
+                                "Pipeline non-entry", "Pre-entry emigration",
+                                "Domestic non-entry", "Post-entry emigration",
                                 "Returns", "Retirements", "Deaths",
-                                "Return-eligible pool", "Pre-entry share"]
+                                "Return-eligible pool", "Pre-entry emigration share"]
                  ).to_csv(os.path.join(TAB, "table12_scenario_flows_2040.csv"),
                           index=False)
 
@@ -1412,7 +2280,10 @@ def write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads):
 # ---------------------------------------------------------------------------
 # 12. Key numbers for the manuscript
 # ---------------------------------------------------------------------------
-def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, grads):
+def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora,
+                      grads, phi_sens, lag_sens, age_sens, ret_sens,
+                      return_recon, effect_sens, train_impl, calib_endpoint,
+                      prcc_boot, dest):
     def f(x, nd=0):
         return f"{x:,.{nd}f}".replace(",", " ")
 
@@ -1425,6 +2296,7 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, gra
     lines.append("# Key numbers\n")
     lines.append("Generated by `src/analysis.py`. Use these values in the manuscript.\n")
     lines.append("## Calibration and fit\n")
+    lines.append(f"- phi (share of pipeline non-entry assumed to be emigration): {c['params_central']['phi']:.2f}")
     lines.append(f"- m_base: {f(c['params_central']['m_base'], 1)}")
     lines.append(f"- Calibration error (2024): {f(c['fit']['calibration_error'], 3)}")
     lines.append(f"- RMSE 2017–2024: {f(c['fit']['rmse'], 1)} ({c['fit']['mape']:.2f}% MAPE)")
@@ -1433,13 +2305,21 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, gra
     lines.append("\n## Baseline\n")
     for k in ("stock_2024", "stock_2030", "stock_2035", "stock_2040",
               "density_2024", "density_2040", "cum_emigration", "cum_returns",
-              "diaspora_2024", "diaspora_2040", "emigration_2024", "returns_2024"):
+              "diaspora_2024", "diaspora_2040", "emigration_2024",
+              "emig_pre_2024", "emig_post_2024", "nonentry_2024",
+              "nonentry_domestic_2024", "returns_2024"):
         lines.append(f"- {k}: {f(c['bau'][k], 2)}")
+    lines.append(f"- cap_binding_any: {c['bau']['cap_binding_any']}")
+    lines.append(f"- max_emig_hazard: {c['bau']['max_emig_hazard']:.3f}")
     lines.append(f"- MC 2040: {f(mc['bau_stock_2040']['median'])} ({f(mc['bau_stock_2040']['lo'])}–{f(mc['bau_stock_2040']['hi'])})")
     lines.append(f"- MC density 2040: {mc['bau_density_2040']['median']:.2f} ({mc['bau_density_2040']['lo']:.2f}–{mc['bau_density_2040']['hi']:.2f})")
     lines.append(f"- MC probability BAU 2040 > 2024: {mc['prob_bau_above_2024']:.3f}")
     lines.append(f"- MC probability combined first: {mc['rank_combined_first']:.3f}")
     lines.append(f"- MC probability training last: {mc['rank_training_last']:.3f}")
+    lines.append(f"- MC probability return last: {mc['rank_return_last']:.3f}")
+    for name, probs in mc["rank_distribution"].items():
+        lines.append(f"- Rank distribution {name}: " + ", ".join(
+            f"{i+1}:{p:.3f}" for i, p in enumerate(probs)))
     lines.append(f"- MC max calibration error: {mc['diagnostics']['max_abs_calibration_error']:.4f}")
 
     lines.append("\n## Scenarios (deterministic)\n")
@@ -1451,9 +2331,10 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, gra
         lines.append(f"  - low/high 2040: {f(r['stock_2040_low'])} / {f(r['stock_2040_high'])}; "
                      f"post-only +3%: {f(r['stock_2040_escalating_post'])}; "
                      f"both +3%: {f(r['stock_2040_escalating_both'])}")
-        lines.append(f"  - cost/PY: {f(costs[k]['cost_per_py'])} "
-                     f"({f(costs[k]['cost_per_py_low'])}–{f(costs[k]['cost_per_py_high'])}); "
-                     f"cost/additional physician: {f(costs[k]['cost_per_additional_physician'])}")
+        lines.append(f"  - fiscal/additional PY: {f(costs[k]['cost_per_py_fiscal'])} "
+                     f"({f(costs[k]['cost_per_py_fiscal_low'])}–{f(costs[k]['cost_per_py_fiscal_high'])}); "
+                     f"resource/additional PY: {f(costs[k]['cost_per_py_resource'])} "
+                     f"({f(costs[k]['cost_per_py_resource_low'])}–{f(costs[k]['cost_per_py_resource_high'])})")
     lines.append(f"- BAU 2040: {f(c['bau']['stock_2040'])}; density {c['bau']['density_2040']:.2f}")
 
     lines.append("\n## Age structure (% of practising physicians)\n")
@@ -1461,11 +2342,19 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, gra
         lines.append(f"- {lab}: " + ", ".join(f"{k} {v:.1f}" for k, v in vals.items()))
 
     lines.append("\n## Identifiability\n")
-    lines.append(f"- Best fit: sigma {ident['best']['sigma']:.2f}, training {ident['best']['g_scale']:.2f}, RMSE {ident['best']['rmse']:.0f}, emigration {ident['best']['emig_total_2024']:.0f}, pool {ident['best']['diaspora_2024']:.0f}")
-    lines.append(f"- Acceptable set (RMSE ≤ 2% of mean stock, {ident['threshold_rmse']:.0f}): sigma {rng(ident['consistent_sigma_range'], 2)}; training {rng(ident['consistent_g_range'], 2)}; emigration {rng(ident['consistent_emig_range'])}; pool {rng(ident['consistent_diaspora_range'])}")
-    lines.append(f"- Strict set (RMSE ≤ 1.10 × best, {ident['strict_threshold_rmse']:.0f}): n={ident['strict_n']}; emigration {rng(ident['strict_emig_range'])}")
-    lines.append(f"- All feasible grid: emigration {rng(ident['all_emig_range'])}; RMSE {rng(ident['all_rmse_range'])}")
-    lines.append(f"- Destination-consistent subset: n={ident['destination_consistent_n']}, emigration {rng(ident['destination_consistent_emig_range'])}, pool {rng(ident['destination_consistent_diaspora_range'])}")
+    lines.append(f"- Best fit: sigma {ident['best']['sigma']:.2f}, training {ident['best']['g_scale']:.2f}, RMSE {ident['best']['rmse']:.0f}, non-entry {ident['best']['nonentry_2024']:.0f}, emigration (phi=0.5) {ident['best']['emig_total_2024']:.0f}, upper bound (phi=1) {ident['best']['emig_total_phi1_2024']:.0f}, pool {ident['best']['diaspora_2024']:.0f}")
+    lines.append(f"- Acceptable set (RMSE ≤ 2% of mean stock, {ident['threshold_rmse']:.0f}): sigma {rng(ident['consistent_sigma_range'], 2)}; training {rng(ident['consistent_g_range'], 2)}; non-entry {rng(ident['consistent_nonentry_range'])}; emigration phi=0.5 {rng(ident['consistent_emig_range'])}; upper bound phi=1 {rng(ident['consistent_emig_phi1_range'])}; pool {rng(ident['consistent_diaspora_range'])}")
+    lines.append(f"- Strict set (RMSE ≤ 1.10 × best, {ident['strict_threshold_rmse']:.0f}): n={ident['strict_n']}; emigration phi=0.5 {rng(ident['strict_emig_range'])}; upper bound phi=1 {rng(ident['strict_emig_phi1_range'])}")
+    lines.append(f"- All feasible grid: emigration phi=0.5 {rng(ident['all_emig_range'])}; upper bound phi=1 {rng(ident['all_emig_phi1_range'])}; RMSE {rng(ident['all_rmse_range'])}")
+    lines.append(f"- Destination-consistent subset: n={ident['destination_consistent_n']}, emigration phi=0.5 {rng(ident['destination_consistent_emig_range'])}, upper bound phi=1 {rng(ident['destination_consistent_emig_phi1_range'])}, pool {rng(ident['destination_consistent_diaspora_range'])}")
+    lines.append("\n## Destination triangulation (cumulative emigration 2008–2024)\n")
+    for _, r in dest["by_phi"].iterrows():
+        lines.append(f"- phi={r['phi']:.2f}: m={f(r['m_base'],1)}; cumulative emigration={f(r['cumulative_emigration_2008_2024'])}; pool 2024={f(r['diaspora_2024'])}")
+    for _, r in dest["consistency"].iterrows():
+        if np.isfinite(r["phi_min"]):
+            lines.append(f"- destination stock {f(r['destination_stock_2024'])} with attrition {r['attrition_return_loss']:.0%}: required cumulative outflow {f(r['required_cumulative_outflow'])}; consistent phi {r['phi_min']:.2f}–{r['phi_max']:.2f}")
+        else:
+            lines.append(f"- destination stock {f(r['destination_stock_2024'])} with attrition {r['attrition_return_loss']:.0%}: required cumulative outflow {f(r['required_cumulative_outflow'])}; no consistent phi in the grid")
 
     lines.append("\n## Sensitivity\n")
     for k in SENS_PARAMS:
@@ -1479,19 +2368,66 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, gra
 
     lines.append("\n## Break-even\n")
     lines.append(f"- Retention reduction matching 30% training: {be['retention_match_30pct_training']*100:.1f}%")
-    lines.append(f"- Training expansion matching 30% retention: {be['training_match_30pct_retention']*100:.1f}%")
+    lines.append(f"- Doctorate-output expansion matching 30% retention: {be['training_match_30pct_retention']*100:.1f}%")
     lines.append(f"- 2040 stock, training +30%: {f(be['stock_training_30'])}; retention −30%: {f(be['stock_retention_30'])}; BAU: {f(be['bau_2040'])}")
 
     lines.append("\n## Diaspora sensitivity\n")
     dc = diaspora["central"]
-    lines.append(f"- Central: attrition {dc['diaspora_attrition']:.2f}, initial pool {f(dc['initial_diaspora_2008'])}, rho {dc['rho']:.3f}, pool 2024 {f(dc['diaspora_2024'])}, BAU 2040 {f(dc['bau_2040'])}, return 2040 {f(dc['return_2040'])}, return difference {f(dc['return_diff_2040'])}, eventual return probability {dc['eventual_return_prob']:.2f}")
+    lines.append(f"- Central: attrition {dc['diaspora_attrition']:.2f}, initial pool {f(dc['initial_diaspora_2008'])}, rho {dc['rho']:.3f}, pool 2024 {f(dc['diaspora_2024'])}, BAU 2040 {f(dc['bau_2040'])}, return 2040 {f(dc['return_2040'])}, return difference {f(dc['return_diff_2040'])}, attempt probability {dc['eventual_attempt_prob']:.3f}, success probability {dc['eventual_success_prob']:.3f}, mean duration {dc['mean_duration_years']:.1f} years")
     lines.append(f"- Return difference range across sensitivity: {rng(diaspora['return_diff_range'])}")
     lines.append(f"- Pool range across sensitivity: {rng(diaspora['diaspora_2024_range'])}")
-    lines.append(f"- Eventual return probability range: {diaspora['eventual_return_range'][0]:.2f}–{diaspora['eventual_return_range'][1]:.2f}")
+    lines.append(f"- Eventual attempt probability range: {diaspora['eventual_attempt_range'][0]:.2f}–{diaspora['eventual_attempt_range'][1]:.2f}")
+    lines.append(f"- Eventual successful return probability range: {diaspora['eventual_success_range'][0]:.2f}–{diaspora['eventual_success_range'][1]:.2f}")
+    lines.append(f"- Mean duration range (years): {diaspora['mean_duration_range'][0]:.1f}–{diaspora['mean_duration_range'][1]:.1f}")
 
     lines.append("\n## Graduate baselines\n")
     for k, v in grads.items():
         lines.append(f"- {k}: graduates 2040 {v['graduates_2040']:.0f}; BAU {f(v['bau_2040'])}; training {f(v['training_2040'])}; combined {f(v['combined_2040'])}; training PY {f(v['training_py'])}; combined PY {f(v['combined_py'])}")
+
+    lines.append("\n## Phi sensitivity (share of pipeline non-entry assumed to be emigration)\n")
+    for k, v in phi_sens.items():
+        b = v["bau"]
+        lines.append(f"- phi={v['phi']:.2f}: m={f(v['m_base'],1)}; emigration 2024={f(b['emigration_2024'])}; non-entry 2024={f(b['nonentry_2024'])}; pool 2024={f(b['diaspora_2024'])}; BAU 2040={f(b['stock_2040'])}; remuneration={f(v['scenarios']['REMUN']['stock_2040'])}; return={f(v['scenarios']['RETURN']['stock_2040'])}; training={f(v['scenarios']['TRAINING']['stock_2040'])}; combined={f(v['scenarios']['COMBINED']['stock_2040'])}; combined PY={f(v['scenarios']['COMBINED']['physician_years'])}; retention match={v['retention_match']*100:.1f}%")
+
+    lines.append("\n## Training-pipeline sensitivity\n")
+    for k, v in lag_sens.items():
+        rm = v.get("retention_match", float("nan"))
+        rm_s = "nan" if not np.isfinite(rm) else f"{rm*100:.1f}%"
+        lines.append(f"- {v['specification']}: m={f(v['m_base'],1)}; BAU 2040={f(v['bau_2040'])}; training={f(v['training_2040'])}; combined={f(v['combined_2040'])}; training PY={f(v['training_py'])}; combined PY={f(v['combined_py'])}; retention match={rm_s}")
+
+    lines.append("\n## Initial age-shape sensitivity\n")
+    for k, v in age_sens.items():
+        lines.append(f"- {k}: m={f(v['m_base'],1)}; BAU 2040={f(v['bau_2040'])}; training={f(v['training_2040'])}; combined={f(v['combined_2040'])}; training PY={f(v['training_py'])}; combined PY={f(v['combined_py'])}; retention match={v['retention_match']*100:.1f}%")
+
+    lines.append("\n## Retirement and mortality sensitivity\n")
+    for k, v in ret_sens.items():
+        lines.append(f"- shift={v['retire_shift']:.1f}, mortality x{v['mortality_mult']:.1f}: m={f(v['m_base'],1)}; BAU 2040={f(v['bau_2040'])}; combined 2040={f(v['combined_2040'])}; combined PY={f(v['combined_py'])}")
+
+    lines.append("\n## Return accounting sensitivity\n")
+    for k, v in return_recon.items():
+        lines.append(f"- recycling={v['recycling']}: m={f(v['m_base'],1)}; pool 2024={f(v['diaspora_2024'])}; returns 2024={f(v['returns_2024'])}; BAU 2040={f(v['bau_2040'])}; return 2040={f(v['return_2040'])}; advantage={f(v['return_diff_2040'])}; attempt={v['eventual_attempt_prob']:.3f}; success={v['eventual_success_prob']:.3f}; duration={v['mean_duration_years']:.1f}")
+
+    lines.append("\n## Policy effect sensitivity\n")
+    for r, stock, d_bau, d_train in effect_sens["retention"]:
+        lines.append(f"- retention {r*100:.1f}%: 2040={f(stock)}; vs BAU={f(d_bau)}; vs 30% training={f(d_train)}")
+    for mult, stock, d_bau, d_train in effect_sens["return"]:
+        lines.append(f"- return multiplier {mult:.2f}: 2040={f(stock)}; vs BAU={f(d_bau)}; vs 30% training={f(d_train)}")
+    for mult, stock, d_bau in effect_sens["training"]:
+        lines.append(f"- training multiplier {mult:.2f}: 2040={f(stock)}; vs BAU={f(d_bau)}")
+    for label, value in effect_sens["conservative"].items():
+        lines.append(f"- conservative {label}: 2040={f(value)}; vs BAU={f(value-effect_sens['bau_2040'])}; vs 30% training={f(value-effect_sens['training30_2040'])}")
+
+    lines.append("\n## Training implementation sensitivity\n")
+    for k, v in train_impl.items():
+        lines.append(f"- completion {v['completion']:.0%}: graduate multiplier {v['graduate_multiplier']:.2f}; 2040={f(v['stock_2040'])}; vs BAU={f(v['difference'])}; PY={f(v['physician_years'])}")
+
+    lines.append("\n## Calibration endpoint sensitivity\n")
+    for k, v in calib_endpoint.items():
+        lines.append(f"- target {k}: stock {f(v['target_stock'])}; m={f(v['m_base'],1)}; simulated 2024={f(v['simulated_2024'])}; BAU 2040={f(v['bau_2040'])}; combined 2040={f(v['combined_2040'])}; training 2040={f(v['training_2040'])}")
+
+    lines.append("\n## PRCC bootstrap stability\n")
+    for k, v in prcc_boot.items():
+        lines.append(f"- {k}: median {v['median']:.2f} (90% {v['lo']:.2f} to {v['hi']:.2f})")
 
     with open(os.path.join(OUT, "key_numbers.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
@@ -1501,8 +2437,38 @@ def write_key_numbers(central, mc, sens, ident, struct, be, costs, diaspora, gra
 # ---------------------------------------------------------------------------
 # 13. Validation
 # ---------------------------------------------------------------------------
+def write_additional_key_numbers(profile_sens, ramp_sens, return_val,
+                                 changepoint, margin_sens, timing_sens):
+    """Append the Q2/Q3/Q6/Q7/Q9/Q10 sensitivities to key_numbers.md."""
+    lines = ["\n## Age-profile sensitivity (Q2)\n"]
+    for k, v in profile_sens.items():
+        lines.append(f"- {k}: RMSE {v['rmse']:.0f}; BAU 2040 {v['bau_2040']:.0f}; training {v['training_2040']:.0f}; combined {v['combined_2040']:.0f}; training gain {v['training_gain']:.0f}; retention match {v['retention_match']*100:.1f}%")
+    lines.append("\n## Emigration-ramp sensitivity (Q3)\n")
+    for k, v in ramp_sens.items():
+        lines.append(f"- {k}: RMSE {v['rmse']:.0f}; BAU 2040 {v['bau_2040']:.0f}; training {v['training_2040']:.0f}; combined {v['combined_2040']:.0f}; training gain {v['training_gain']:.0f}; retention match {v['retention_match']*100:.1f}%")
+    lines.append("\n## Return-parameter validation (Q6)\n")
+    rs = return_val["summary"]
+    lines.append(f"- return advantage range: {rs['advantage_min']:.0f}–{rs['advantage_max']:.0f}; pool 2024 range {rs['pool_min']:.0f}–{rs['pool_max']:.0f}; n={rs['n']}")
+    lines.append("\n## Change-point sensitivity (Q7)\n")
+    lines.append(f"- mean 2020–2021 residual: {changepoint['break_residual']:.0f}")
+    lines.append(f"- best additive shift: {changepoint['best_shift']:.0f}; RMSE before {changepoint['rmse_before']:.0f}; after {changepoint['rmse_after']:.0f}")
+    for r in changepoint["endpoints"]:
+        lines.append(f"- {r['endpoint']}: m={r['m_base']:.1f}; BAU 2040 {r['bau_2040']:.0f}; training {r['training_2040']:.0f}; combined {r['combined_2040']:.0f}")
+    lines.append("\n## Retention-margin sensitivity (Q10)\n")
+    for r in margin_sens["rows"]:
+        lines.append(f"- {r['specification']}: 2040 {r['stock_2040']:.0f}; vs BAU {r['difference_bau']:+.0f}; vs training {r['difference_training']:+.0f}")
+    lines.append("\n## Training-timing sensitivity (Q9)\n")
+    for r in timing_sens["rows"]:
+        lines.append(f"- {r['train_path']}, completion {r['completion']:.0%}: 2040 {r['stock_2040']:.0f}; vs BAU {r['difference_bau']:+.0f}; PY {r['physician_years']:.0f}")
+    with open(os.path.join(OUT, "key_numbers.md"), "a", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
+
+
 def validate(central, mc, ident, sens):
     checks = []
+    p = replace(CENTRAL, m_base=central["params_central"]["m_base"])
+    base = simulate(p, end_year=2040)
+
     checks.append(("2024 calibration exact",
                    abs(central["fit"]["calibration_error"]) < 0.5,
                    f"{central['fit']['calibration_error']:.3f}"))
@@ -1523,6 +2489,89 @@ def validate(central, mc, ident, sens):
     checks.append(("All scenarios positive",
                    all(central["scenarios"][k]["stock_2040"] > 0 for k in SCENARIOS),
                    ""))
+    checks.append(("PRCCs within [-1, 1]",
+                   all(-1.0001 <= v <= 1.0001 for v in sens["prcc"].values()), ""))
+
+    # Return accounting.
+    i24 = list(base["years"]).index(2024)
+    gross = float(base["returns_gross"][i24])
+    net = float(base["returns_net"][i24])
+    reem = float(base["re_emigration"][i24])
+    theta = p.return_retention
+    checks.append(("Return flow components additive",
+                   abs(gross - net - reem) < 1e-9, ""))
+    checks.append(("Return retention matches flow",
+                   abs(net / gross - theta) < 1e-9 if gross > 0 else True,
+                   f"{net/gross:.3f}" if gross > 0 else "—"))
+    denom = 1.0 - (1.0 - theta * p.rho) * (1.0 - p.diaspora_attrition)
+    denom_attempt = 1.0 - (1.0 - p.rho) * (1.0 - p.diaspora_attrition)
+    attempt = p.rho / denom_attempt
+    success = theta * p.rho / denom
+    duration = 1.0 / denom
+    checks.append(("Return probabilities ordered",
+                   0 < success < attempt < 1 and 0 < duration < 100,
+                   f"attempt {attempt:.3f}, success {success:.3f}, duration {duration:.1f}"))
+    o_nr = simulate(replace(p, return_recycling=False), end_year=2040)
+    nr_ok = True
+    for j in range(1, len(o_nr["years"])):
+        lhs = o_nr["stock"][j] - o_nr["stock"][j - 1]
+        rhs = (o_nr["entries"][j] - o_nr["emig_post"][j]
+               + o_nr["returns_net"][j] - o_nr["retirements"][j]
+               - o_nr["deaths"][j])
+        if abs(lhs - rhs) > 1e-6:
+            nr_ok = False
+            break
+    checks.append(("No-recycling flow identity holds", nr_ok, ""))
+
+    # Flow identity for every scenario.
+    flow_ok = True
+    pipeline_ok = True
+    nonneg_ok = True
+    density_ok = True
+    py_ok = True
+    for key in SCENARIOS:
+        o = simulate(p, scenario=_scen_dict(key), end_year=2040)
+        for j in range(1, len(o["years"])):
+            lhs = o["stock"][j] - o["stock"][j - 1]
+            rhs = (o["entries"][j] - o["emig_post"][j]
+                   + o["returns_net"][j] - o["retirements"][j]
+                   - o["deaths"][j])
+            if abs(lhs - rhs) > 1e-6:
+                flow_ok = False
+                break
+        for j, y in enumerate(o["years"]):
+            if abs(o["entries"][j] + o["nonentry_total"][j]
+                   - o["graduates"][j]) > 1e-6:
+                pipeline_ok = False
+                break
+        if any((d < -1e-9).any() for d in o["age_dist"].values()):
+            nonneg_ok = False
+        s = summarise(o)
+        if abs(s["density_2040"] - o["stock"][-1] / POP[2040] * 1000) > 1e-9:
+            density_ok = False
+        if key != "BAU":
+            py = summarise(o, base)["physician_years"]
+            mask = np.array([y >= 2026 for y in o["years"]])
+            if abs(py - float(np.sum((o["stock"] - base["stock"])[mask]))) > 1e-6:
+                py_ok = False
+
+    checks.append(("Workforce flow identity holds for all scenarios", flow_ok, ""))
+    checks.append(("Graduate pipeline identity holds for all scenarios", pipeline_ok, ""))
+    checks.append(("Age distributions non-negative", nonneg_ok, ""))
+    checks.append(("Density calculation consistent", density_ok, ""))
+    checks.append(("Physician-year calculation consistent", py_ok, ""))
+    checks.append(("Emigration hazard cap does not bind centrally",
+                   not central["bau"]["cap_binding_any"],
+                   f"max hazard {central['bau']['max_emig_hazard']:.3f}"))
+    checks.append(("Hazards in [0, 1]",
+                   (retirement_hazard(0.0).max() <= 1.0
+                    and retirement_hazard(0.0).min() >= 0.0
+                    and mortality_hazard(1.0).max() <= 1.0), ""))
+    checks.append(("MC intervals ordered",
+                   all(mc[k]["lo"] <= mc[k]["median"] <= mc[k]["hi"]
+                       for k in ("bau_stock_2040", "bau_stock_2030",
+                                 "bau_stock_2035", "emig_total_2024")), ""))
+
     ok = all(c[1] for c in checks)
     lines = ["# Validation report\n", f"Overall: {'PASS' if ok else 'FAIL'}\n"]
     for name, passed, detail in checks:
@@ -1562,12 +2611,18 @@ def main():
     print("Identifiability grid ...")
     ident = run_identifiability()
 
+    print("Destination triangulation ...")
+    dest = run_destination_triangulation()
+
     print("Monte Carlo ...")
-    df, diagnostics = run_mc(n=2000)
+    df, diagnostics = run_mc(n=4000)
     mc = summarise_mc(df, diagnostics)
 
     print("Sensitivity ...")
     sens = run_sensitivity(df)
+
+    print("PRCC bootstrap stability ...")
+    prcc_boot = run_prcc_stability(df, n_boot=1000)
 
     print("Structural escalation ...")
     struct = run_structural(central)
@@ -1579,8 +2634,39 @@ def main():
     print("Diaspora sensitivity ...")
     diaspora = run_diaspora_sensitivity(central)
 
+    print("Return accounting sensitivity ...")
+    return_recon = run_return_accounting_sensitivity(central)
+
     print("Graduate baselines ...")
     grads = run_graduate_baselines(central)
+
+    print("Policy effect sensitivity ...")
+    effect_sens = run_effect_sensitivity(central)
+    print("Training implementation sensitivity ...")
+    train_impl = run_training_implementation_sensitivity(central)
+    print("Calibration endpoint sensitivity ...")
+    calib_endpoint = run_calibration_endpoint_sensitivity(central)
+
+    print("Phi sensitivity ...")
+    phi_sens = run_phi_sensitivity(central)
+    print("Training-pipeline sensitivity ...")
+    lag_sens = run_lag_sensitivity(central)
+    print("Age-profile sensitivity ...")
+    profile_sens = run_age_profile_sensitivity(central)
+    print("Emigration-ramp sensitivity ...")
+    ramp_sens = run_ramp_sensitivity(central)
+    print("Return-parameter validation ...")
+    return_val = run_return_validation_sensitivity(central)
+    print("Change-point sensitivity ...")
+    changepoint = run_changepoint_sensitivity(central, calib_endpoint)
+    print("Retention-margin sensitivity ...")
+    margin_sens = run_retention_margin_sensitivity(central)
+    print("Training-timing sensitivity ...")
+    timing_sens = run_training_timing_sensitivity(central)
+    print("Initial age-shape sensitivity ...")
+    age_sens = run_age_shape_sensitivity(central)
+    print("Retirement and mortality sensitivity ...")
+    ret_sens = run_retirement_sensitivity(central)
 
     print("Costs ...")
     costs = run_costs(central)
@@ -1596,14 +2682,35 @@ def main():
     fig_age(plt, central)
     fig_structural(plt, central)
     fig_breakeven(plt, be)
+    fig_cost(plt, costs)
 
     print("Tables ...")
-    write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads)
+    write_tables(central, mc, sens, ident, struct, be, costs, diaspora, grads,
+                 effect_sens, train_impl, calib_endpoint, return_recon)
 
     summary = {
         "central": central, "mc": mc, "sensitivity": sens,
         "identifiability": ident, "structural": struct, "breakeven": be,
         "costs": costs, "diaspora": diaspora, "graduate_baselines": grads,
+        "phi_sensitivity": phi_sens, "lag_sensitivity": lag_sens,
+        "age_shape_sensitivity": age_sens,
+        "retirement_sensitivity": ret_sens,
+        "return_accounting": return_recon,
+        "effect_sensitivity": effect_sens,
+        "training_implementation": train_impl,
+        "calibration_endpoint": calib_endpoint,
+        "prcc_stability": prcc_boot,
+        "destination_triangulation": {
+            "by_phi": dest["by_phi"].to_dict(orient="records"),
+            "requirements": dest["requirements"].to_dict(orient="records"),
+            "consistency": dest["consistency"].to_dict(orient="records"),
+        },
+        "age_profile_sensitivity": profile_sens,
+        "ramp_sensitivity": ramp_sens,
+        "return_validation": return_val,
+        "changepoint_sensitivity": changepoint,
+        "retention_margin_sensitivity": margin_sens,
+        "training_timing_sensitivity": timing_sens,
     }
     with open(os.path.join(OUT, "results_summary.json"), "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2,
@@ -1611,7 +2718,11 @@ def main():
                   else (int(o) if isinstance(o, np.integer) else str(o)))
 
     write_key_numbers(central, mc, sens, ident, struct, be, costs,
-                      diaspora, grads)
+                      diaspora, grads, phi_sens, lag_sens, age_sens, ret_sens,
+                      return_recon, effect_sens, train_impl, calib_endpoint,
+                      prcc_boot, dest)
+    write_additional_key_numbers(profile_sens, ramp_sens, return_val,
+                                 changepoint, margin_sens, timing_sens)
     write_environment()
     ok = validate(central, mc, ident, sens)
     print("Validation:", "PASS" if ok else "FAIL")

@@ -242,10 +242,10 @@ def md_to_docx(md_path: Path, out_path: Path, double_spacing: bool = True):
 
 
 def main():
-    md_to_docx(SUB / "Manuscript_HRH.md", SUB / "Manuscript_HRH.docx")
-    md_to_docx(SUB / "Additional_file_1.md", SUB / "Additional_file_1.docx", double_spacing=False)
-    if (SUB / "Cover_letter.md").exists():
-        md_to_docx(SUB / "Cover_letter.md", SUB / "Cover_letter.docx", double_spacing=False)
+    md_to_docx(ROOT / "Manuscript_HRH_Revised_R3.md",
+               ROOT / "Manuscript_HRH_Revised_R3.docx")
+    md_to_docx(ROOT / "Additional_file_1_Revised_R3.md",
+               ROOT / "Additional_file_1_Revised_R3.docx", double_spacing=False)
 
 
 if __name__ == "__main__":
